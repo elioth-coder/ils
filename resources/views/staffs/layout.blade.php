@@ -15,8 +15,8 @@
 
         <div class="container d-flex flex-column pb-5 row-gap-4">
             <section class="w-100">
-                <a href="/users/students#students-form" class="btn btn-outline-success">
-                    New Student
+                <a href="/users/staffs#staffs-form" class="btn btn-outline-success">
+                    New Staff
                     <i class="bi bi-plus"></i>
                 </a>
             </section>
@@ -31,44 +31,44 @@
                     </div>
                 @endif
 
-                <table id="students-table" class="table table-striped table-hover">
+                <table id="staffs-table" class="table table-striped table-hover">
                     <thead>
                         <tr>
                             <th>Action</th>
-                            <th>Student #</th>
+                            <th>Employee #</th>
                             <th>Name</th>
-                            <th>Course</th>
+                            <th>Library</th>
                             <th>Email Address</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($students as $student)
+                        @foreach ($staffs as $staff)
                             <tr>
                                 <td>
-                                    <form id="delete-student-{{ $student->id }}"
-                                        action="/users/students/{{ $student->id }}" method="POST" class="d-none">
+                                    <form id="delete-staff-{{ $staff->id }}"
+                                        action="/users/staffs/{{ $staff->id }}" method="POST" class="d-none">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit">DELETE</button>
                                     </form>
-                                    <a title="Edit" href="/users/students/{{ $student->id }}/edit#students-form" class="btn btn-light btn-sm">
+                                    <a title="Edit" href="/users/staffs/{{ $staff->id }}/edit#staffs-form" class="btn btn-light btn-sm">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <button title="Delete" onclick="deleteStudent({{ $student->id }});" class="btn btn-light btn-sm">
+                                    <button title="Delete" onclick="deleteStaff({{ $staff->id }});" class="btn btn-light btn-sm">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </td>
-                                <td class="text-end">{{ $student->student_number }}</td>
-                                <td>{{ $student->first_name }} {{ $student->last_name }}</td>
-                                <td>{{ $student->program }} {{ $student->year }}</td>
-                                <td>{{ $student->email }}</td>
+                                <td class="text-end">{{ $staff->employee_number }}</td>
+                                <td>{{ $staff->first_name }} {{ $staff->last_name }}</td>
+                                <td>{{ $staff->library }}</td>
+                                <td>{{ $staff->email }}</td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
             </section>
             <section class="d-block">
-                <div id="students-form" class="card p-3 w-full shadow">
+                <div id="staffs-form" class="card p-3 w-full shadow">
                     <div class="card-body">
                         {{ $form ?? '' }}
                     </div>
@@ -79,11 +79,11 @@
     <x-footer />
     <x-slot:script>
         <script>
-            new DataTable('#students-table');
+            new DataTable('#staffs-table');
 
-            async function deleteStudent(id) {
+            async function deleteStaff(id) {
                 let result = await Swal.fire({
-                    title: "Delete this student?",
+                    title: "Delete this staff?",
                     icon: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#0d6efd",
@@ -92,7 +92,7 @@
                 });
 
                 if (result.isConfirmed) {
-                    document.querySelector(`#delete-student-${id} button`).click();
+                    document.querySelector(`#delete-staff-${id} button`).click();
                 }
             }
 

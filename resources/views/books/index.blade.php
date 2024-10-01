@@ -198,7 +198,7 @@
                             <select class="form-control form-control-sm text-capitalize" name="status" id="status">
                                 <option value="">--</option>
                                 @foreach ($statuses as $status)
-                                    <option value="{{ $status }}">{{ $status }}</option>
+                                    <option {{ $status==old('status') ? 'selected' : '' }} value="{{ $status }}">{{ $status }}</option>
                                 @endforeach
                             </select>
                             @error('status')

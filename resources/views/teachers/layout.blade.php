@@ -15,8 +15,8 @@
 
         <div class="container d-flex flex-column pb-5 row-gap-4">
             <section class="w-100">
-                <a href="/users/students#students-form" class="btn btn-outline-success">
-                    New Student
+                <a href="/users/teachers#teachers-form" class="btn btn-outline-success">
+                    New Teacher
                     <i class="bi bi-plus"></i>
                 </a>
             </section>
@@ -31,44 +31,44 @@
                     </div>
                 @endif
 
-                <table id="students-table" class="table table-striped table-hover">
+                <table id="teachers-table" class="table table-striped table-hover">
                     <thead>
                         <tr>
                             <th>Action</th>
-                            <th>Student #</th>
+                            <th>Employee #</th>
                             <th>Name</th>
-                            <th>Course</th>
+                            <th>Rank</th>
                             <th>Email Address</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($students as $student)
+                        @foreach ($teachers as $teacher)
                             <tr>
                                 <td>
-                                    <form id="delete-student-{{ $student->id }}"
-                                        action="/users/students/{{ $student->id }}" method="POST" class="d-none">
+                                    <form id="delete-teacher-{{ $teacher->id }}"
+                                        action="/users/teachers/{{ $teacher->id }}" method="POST" class="d-none">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit">DELETE</button>
                                     </form>
-                                    <a title="Edit" href="/users/students/{{ $student->id }}/edit#students-form" class="btn btn-light btn-sm">
+                                    <a title="Edit" href="/users/teachers/{{ $teacher->id }}/edit#teachers-form" class="btn btn-light btn-sm">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <button title="Delete" onclick="deleteStudent({{ $student->id }});" class="btn btn-light btn-sm">
+                                    <button title="Delete" onclick="deleteTeacher({{ $teacher->id }});" class="btn btn-light btn-sm">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </td>
-                                <td class="text-end">{{ $student->student_number }}</td>
-                                <td>{{ $student->first_name }} {{ $student->last_name }}</td>
-                                <td>{{ $student->program }} {{ $student->year }}</td>
-                                <td>{{ $student->email }}</td>
+                                <td class="text-end">{{ $teacher->employee_number }}</td>
+                                <td>{{ $teacher->first_name }} {{ $teacher->last_name }}</td>
+                                <td class="text-uppercase">{{ $teacher->academic_rank }}</td>
+                                <td>{{ $teacher->email }}</td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
             </section>
             <section class="d-block">
-                <div id="students-form" class="card p-3 w-full shadow">
+                <div id="teachers-form" class="card p-3 w-full shadow">
                     <div class="card-body">
                         {{ $form ?? '' }}
                     </div>
@@ -79,11 +79,11 @@
     <x-footer />
     <x-slot:script>
         <script>
-            new DataTable('#students-table');
+            new DataTable('#teachers-table');
 
-            async function deleteStudent(id) {
+            async function deleteTeacher(id) {
                 let result = await Swal.fire({
-                    title: "Delete this student?",
+                    title: "Delete this teacher?",
                     icon: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#0d6efd",
@@ -92,7 +92,7 @@
                 });
 
                 if (result.isConfirmed) {
-                    document.querySelector(`#delete-student-${id} button`).click();
+                    document.querySelector(`#delete-teacher-${id} button`).click();
                 }
             }
 

@@ -119,7 +119,7 @@ class BookController extends Controller
             'price'            => ['nullable', 'numeric', 'min:0'],
             'location'         => ['nullable', 'string', 'max:255'],
             'tags'             => ['nullable', 'string', 'max:255'],
-            'status'           => ['nullable','in:available,checked out,reserved,on hold,lost,damaged,in repair,in processing,missing,on order,reference only,withdrawn,transferred,archived,overdue'],
+            'status'           => ['required','in:available,checked out,reserved,on hold,lost,damaged,in repair,in processing,missing,on order,reference only,withdrawn,transferred,archived,overdue'],
             'file'             => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ]);
 
@@ -135,10 +135,10 @@ class BookController extends Controller
         if(!empty($image)) {
             $path = "public/images/books";
             Storage::makeDirectory($path);
-            $path .= "/book_$book->id.png";
+            $path .= "/$book->isbn.png";
             Storage::put($path, (string) $image->encode());
 
-            $book->cover_image = "book_" . $book->id . ".png";
+            $book->cover_image = $book->isbn . ".png";
             $book->save();
         }
 
@@ -167,7 +167,7 @@ class BookController extends Controller
             'price'            => ['nullable', 'numeric', 'min:0'],
             'location'         => ['nullable', 'string', 'max:255'],
             'tags'             => ['nullable', 'string', 'max:255'],
-            'status'           => ['nullable','in:available,checked out,reserved,on hold,lost,damaged,in repair,in processing,missing,on order,reference only,withdrawn,transferred,archived,overdue'],
+            'status'           => ['required','in:available,checked out,reserved,on hold,lost,damaged,in repair,in processing,missing,on order,reference only,withdrawn,transferred,archived,overdue'],
             'file'             => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ]);
 
@@ -183,19 +183,15 @@ class BookController extends Controller
         if(!empty($image)) {
             $path = "public/images/books";
             Storage::makeDirectory($path);
-            $path .= "/book_$book->id.png";
+            $path .= "/$book->isbn.png";
             Storage::put($path, (string) $image->encode());
 
-            $book->cover_image = "book_$book->id.png";
+            $book->cover_image = "$book->isbn.png";
             $book->save();
         } else {
             $source_book = Book::findOrFail($id);
             if($source_book->cover_image) {
-                $path = "public/images/books";
-                Storage::makeDirectory($path);
-                Storage::copy($path . "/$source_book->cover_image", $path . "/book_$book->id.png");
-
-                $book->cover_image = "book_$book->id.png";
+                $book->cover_image = $source_book->cover_image;
                 $book->save();
             }
         }
@@ -273,7 +269,7 @@ class BookController extends Controller
             'price'            => ['nullable', 'numeric', 'min:0'],
             'location'         => ['nullable', 'string', 'max:255'],
             'tags'             => ['nullable', 'string', 'max:255'],
-            'status'           => ['nullable','in:available,checked out,reserved,on hold,lost,damaged,in repair,in processing,missing,on order,reference only,withdrawn,transferred,archived,overdue'],
+            'status'           => ['required', 'in:available,checked out,reserved,on hold,lost,damaged,in repair,in processing,missing,on order,reference only,withdrawn,transferred,archived,overdue'],
             'file'             => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ];
 
@@ -289,6 +285,8 @@ class BookController extends Controller
 
         $attributes = $request->validate($rules);
 
+        $previousIsbn  = $book->isbn;
+        $previousCover = $book->cover_image;
         $book->update($attributes);
         if(!empty($attributes['file'])) {
             $manager = ImageManager::gd();
@@ -301,11 +299,25 @@ class BookController extends Controller
         if(!empty($image)) {
             $path = "public/images/books";
             Storage::makeDirectory($path);
-            $path .= "/book_$book->id.png";
+            $path .= "/$book->isbn.png";
             Storage::put($path, (string) $image->encode());
 
-            $book->cover_image = "book_" . $book->id . ".png";
+            $book->cover_image = $book->isbn . ".png";
             $book->save();
+        } else {
+            if($previousIsbn != $book->isbn) {
+                $path = "public/images/books";
+                Storage::makeDirectory($path);
+                $newPath = $path . "/$book->isbn.png";
+                $oldPath = $path . "/$previousCover";
+
+                if (Storage::exists($oldPath)) {
+                    Storage::move($oldPath, $newPath);
+                }
+
+                $book->cover_image = $book->isbn . ".png";
+                $book->save();
+            }
         }
 
         return redirect('collections/books')->with([

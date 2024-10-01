@@ -1,12 +1,12 @@
-@component('students.layout', [
-    'students' => $students,
+@component('teachers.layout', [
+    'teachers' => $teachers,
 ])
     @slot('breadcrumb')
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0 border py-2 px-3 bg-white rounded">
                 <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
                 <li class="breadcrumb-item"><a href="/users">Users</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Students</li>
+                <li class="breadcrumb-item active" aria-current="page">Teachers</li>
             </ol>
         </nav>
     @endslot
@@ -29,18 +29,18 @@
           position: absolute;
         }
         </style>
-        <form action="/users/students" method="POST" enctype="multipart/form-data">
+        <form action="/users/teachers" method="POST" enctype="multipart/form-data">
             @csrf
             @method('POST')
-            <h4 class="text-body-secondary">Create new student</h4>
+            <h4 class="text-body-secondary">Create new teacher</h4>
             <hr>
             <div class="d-flex column-gap-4">
                 <div class="w-100">
                     <div class="d-flex column-gap-2">
                         <div class="mb-2 w-100">
-                            <label for="student_number" class="form-label">Student No.</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--" name="student_number" id="student_number" value="{{ old('student_number') ?? '' }}">
-                            @error('student_number')
+                            <label for="employee_number" class="form-label">Employee No.</label>
+                            <input type="text" class="form-control form-control-sm" placeholder="--" name="employee_number" id="employee_number" value="{{ old('employee_number') ?? '' }}">
+                            @error('employee_number')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
                         </div>
@@ -159,46 +159,46 @@
                     </div>
                     <div class="d-flex column-gap-2">
                         <div class="mb-2 w-100">
-                            <label for="year" class="form-label">Year</label>
-                            <select class="form-control form-control-sm text-capitalize" name="year" id="year">
+                            <label for="college" class="form-label">College</label>
+                            <select class="form-control form-control-sm" name="college" id="college">
                                 <option value="">--</option>
-                                @foreach ($year_levels as $year_level)
-                                    <option {{ $year_level['value']==old('year') ? "selected" : "" }} value="{{ $year_level['value'] }}">{{ $year_level['key'] }} year</option>
+                                @foreach ($colleges as $college)
+                                    <option {{ $college->code==old('college') ? "selected" : "" }} value="{{ $college->code }}">{{ $college->code }}</option>
                                 @endforeach
                             </select>
-                            @error('year')
+                            @error('college')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="mb-2 w-100">
-                            <label for="section" class="form-label">Section</label>
-                            <select class="form-control form-control-sm text-capitalize" name="section" id="section">
+                            <label for="campus" class="form-label">Campus</label>
+                            <select class="form-control form-control-sm" name="campus" id="campus">
                                 <option value="">--</option>
-                                @foreach ($sections as $section)
-                                    <option {{ $section==old('section') ? "selected" : "" }} value="{{ $section }}">{{ $section }}</option>
+                                @foreach ($campuses as $campus)
+                                    <option {{ $campus->code==old('campus') ? "selected" : "" }} value="{{ $campus->code }}">{{ $campus->code }}</option>
                                 @endforeach
                             </select>
-                            @error('section')
+                            @error('campus')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
                     <div class="d-flex column-gap-2">
                         <div class="mb-2 w-100">
-                            <label for="program" class="form-label">Program</label>
-                            <select class="form-control form-control-sm text-capitalize" name="program" id="program">
+                            <label for="academic_rank" class="form-label">Academic Rank</label>
+                            <select class="form-control form-control-sm text-uppercase" name="academic_rank" id="academic_rank">
                                 <option value="">--</option>
-                                @foreach ($programs as $program)
-                                    <option {{ $program->code==old('program') ? "selected" : "" }} value="{{ $program->code }}">{{ $program->code }}</option>
+                                @foreach ($academic_ranks as $academic_rank)
+                                    <option {{ $academic_rank==old('academic_rank') ? "selected" : "" }} value="{{ $academic_rank }}">{{ $academic_rank }}</option>
                                 @endforeach
                             </select>
-                            @error('program')
+                            @error('academic_rank')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="mb-2 w-100">
                             <label for="status" class="form-label">Status</label>
-                            <select class="form-control form-control-sm text-capitalize" name="status" id="status">
+                            <select class="form-control form-control-sm text-uppercase" name="status" id="status">
                                 <option value="">--</option>
                                 @foreach ($statuses as $status)
                                     <option {{ $status==old('status') ? "selected" : "" }} value="{{ $status }}">{{ $status }}</option>

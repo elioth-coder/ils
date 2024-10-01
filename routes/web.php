@@ -7,7 +7,9 @@ use App\Http\Controllers\CollegeController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\RegisterUserController;
 use App\Http\Controllers\SessionController;
+use App\Http\Controllers\StaffController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\TeacherController;
 use Illuminate\Support\Facades\Route;
 
 Route::delete('/logout', [SessionController::class, 'destroy'])->middleware('auth');
@@ -34,12 +36,35 @@ Route::middleware('auth')->group(function () {
         return view('dashboard.collections');
     });
 
-    Route::get('/patrons', function () {
-        return view('dashboard.patrons');
+    Route::get('/users', function () {
+        return view('dashboard.users');
     });
 
-    Route::prefix('patrons/students')->group(function () {
+    Route::prefix('users/teachers')->group(function () {
+        Route::controller(TeacherController::class)->group(function () {
+            Route::get('/', 'index');
+            Route::post('/', 'store');
+            Route::get('/{id}', 'show');
+            Route::get('/{id}/edit', 'edit');
+            Route::patch('/{id}', 'update');
+            Route::delete('/{id}', 'destroy');
+        });
+    });
+
+    Route::prefix('users/students')->group(function () {
         Route::controller(StudentController::class)->group(function () {
+            Route::get('/', 'index');
+            Route::post('/', 'store');
+            Route::get('/{id}', 'show');
+            Route::get('/{id}/edit', 'edit');
+            Route::patch('/{id}', 'update');
+            Route::delete('/{id}', 'destroy');
+        });
+    });
+
+
+    Route::prefix('users/staffs')->group(function () {
+        Route::controller(StaffController::class)->group(function () {
             Route::get('/', 'index');
             Route::post('/', 'store');
             Route::get('/{id}', 'show');

@@ -1,3 +1,68 @@
+@php
+    $users = [
+        [
+            'icon'  => 'people',
+            'url'   => '/users/teachers',
+            'title' => 'Teachers',
+        ],
+        [
+            'icon'  => 'people',
+            'url'   => '/users/students',
+            'title' => 'Students',
+        ],
+        [
+            'icon'  => 'people',
+            'url'   => '/users/staffs',
+            'title' => 'Library Staffs',
+        ],
+    ];
+    $collections = [
+        [
+            'icon'  => 'book',
+            'url'   => '/collections/books',
+            'title' => 'Books',
+        ],
+        [
+            'icon'  => 'file-earmark-text',
+            'url'   => '/collections/research_papers',
+            'title' => 'Research Papers',
+        ],
+        [
+            'icon'  => 'file-earmark-richtext',
+            'url'   => '/collections/print_periodicals',
+            'title' => 'Print Periodicals',
+        ],
+        [
+            'icon'  => 'disc',
+            'url'   => '/collections/cd_dvds',
+            'title' => 'CD/DVDs',
+        ],
+    ];
+
+    $settings = [
+        [
+            'icon'  => 'stack-overflow',
+            'url'   => '/settings/libraries',
+            'title' => 'Libraries',
+        ],
+        [
+            'icon'  => 'bank',
+            'url'   => '/settings/campuses',
+            'title' => 'Campuses',
+        ],
+        [
+            'icon'  => 'buildings',
+            'url'   => '/settings/colleges',
+            'title' => 'Colleges',
+        ],
+        [
+            'icon'  => 'building',
+            'url'   => '/settings/programs',
+            'title' => 'Programs',
+        ],
+    ];
+@endphp
+
 <header>
     <nav class="navbar bg-primary">
         <div class="container d-flex column-gap-5">
@@ -19,25 +84,22 @@
                     <button class="btn btn-link dropdown-toggle text-decoration-none text-black-50" type="button"
                         data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-people-fill me-1"></i>
-                        Patrons
+                        Users
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li>
-                            <a class="dropdown-item" href="/patrons/teachers">
-                                <i class="bi bi-people me-1"></i> Teachers
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="/patrons/students">
-                                <i class="bi bi-people me-1"></i> Students
-                            </a>
-                        </li>
+                        @foreach ($users as $user)
+                            <li>
+                                <a class="dropdown-item" href="{{ $user['url'] }}">
+                                    <i class="bi bi-{{ $user['icon'] }} me-1"></i> {{ $user['title'] }}
+                                </a>
+                            </li>
+                        @endforeach
                         <li>
                             <hr class="dropdown-divider">
                         </li>
                         <li>
-                            <a class="dropdown-item" href="/patrons">
-                                <i class="bi bi-people me-1"></i> Patrons
+                            <a class="dropdown-item" href="/users">
+                                <i class="bi bi-people me-1"></i> All Users
                             </a>
                         </li>
                     </ul>
@@ -49,37 +111,19 @@
                         Collections
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li>
-                            <a class="dropdown-item" href="/collections/books">
-                                <i class="bi bi-book me-1"></i> Books
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="/collections/researh_papers">
-                                <i class="bi bi-file-earmark-text me-1"></i> Research Papers
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="/collections/print_periodicals">
-                                <i class="bi bi-file-earmark-richtext me-1"></i> Print Periodicals
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="/collections/cd_dvds">
-                                <i class="bi bi-disc me-1"></i> CD/DVDs
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="/collections/pdfs">
-                                <i class="bi bi-file-earmark-pdf me-1"></i> PDFs
-                            </a>
-                        </li>
+                        @foreach ($collections as $collection)
+                            <li>
+                                <a class="dropdown-item" href="{{ $collection['url'] }}">
+                                    <i class="bi bi-{{ $collection['icon'] }} me-1"></i> {{ $collection['title'] }}
+                                </a>
+                            </li>
+                        @endforeach
                         <li>
                             <hr class="dropdown-divider">
                         </li>
                         <li>
                             <a class="dropdown-item" href="/collections">
-                                <i class="bi bi-layers me-1"></i> Collections
+                                <i class="bi bi-layers me-1"></i> All Collections
                             </a>
                         </li>
                     </ul>
@@ -91,32 +135,19 @@
                         Settings
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li>
-                            <a class="dropdown-item" href="/settings/libraries">
-                                <i class="bi bi-stack-overflow me-1"></i> Libraries
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="/settings/campuses">
-                                <i class="bi bi-bank me-1"></i> Campuses
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="/settings/colleges">
-                                <i class="bi bi-buildings me-1"></i> Colleges
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="/settings/programs">
-                                <i class="bi bi-building me-1"></i> Programs
-                            </a>
-                        </li>
+                        @foreach ($settings as $setting)
+                            <li>
+                                <a class="dropdown-item" href="{{ $setting['url'] }}">
+                                    <i class="bi bi-{{ $setting['icon'] }} me-1"></i> {{ $setting['title'] }}
+                                </a>
+                            </li>
+                        @endforeach
                         <li>
                             <hr class="dropdown-divider">
                         </li>
                         <li>
                             <a class="dropdown-item" href="/settings">
-                                <i class="bi bi-gear me-1"></i> Settings
+                                <i class="bi bi-gear me-1"></i> All Settings
                             </a>
                         </li>
                     </ul>

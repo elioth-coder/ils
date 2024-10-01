@@ -74,7 +74,7 @@ class StudentController extends Controller
         if(!empty($attributes['file'])) {
             $manager = ImageManager::gd();
             $image = $manager->read($request->file('file'));
-            $image->scale(height: 350);
+            $image->scale(height: 225);
 
             $image->crop(225, 225, position: 'center');
         }
@@ -82,14 +82,14 @@ class StudentController extends Controller
         if(!empty($image)) {
             $path = "public/images/students";
             Storage::makeDirectory($path);
-            $path .= "/student_$student->id.png";
+            $path .= "/$student->number.png";
             Storage::put($path, (string) $image->encode());
 
-            $student->profile = "student_" . $student->id . ".png";
+            $student->profile = $student->number . ".png";
             $student->save();
         }
 
-        return redirect('patrons/students')->with([
+        return redirect('users/students')->with([
             'message' => "Successfully created the student $student->student_number."
         ]);
     }
@@ -105,7 +105,7 @@ class StudentController extends Controller
 
         $student->delete();
 
-        return redirect("patrons/students")
+        return redirect("users/students")
             ->with([
                 'message' => 'Successfully deleted the student ' . $student->student_number . '.',
             ]);
@@ -161,26 +161,42 @@ class StudentController extends Controller
 
         $attributes = $request->validate($rules);
 
+        $previousStudentNumber = $student->student_number;
+        $previousProfile = $student->profile;
         $student->update($attributes);
         if(!empty($attributes['file'])) {
             $manager = ImageManager::gd();
             $image = $manager->read($request->file('file'));
-            $image->scale(height: 350);
+            $image->scale(height: 225);
 
-            $image->crop(235, 350, position: 'center');
+            $image->crop(225, 225, position: 'center');
         }
 
         if(!empty($image)) {
             $path = "public/images/students";
             Storage::makeDirectory($path);
-            $path .= "/student_$student->id.png";
+            $path .= "/$student->student_number.png";
             Storage::put($path, (string) $image->encode());
 
-            $student->profile = "student_" . $student->id . ".png";
+            $student->profile = $student->student_number . ".png";
             $student->save();
+        } else {
+            if($previousStudentNumber != $student->student_number) {
+                $path = "public/images/students";
+                Storage::makeDirectory($path);
+                $newPath = $path . "/$student->student_number.png";
+                $oldPath = $path . "/$previousProfile";
+
+                if (Storage::exists($oldPath)) {
+                    Storage::move($oldPath, $newPath);
+                }
+
+                $student->profile = $student->student_number . ".png";
+                $student->save();
+            }
         }
 
-        return redirect('patrons/students')->with([
+        return redirect('users/students')->with([
             'message' => "Successfully updated the student $student->student_number."
         ]);
     }

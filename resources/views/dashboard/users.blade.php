@@ -5,25 +5,30 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0 border py-2 px-3 bg-white rounded">
                     <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Patrons</li>
+                    <li class="breadcrumb-item active" aria-current="page">Users</li>
                 </ol>
             </nav>
         </section>
         <div class="container d-flex flex-column pb-5">
-            <h1 class="text-center"><i class="bi bi-people-fill me-3"></i>Patrons</h1>
+            <h1 class="text-center"><i class="bi bi-people-fill me-3"></i>Users</h1>
             <hr>
             <div class="d-flex align-items-center justify-content-center gap-3 py-5">
                 @php
                     $links = [
                         [
                             'icon'  => 'people',
-                            'href'  => '/patrons/teachers',
+                            'href'  => '/users/teachers',
                             'title' => 'Teachers',
                         ],
                         [
                             'icon'  => 'people',
-                            'href'  => '/patrons/students',
+                            'href'  => '/users/students',
                             'title' => 'Students',
+                        ],
+                        [
+                            'icon'  => 'people',
+                            'href'  => '/users/staffs',
+                            'title' => 'Library Staffs',
                         ],
                     ];
                 @endphp

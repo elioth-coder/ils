@@ -1,12 +1,12 @@
-@component('students.layout', [
-    'students' => $students,
+@component('teachers.layout', [
+    'teachers' => $teachers,
 ])
     @slot('breadcrumb')
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0 border py-2 px-3 bg-white rounded">
                 <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
                 <li class="breadcrumb-item"><a href="/users">Users</a></li>
-                <li class="breadcrumb-item"><a href="/users/students">Students</a></li>
+                <li class="breadcrumb-item"><a href="/users/teachers">Teachers</a></li>
                 <li class="breadcrumb-item active" aria-current="page">{{ $selected->id }}</li>
             </ol>
         </nav>
@@ -30,25 +30,25 @@
           position: absolute;
         }
         </style>
-        <form action="/users/students/{{ $selected->id }}" method="POST" enctype="multipart/form-data">
+        <form action="/users/teachers/{{ $selected->id }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PATCH')
-            <h4 class="text-body-secondary">Edit this student</h4>
+            <h4 class="text-body-secondary">Edit this teacher</h4>
             <hr>
             <div class="d-flex column-gap-4">
                 <div class="w-100">
                     <div class="d-flex column-gap-2">
                         <div class="mb-2 w-100">
                             @php
-                                if($errors->has('student_number')) {
-                                    $student_number = old('student_number');
+                                if($errors->has('employee_number')) {
+                                    $employee_number = old('employee_number');
                                 } else {
-                                    $student_number = (old('student_number')) ? old('student_number') : $selected->student_number;
+                                    $employee_number = (old('employee_number')) ? old('employee_number') : $selected->employee_number;
                                 }
                             @endphp
-                            <label for="student_number" class="form-label">Student No.</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--" name="student_number" id="student_number" value="{{ $student_number }}">
-                            @error('student_number')
+                            <label for="employee_number" class="form-label">Employee No.</label>
+                            <input type="text" class="form-control form-control-sm" placeholder="--" name="employee_number" id="employee_number" value="{{ $employee_number }}">
+                            @error('employee_number')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
                         </div>
@@ -238,7 +238,7 @@
                 <div class="w-100 d-flex flex-column">
                     <div class="flex-grow-1 rounded d-flex align-items-center justify-content-center">
                         <div id="profile-container" class="border text-center shadow">
-                            @php $profile = ($selected->profile) ? "/storage/images/students/$selected->profile" : '/images/profile.jpg'; @endphp
+                            @php $profile = ($selected->profile) ? "/storage/images/teachers/$selected->profile" : '/images/profile.jpg'; @endphp
                             <img id="profile" class="h-100 d-block" src="{{ asset($profile) }}" alt="">
                         </div>
                         <input class="d-none" type="file" name="file" id="file">
@@ -246,39 +246,39 @@
                     <div class="d-flex column-gap-2">
                         <div class="mb-2 w-100">
                             @php
-                                if($errors->has('year')) {
-                                    $year = old('year');
+                                if($errors->has('college')) {
+                                    $college = old('college');
                                 } else {
-                                    $year = (old('year')) ? old('year') : $selected->year;
+                                    $college = (old('college')) ? old('college') : $selected->college;
                                 }
                             @endphp
-                            <label for="year" class="form-label">Year</label>
-                            <select class="form-control form-control-sm text-capitalize" name="year" id="year">
+                            <label for="college" class="form-label">College</label>
+                            <select class="form-control form-control-sm" name="college" id="college">
                                 <option value="">--</option>
-                                @foreach ($year_levels as $year_level)
-                                    <option {{ $year_level['value']==$year ? "selected" : "" }} value="{{ $year_level['value'] }}">{{ $year_level['key'] }} year</option>
+                                @foreach ($colleges as $_college)
+                                    <option {{ $_college->code==$college ? "selected" : "" }} value="{{ $_college->code }}">{{ $_college->code }}</option>
                                 @endforeach
                             </select>
-                            @error('year')
+                            @error('college')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="mb-2 w-100">
                             @php
-                                if($errors->has('section')) {
-                                    $section = old('section');
+                                if($errors->has('campus')) {
+                                    $campus = old('campus');
                                 } else {
-                                    $section = (old('section')) ? old('section') : $selected->section;
+                                    $campus = (old('campus')) ? old('campus') : $selected->campus;
                                 }
                             @endphp
-                            <label for="section" class="form-label">Section</label>
-                            <select class="form-control form-control-sm text-capitalize" name="section" id="section">
+                            <label for="campus" class="form-label">Campus</label>
+                            <select class="form-control form-control-sm" name="campus" id="campus">
                                 <option value="">--</option>
-                                @foreach ($sections as $_section)
-                                    <option {{ $_section==$section ? "selected" : "" }} value="{{ $_section }}">{{ $_section }}</option>
+                                @foreach ($campuses as $_campus)
+                                    <option {{ $_campus->code==$campus ? "selected" : "" }} value="{{ $_campus->code }}">{{ $_campus->code }}</option>
                                 @endforeach
                             </select>
-                            @error('section')
+                            @error('campus')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
                         </div>
@@ -286,20 +286,20 @@
                     <div class="d-flex column-gap-2">
                         <div class="mb-2 w-100">
                             @php
-                                if($errors->has('program')) {
-                                    $program = old('program');
+                                if($errors->has('academic_rank')) {
+                                    $academic_rank = old('academic_rank');
                                 } else {
-                                    $program = (old('program')) ? old('program') : $selected->program;
+                                    $academic_rank = (old('academic_rank')) ? old('academic_rank') : $selected->academic_rank;
                                 }
                             @endphp
-                            <label for="program" class="form-label">Program</label>
-                            <select class="form-control form-control-sm text-capitalize" name="program" id="program">
+                            <label for="academic_rank" class="form-label">Academic Rank</label>
+                            <select class="form-control form-control-sm text-uppercase" name="academic_rank" id="academic_rank">
                                 <option value="">--</option>
-                                @foreach ($programs as $_program)
-                                    <option {{ $_program->code==$program ? "selected" : "" }} value="{{ $_program->code }}">{{ $_program->code }}</option>
+                                @foreach ($academic_ranks as $_academic_rank)
+                                    <option {{ $_academic_rank==$academic_rank ? "selected" : "" }} value="{{ $_academic_rank }}">{{ $_academic_rank }}</option>
                                 @endforeach
                             </select>
-                            @error('program')
+                            @error('academic_rank')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
                         </div>
@@ -312,7 +312,7 @@
                                 }
                             @endphp
                             <label for="status" class="form-label">Status</label>
-                            <select class="form-control form-control-sm text-capitalize" name="status" id="status">
+                            <select class="form-control form-control-sm text-uppercase" name="status" id="status">
                                 <option value="">--</option>
                                 @foreach ($statuses as $_status)
                                     <option {{ $_status==$status ? "selected" : "" }} value="{{ $_status }}">{{ $_status }}</option>
@@ -327,7 +327,7 @@
             </div>
             <hr>
             <div class="d-flex gap-2 flex-row-reverse">
-                <a href="/users/students" class="w-25 btn btn-outline-dark px-3">Cancel</a>
+                <a href="/users/teachers" class="w-25 btn btn-outline-dark px-3">Cancel</a>
                 <button type="submit" class="w-25 btn btn-primary px-3">Update</button>
             </div>
         </form>
