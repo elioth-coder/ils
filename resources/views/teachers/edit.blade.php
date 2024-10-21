@@ -323,6 +323,27 @@
                             @enderror
                         </div>
                     </div>
+                    <div class="mb-2">
+                        @php
+                            if($errors->has('library')) {
+                                $library = old('library');
+                            } else {
+                                $library = (old('library')) ? old('library') : $selected->library;
+                            }
+                        @endphp
+                        <label for="library" class="form-label">
+                            Library
+                        </label>
+                        <select class="form-control form-control-sm" name="library" id="library">
+                            <option value="">--</option>
+                            @foreach($libraries as $_library)
+                                <option {{ ($library==$_library->code) ? 'selected' : '' }} value="{{ $_library->code }}">{{ $_library->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('library')
+                            <div class="form-text text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
                 </div>
             </div>
             <hr>

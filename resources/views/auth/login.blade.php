@@ -26,7 +26,7 @@
                 @error('credential')
                     <div style="width: 400px;" class="mx-auto alert alert-danger alert-dismissible fade show" role="alert">
                         <i class="bi bi-exclamation-triangle me-1"></i>
-                        Incorrect username or password provided
+                        {{ $message }}
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 @enderror
@@ -40,11 +40,11 @@
                             <br>
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" name="email" id="email">
+                                <input type="email" class="form-control" name="email" id="email" value="{{ old('email') ?? '' }}">
                             </div>
                             <div class="mb-3">
                                 <label for="password" class="form-label">Password</label>
-                                <input type="password" class="form-control" name="password" id="password">
+                                <input type="password" class="form-control" name="password" id="password" value="{{ old('password') ?? '' }}">
                             </div>
                             <div class="mb-3 form-check">
                                 <input type="checkbox" class="form-check-input" id="exampleCheck1">

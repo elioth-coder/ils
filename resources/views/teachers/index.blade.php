@@ -209,6 +209,20 @@
                             @enderror
                         </div>
                     </div>
+                    <div class="mb-2">
+                        <label for="library" class="form-label">
+                            Library
+                        </label>
+                        <select class="form-control form-control-sm" name="library" id="library">
+                            <option value="">--</option>
+                            @foreach($libraries as $library)
+                                <option {{ (old('library')==$library->code) ? 'selected' : '' }} value="{{ $library->code }}">{{ $library->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('library')
+                            <div class="form-text text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
                 </div>
             </div>
             <hr>

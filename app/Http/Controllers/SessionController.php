@@ -26,13 +26,6 @@ class SessionController extends Controller
             ]);
         }
 
-        if(Auth::user()->status=='inactive') {
-            Auth::logout();
-            throw ValidationException::withMessages([
-                'credential' => 'Cannot login, your account is locked by admin',
-            ]);
-        }
-
         $request->session()->regenerate();
 
         return redirect('/');

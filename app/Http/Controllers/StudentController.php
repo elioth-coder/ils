@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Student;
 use App\Models\Program;
+use App\Models\Staff;
 
 class StudentController extends Controller
 {
@@ -69,6 +71,9 @@ class StudentController extends Controller
             'status'         => ['required','in:active,inactive'],
             'file'           => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ]);
+
+        $staff = Staff::where('email', Auth::user()->email)->first();
+        $attributes['library'] = $staff->library;
 
         $student = Student::create($attributes);
         if(!empty($attributes['file'])) {
@@ -163,6 +168,9 @@ class StudentController extends Controller
 
         $previousStudentNumber = $student->student_number;
         $previousProfile = $student->profile;
+
+        $staff = Staff::where('email', Auth::user()->email)->first();
+        $attributes['library'] = $staff->library;
         $student->update($attributes);
         if(!empty($attributes['file'])) {
             $manager = ImageManager::gd();

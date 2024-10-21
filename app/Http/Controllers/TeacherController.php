@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Teacher;
 use App\Models\College;
 use App\Models\Campus;
+use App\Models\Staff;
+use App\Models\Library;
 
 class TeacherController extends Controller
 {
@@ -39,14 +42,25 @@ class TeacherController extends Controller
 
     public function index()
     {
-        $teachers = Teacher::latest()->get();
-        $colleges = College::latest()->get();
-        $campuses = Campus::latest()->get();
+        if(Auth::user()->role != 'admin') {
+            $staff = Staff::where('email', Auth::user()->email)->first();
+            $teachers  =
+                Teacher::where('library', $staff->library)
+                    ->latest()
+                    ->get();
+        } else {
+            $teachers  = Teacher::latest()->get();
+        }
+
+        $colleges  = College::latest()->get();
+        $campuses  = Campus::latest()->get();
+        $libraries = Library::latest()->get();
 
         return view('teachers.index', [
             'teachers'       => $teachers,
             'suffixes'       => $this->suffixes,
             'genders'        => $this->genders,
+            'libraries'      => $libraries,
             'colleges'       => $colleges,
             'campuses'       => $campuses,
             'academic_ranks' => $this->academic_ranks,
@@ -56,7 +70,7 @@ class TeacherController extends Controller
 
     public function store(Request $request)
     {
-        $attributes = $request->validate([
+        $rules = [
             'employee_number' => ['required', 'string', 'unique:teachers,employee_number', 'max:255'],
             'first_name'      => ['required', 'string', 'max:255'],
             'middle_name'     => ['nullable', 'string', 'max:255'],
@@ -74,7 +88,18 @@ class TeacherController extends Controller
             'academic_rank'   => ['required', 'string', 'max:255'],
             'status'          => ['required', 'in:active,inactive'],
             'file'            => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
-        ]);
+        ];
+
+        if(Auth::user()->role == 'admin') {
+            $rules['library'] = ['required', 'string', 'exists:libraries,code'];
+        }
+
+        $attributes = $request->validate($rules);
+
+        if(Auth::user()->role != 'admin') {
+            $staff = Staff::where('email', Auth::user()->email)->first();
+            $attributes['library'] = $staff->library;
+        }
 
         $teacher = Teacher::create($attributes);
         if(!empty($attributes['file'])) {
@@ -119,16 +144,27 @@ class TeacherController extends Controller
 
     public function edit($id)
     {
-        $selected = Teacher::findOrFail($id);
-        $teachers = Teacher::latest()->get();
-        $colleges = College::latest()->get();
-        $campuses = Campus::latest()->get();
+        if(Auth::user()->role != 'admin') {
+            $staff = Staff::where('email', Auth::user()->email)->first();
+            $teachers  =
+                Teacher::where('library', $staff->library)
+                    ->latest()
+                    ->get();
+        } else {
+            $teachers  = Teacher::latest()->get();
+        }
+
+        $selected  = Teacher::findOrFail($id);
+        $colleges  = College::latest()->get();
+        $campuses  = Campus::latest()->get();
+        $libraries = Library::latest()->get();
 
         return view('teachers.edit', [
             'teachers'       => $teachers,
             'selected'       => $selected,
             'suffixes'       => $this->suffixes,
             'genders'        => $this->genders,
+            'libraries'      => $libraries,
             'colleges'       => $colleges,
             'campuses'       => $campuses,
             'academic_ranks' => $this->academic_ranks,
@@ -166,10 +202,20 @@ class TeacherController extends Controller
             unset($rules['email']);
         }
 
+        if(Auth::user()->role == 'admin') {
+            $rules['library'] = ['required', 'string', 'exists:libraries,code'];
+        }
+
         $attributes = $request->validate($rules);
+
+        if(Auth::user()->role != 'admin') {
+            $staff = Staff::where('email', Auth::user()->email)->first();
+            $attributes['library'] = $staff->library;
+        }
 
         $previousEmployeeNumber = $teacher->employee_number;
         $previousProfile = $teacher->profile;
+
         $teacher->update($attributes);
         if(!empty($attributes['file'])) {
             $manager = ImageManager::gd();

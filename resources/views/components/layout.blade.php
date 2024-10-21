@@ -9,7 +9,7 @@
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
     <style>
     html, body {
-        overflow-x: hidden;
+        overflow: unset;
     }
     </style>
 </head>

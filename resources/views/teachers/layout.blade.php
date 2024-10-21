@@ -39,6 +39,7 @@
                             <th>Name</th>
                             <th>Rank</th>
                             <th>Email Address</th>
+                            <th>Library Code</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -58,10 +59,11 @@
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </td>
-                                <td class="text-end">{{ $teacher->employee_number }}</td>
+                                <td>{{ $teacher->employee_number }}</td>
                                 <td>{{ $teacher->first_name }} {{ $teacher->last_name }}</td>
                                 <td class="text-uppercase">{{ $teacher->academic_rank }}</td>
                                 <td>{{ $teacher->email }}</td>
+                                <td>{{ $teacher->library }}</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -96,7 +98,7 @@
                 }
             }
 
-            (function() {
+            document.addEventListener('DOMContentLoaded', function() {
                 const fileInput = document.getElementById('file');
                 const container = document.getElementById('profile-container');
                 const cover_img = document.getElementById('profile');
@@ -113,7 +115,7 @@
                         cover_img.src = '/images/profile.jpg';
                     }
                 });
-            })();
+            });
         </script>
     </x-slot:script>
 </x-layout>

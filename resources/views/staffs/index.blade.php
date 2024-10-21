@@ -126,7 +126,7 @@
                         </div>
                         <div class="mb-2 w-100">
                             <label for="password_confirmation" class="form-label">Confirm Password</label>
-                            <input type="password_confirmation" class="form-control form-control-sm" placeholder="--" name="password_confirmation" id="password_confirmation" value="{{ old('password_confirmation') ?? '' }}">
+                            <input type="password" class="form-control form-control-sm" placeholder="--" name="password_confirmation" id="password_confirmation" value="{{ old('password_confirmation') ?? '' }}">
                             @error('password_confirmation')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror

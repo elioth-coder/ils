@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Book;
+use App\Models\Library;
+use App\Models\Staff;
 
 class BookController extends Controller
 {
@@ -66,7 +69,7 @@ class BookController extends Controller
         'short stories',
     ];
 
-    public $formats = ['hardcover','paperback'];
+    public $formats = ['hardcover','paperback','ebook'];
 
     public $statuses = [
         'available',
@@ -86,9 +89,25 @@ class BookController extends Controller
         'overdue'
     ];
 
+    private function getAffiliatedLibrary() {
+        $library = null;
+        if(in_array(Auth::user()->role, ['librarian','assistant','clerk'])) {
+            $staff = Staff::where('email',Auth::user()->email)->first();
+            $library = $staff->library;
+        }
+
+        return $library;
+    }
+
     public function index()
     {
-        $books = Book::latest()->get();
+        $library = $this->getAffiliatedLibrary();
+
+        $books = Book::latest()
+            ->when($library, function ($query) use ($library) {
+                return $query->where('library', $library);
+            })
+            ->get();
 
         return view('books.index', [
             'books'     => $books,
@@ -119,9 +138,14 @@ class BookController extends Controller
             'price'            => ['nullable', 'numeric', 'min:0'],
             'location'         => ['nullable', 'string', 'max:255'],
             'tags'             => ['nullable', 'string', 'max:255'],
-            'status'           => ['required','in:available,checked out,reserved,on hold,lost,damaged,in repair,in processing,missing,on order,reference only,withdrawn,transferred,archived,overdue'],
+            'status'           => ['required','string', 'max:255'],
             'file'             => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ]);
+
+        if(Auth::user()->role != 'admin') {
+            $staff = Staff::where('email', Auth::user()->email)->first();
+            $attributes['library'] = $staff->library;
+        }
 
         $book = Book::create($attributes);
         if(!empty($attributes['file'])) {
@@ -147,6 +171,34 @@ class BookController extends Controller
         ]);
     }
 
+    public function detail(Request $request, $isbn)
+    {
+        $libraries = Library::all();
+
+        $book  = Book::where('isbn', $isbn)->first();
+        $books = Book::where('isbn', $isbn)->get();
+        $book->copies = count($books);
+
+        $books->map(function ($book) {
+            $library = Library::where('code', $book->library)->first();
+            $book->library_name = $library->name;
+
+            return $book;
+        });
+
+        $libraries->map(function ($library) use ($books) {
+            $library->books = $books->filter(function ($book) use ($library) {
+                return $book->library == $library->code;
+            });
+        });
+
+        return view('books.detail', [
+            'book'  => $book,
+            // 'books' => $books,
+            'libraries' => $libraries,
+        ]);
+    }
+
     public function duplicate(Request $request, $id)
     {
         $attributes = $request->validate([
@@ -167,9 +219,14 @@ class BookController extends Controller
             'price'            => ['nullable', 'numeric', 'min:0'],
             'location'         => ['nullable', 'string', 'max:255'],
             'tags'             => ['nullable', 'string', 'max:255'],
-            'status'           => ['required','in:available,checked out,reserved,on hold,lost,damaged,in repair,in processing,missing,on order,reference only,withdrawn,transferred,archived,overdue'],
+            'status'           => ['required','string', 'max:255'],
             'file'             => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ]);
+
+        if(Auth::user()->role != 'admin') {
+            $staff = Staff::where('email', Auth::user()->email)->first();
+            $attributes['library'] = $staff->library;
+        }
 
         $book = Book::create($attributes);
         if(!empty($attributes['file'])) {
@@ -189,9 +246,9 @@ class BookController extends Controller
             $book->cover_image = "$book->isbn.png";
             $book->save();
         } else {
-            $source_book = Book::findOrFail($id);
-            if($source_book->cover_image) {
-                $book->cover_image = $source_book->cover_image;
+            $source = Book::findOrFail($id);
+            if($source->cover_image) {
+                $book->cover_image = $source->cover_image;
                 $book->save();
             }
         }
@@ -221,7 +278,13 @@ class BookController extends Controller
     public function copy($id)
     {
         $selected  = Book::findOrFail($id);
-        $books = Book::latest()->get();
+        $library = $this->getAffiliatedLibrary();
+
+        $books = Book::latest()
+            ->when($library, function ($query) use ($library) {
+                return $query->where('library', $library);
+            })
+            ->get();
 
         return view('books.copy', [
             'books' => $books,
@@ -236,7 +299,13 @@ class BookController extends Controller
     public function edit($id)
     {
         $selected  = Book::findOrFail($id);
-        $books = Book::latest()->get();
+        $library = $this->getAffiliatedLibrary();
+
+        $books = Book::latest()
+            ->when($library, function ($query) use ($library) {
+                return $query->where('library', $library);
+            })
+            ->get();
 
         return view('books.edit', [
             'books' => $books,
@@ -269,7 +338,7 @@ class BookController extends Controller
             'price'            => ['nullable', 'numeric', 'min:0'],
             'location'         => ['nullable', 'string', 'max:255'],
             'tags'             => ['nullable', 'string', 'max:255'],
-            'status'           => ['required', 'in:available,checked out,reserved,on hold,lost,damaged,in repair,in processing,missing,on order,reference only,withdrawn,transferred,archived,overdue'],
+            'status'           => ['required', 'string', 'max:255'],
             'file'             => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ];
 
@@ -287,7 +356,27 @@ class BookController extends Controller
 
         $previousIsbn  = $book->isbn;
         $previousCover = $book->cover_image;
+
+        if(Auth::user()->role != 'admin') {
+            $staff = Staff::where('email', Auth::user()->email)->first();
+            $attributes['library'] = $staff->library;
+        }
+
         $book->update($attributes);
+
+        Book::where('isbn', $book->isbn)->update([
+            'title'            => $attributes['title'],
+            'author'           => $attributes['author'],
+            'publisher'        => $attributes['publisher'],
+            'publication_year' => $attributes['publication_year'],
+            'genre'            => $attributes['genre'],
+            'summary'          => $attributes['summary'],
+            'number_of_pages'  => $attributes['number_of_pages'],
+            'format'           => $attributes['format'],
+            'language'         => $attributes['language'],
+            'tags'             => $attributes['tags'],
+        ]);
+
         if(!empty($attributes['file'])) {
             $manager = ImageManager::gd();
             $image = $manager->read($request->file('file'));
@@ -321,7 +410,7 @@ class BookController extends Controller
         }
 
         return redirect('collections/books')->with([
-            'message' => "Successfully updated the book $book->name."
+            'message' => "Successfully updated the book $book->title."
         ]);
     }
 }

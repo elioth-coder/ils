@@ -69,27 +69,25 @@
                         </div>
                     </div>
                     <div class="mb-2">
+                        <label for="isbn" class="form-label">ISBN</label>
+                        <input type="text" class="form-control form-control-sm" placeholder="--" name="isbn" id="isbn" value="{{ old('isbn') ?? '' }}">
+                        @error('isbn')
+                            <div class="form-text text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="mb-2">
                         <label for="title" class="form-label">Title</label>
                         <input type="text" class="form-control form-control-sm" placeholder="--" name="title" id="title" value="{{ old('title') ?? '' }}">
                         @error('title')
                             <div class="form-text text-danger">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="d-flex column-gap-2">
-                        <div class="mb-2 w-100">
-                            <label for="author" class="form-label">Author</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--" name="author" id="author" value="{{ old('author') ?? '' }}">
-                            @error('author')
-                                <div class="form-text text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="mb-2 w-100">
-                            <label for="isbn" class="form-label">ISBN</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--" name="isbn" id="isbn" value="{{ old('isbn') ?? '' }}">
-                            @error('isbn')
-                                <div class="form-text text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
+                    <div class="mb-2">
+                        <label for="author" class="form-label">Author(s)</label>
+                        <input type="text" class="form-control form-control-sm" placeholder="--" name="author" id="author" value="{{ old('author') ?? '' }}">
+                        @error('author')
+                            <div class="form-text text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="d-flex column-gap-2">
                         <div class="mb-2 w-100">
@@ -148,7 +146,7 @@
                         <input class="d-none" type="file" name="file" id="file">
                     </div>
                     <div class="mb-2">
-                        <label for="tags" class="form-label">Tags</label>
+                        <label for="tags" class="form-label">Tag(s)</label>
                         <input type="text" class="form-control form-control-sm" placeholder="--" name="tags" id="tags" value="{{ old('tags') ?? '' }}">
                         @error('tags')
                             <div class="form-text text-danger">{{ $message }}</div>

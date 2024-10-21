@@ -1,6 +1,6 @@
 <x-layout>
     <x-header />
-    <main class="d-flex flex-column align-items-center justify-content-center w-100 bg-success-subtle">
+    <main class="d-flex flex-column align-items-center justify-content-center w-100 bg-body-secondary">
         <section class="container d-flex py-3 align-items-center">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0 border py-2 px-3 bg-white rounded">
@@ -14,27 +14,30 @@
             <hr>
             <div class="d-flex align-items-center justify-content-center gap-3 py-5">
                 @php
-                    $links = [
-                        [
+                    $links = [];
+
+                    if(Auth::user()->role=='admin') {
+                        $links[] = [
                             'icon'  => 'stack-overflow',
                             'href'  => '/settings/libraries',
                             'title' => 'Libraries',
-                        ],
-                        [
+                        ];
+                        $links[] = [
                             'icon'  => 'bank',
                             'href'  => '/settings/campuses',
                             'title' => 'Campuses',
-                        ],
-                        [
-                            'icon'  => 'buildings',
-                            'href'  => '/settings/colleges',
-                            'title' => 'Colleges',
-                        ],
-                        [
-                            'icon'  => 'building',
-                            'href'  => '/settings/programs',
-                            'title' => 'Programs',
-                        ],
+                        ];
+                    }
+
+                    $links[] = [
+                        'icon'  => 'buildings',
+                        'href'  => '/settings/colleges',
+                        'title' => 'Colleges',
+                    ];
+                    $links[] = [
+                        'icon'  => 'building',
+                        'href'  => '/settings/programs',
+                        'title' => 'Programs',
                     ];
                 @endphp
 

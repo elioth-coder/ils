@@ -36,26 +36,26 @@
                         <tr>
                             <th>Action</th>
                             <th>ISBN</th>
-                            {{-- <th>Cover</th> --}}
                             <th>Title</th>
                             <th>Year</th>
                             <th>Author</th>
+                            <th>Library</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($books as $book)
                             <tr>
-                                <td>
+                                <td style="width: 150px;">
                                     <form id="delete-book-{{ $book->id }}"
                                         action="/collections/books/{{ $book->id }}" method="POST" class="d-none">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit">DELETE</button>
                                     </form>
-                                    <a title="Copy" href="/collections/books/{{ $book->id }}/copy" class="btn btn-light btn-sm">
+                                    <a title="Copy" href="/collections/books/{{ $book->id }}/copy#books-form" class="btn btn-light btn-sm">
                                         <i class="bi bi-copy"></i>
                                     </a>
-                                    <a title="Edit" href="/collections/books/{{ $book->id }}/edit" class="btn btn-light btn-sm">
+                                    <a title="Edit" href="/collections/books/{{ $book->id }}/edit#books-form" class="btn btn-light btn-sm">
                                         <i class="bi bi-pencil"></i>
                                     </a>
                                     <button title="Delete" onclick="deleteBook({{ $book->id }});" class="btn btn-light btn-sm">
@@ -66,6 +66,7 @@
                                 <td>{{ $book->title }}</td>
                                 <td class="text-end">{{ $book->publication_year }}</td>
                                 <td>{{ $book->author }}</td>
+                                <td>{{ $book->library }}</td>
                             </tr>
                         @endforeach
                     </tbody>

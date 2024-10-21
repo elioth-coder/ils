@@ -25,23 +25,37 @@
             <section class="d-flex flex-column w-100 h-100 align-items-center justify-content-center">
                 <div style="width: 470px;" class="card mx-auto p-3">
                     <div class="card-body">
-                        <form action="/register" method="POST">
+                        <form autocomplete="off" action="/register" method="POST">
                             @csrf
                             @method('POST')
 
                             <h3 class="text-body-secondary">Create Patron Account</h3>
                             <br>
+                            <div class="mb-3">
+                                <label for="account_type" class="form-label">Account type</label>
+                                <select class="form-control" name="account_type" id="account_type">
+                                    @php
+                                    $account_type = old('account_type') ?? '';
+                                    @endphp
+                                    <option value="">--</option>
+                                    <option {{ ($account_type=='teacher') ? 'selected' : '' }} value="teacher">Teacher / Faculty</option>
+                                    <option {{ ($account_type=='student') ? 'selected' : '' }} value="student">Student</option>
+                                </select>
+                                @error('account_type')
+                                    <div class="form-text text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
                             <div class="mb-3 d-flex column-gap-3">
                                 <section>
                                     <label for="first_name" class="form-label">First name</label>
-                                    <input type="text" class="form-control" name="first_name" id="first_name">
+                                    <input type="text" class="form-control" name="first_name" id="first_name" value="{{ old('first_name') ?? ''}}">
                                     @error('first_name')
                                         <div class="form-text text-danger">{{ $message }}</div>
                                     @enderror
                                 </section>
                                 <section>
                                     <label for="last_name" class="form-label">Last name</label>
-                                    <input type="text" class="form-control" name="last_name" id="last_name">
+                                    <input type="text" class="form-control" name="last_name" id="last_name" value="{{ old('last_name') ?? ''}}">
                                     @error('last_name')
                                         <div class="form-text text-danger">{{ $message }}</div>
                                     @enderror
@@ -49,21 +63,21 @@
                             </div>
                             <div class="mb-3">
                                 <label for="email" class="form-label">E-mail</label>
-                                <input type="email" class="form-control" name="email" id="email">
+                                <input autocomplete="off" name="email" class="form-control" name="email" id="email" value="{{ old('email') ?? ''}}">
                                 @error('email')
                                     <div class="form-text text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="mb-3">
                                 <label for="password" class="form-label">Password</label>
-                                <input type="password" class="form-control" name="password" id="password">
+                                <input autocomplete="off" type="password" class="form-control" name="password" id="password" value="{{ old('password') ?? ''}}">
                                 @error('password')
                                     <div class="form-text text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="mb-3">
                                 <label for="password_confirmation" class="form-label">Confirm Password</label>
-                                <input type="password" class="form-control" name="password_confirmation" id="password_confirmation">
+                                <input type="password" class="form-control" name="password_confirmation" id="password_confirmation" value="{{ old('password_confirmation') ?? ''}}">
                                 @error('password_confirmation')
                                     <div class="form-text text-danger">{{ $message }}</div>
                                 @enderror
