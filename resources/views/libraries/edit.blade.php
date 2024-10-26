@@ -120,7 +120,7 @@
             </div>
             <div class="d-flex gap-2">
                 <button type="submit" class="w-100 btn btn-primary px-3">Update</button>
-                <a href="/settings/libraries" class="w-100 btn btn-outline-secondary px-3">Cancel</a>
+                <a href="{{ url()->previous() }}" class="w-100 btn btn-outline-secondary px-3">Cancel</a>
             </div>
         </form>
     @endslot

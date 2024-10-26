@@ -35,9 +35,10 @@
                     <thead>
                         <tr>
                             <th>Action</th>
-                            <th>Employee #</th>
+                            <th>Card No.</th>
                             <th>Name</th>
                             <th>Library</th>
+                            <th>Role</th>
                             <th>Email Address</th>
                         </tr>
                     </thead>
@@ -58,9 +59,10 @@
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </td>
-                                <td class="text-end">{{ $staff->employee_number }}</td>
+                                <td>{{ $staff->card_number }}</td>
                                 <td>{{ $staff->first_name }} {{ $staff->last_name }}</td>
                                 <td>{{ $staff->library }}</td>
+                                <td>{{ $staff->role }}</td>
                                 <td>{{ $staff->email }}</td>
                             </tr>
                         @endforeach

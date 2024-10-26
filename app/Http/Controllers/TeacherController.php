@@ -6,10 +6,9 @@ use Illuminate\Http\Request;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Teacher;
+use App\Models\UserDetail;
 use App\Models\College;
 use App\Models\Campus;
-use App\Models\Staff;
 use App\Models\Library;
 
 class TeacherController extends Controller
@@ -43,13 +42,16 @@ class TeacherController extends Controller
     public function index()
     {
         if(Auth::user()->role != 'admin') {
-            $staff = Staff::where('email', Auth::user()->email)->first();
+            $staff = UserDetail::where('email', Auth::user()->email)->first();
             $teachers  =
-                Teacher::where('library', $staff->library)
+                UserDetail::whereIn('role', ['teacher'])
+                    ->where('library', $staff->library)
                     ->latest()
                     ->get();
         } else {
-            $teachers  = Teacher::latest()->get();
+            $teachers = UserDetail::whereIn('role', ['teacher'])
+                ->latest()
+                ->get();
         }
 
         $colleges  = College::latest()->get();
@@ -71,18 +73,18 @@ class TeacherController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'employee_number' => ['required', 'string', 'unique:teachers,employee_number', 'max:255'],
+            'card_number'     => ['required', 'string', 'unique:user_details,card_number', 'max:255'],
             'first_name'      => ['required', 'string', 'max:255'],
             'middle_name'     => ['nullable', 'string', 'max:255'],
             'last_name'       => ['required', 'string', 'max:255'],
             'suffix'          => ['nullable', 'string', 'max:255'],
             'gender'          => ['required', 'in:male,female'],
             'birthday'        => ['required', 'date'],
-            'province'        => ['required', 'string', 'max:255'],
-            'municipality'    => ['required', 'string', 'max:255'],
-            'barangay'        => ['required', 'string', 'max:255'],
-            'mobile_number'   => ['required', 'string', 'max:255'],
-            'email'           => ['required', 'email', 'unique:teachers,email', 'max:255'],
+            'province'        => ['nullable', 'string', 'max:255'],
+            'municipality'    => ['nullable', 'string', 'max:255'],
+            'barangay'        => ['nullable', 'string', 'max:255'],
+            'mobile_number'   => ['nullable', 'string', 'max:255'],
+            'email'           => ['required', 'email', 'unique:user_details,email', 'max:255'],
             'college'         => ['required', 'exists:colleges,code'],
             'campus'          => ['required', 'exists:campuses,code'],
             'academic_rank'   => ['required', 'string', 'max:255'],
@@ -95,13 +97,14 @@ class TeacherController extends Controller
         }
 
         $attributes = $request->validate($rules);
+        $attributes['role'] = 'teacher';
 
         if(Auth::user()->role != 'admin') {
-            $staff = Staff::where('email', Auth::user()->email)->first();
+            $staff = UserDetail::where('email', Auth::user()->email)->first();
             $attributes['library'] = $staff->library;
         }
 
-        $teacher = Teacher::create($attributes);
+        $teacher = UserDetail::create($attributes);
         if(!empty($attributes['file'])) {
             $manager = ImageManager::gd();
             $image = $manager->read($request->file('file'));
@@ -111,24 +114,24 @@ class TeacherController extends Controller
         }
 
         if(!empty($image)) {
-            $path = "public/images/teachers";
+            $path = "public/images/users";
             Storage::makeDirectory($path);
-            $path .= "/$teacher->employee_number.png";
+            $path .= "/$teacher->card_number.png";
             Storage::put($path, (string) $image->encode());
 
-            $teacher->profile = "$teacher->employee_number.png";
+            $teacher->profile = "$teacher->card_number.png";
             $teacher->save();
         }
 
         return redirect('users/teachers')->with([
-            'message' => "Successfully created the teacher $teacher->employee_number."
+            'message' => "Successfully created the teacher $teacher->card_number."
         ]);
     }
 
     public function destroy($id)
     {
-        $teacher = Teacher::findOrFail($id);
-        $path = "public/images/teachers/$teacher->profile";
+        $teacher = UserDetail::findOrFail($id);
+        $path = "public/images/users/$teacher->profile";
 
         if (Storage::exists($path)) {
             Storage::delete($path);
@@ -138,23 +141,26 @@ class TeacherController extends Controller
 
         return redirect("users/teachers")
             ->with([
-                'message' => 'Successfully deleted the teacher ' . $teacher->employee_number . '.',
+                'message' => 'Successfully deleted the teacher ' . $teacher->card_number . '.',
             ]);
     }
 
     public function edit($id)
     {
         if(Auth::user()->role != 'admin') {
-            $staff = Staff::where('email', Auth::user()->email)->first();
+            $staff = UserDetail::where('email', Auth::user()->email)->first();
             $teachers  =
-                Teacher::where('library', $staff->library)
+                UserDetail::whereIn('role', ['teacher'])
+                    ->where('library', $staff->library)
                     ->latest()
                     ->get();
         } else {
-            $teachers  = Teacher::latest()->get();
+            $teachers = UserDetail::whereIn('role', ['teacher'])
+                ->latest()
+                ->get();
         }
 
-        $selected  = Teacher::findOrFail($id);
+        $selected  = UserDetail::findOrFail($id);
         $colleges  = College::latest()->get();
         $campuses  = Campus::latest()->get();
         $libraries = Library::latest()->get();
@@ -175,18 +181,18 @@ class TeacherController extends Controller
     public function update(Request $request, $id)
     {
         $rules = [
-            'employee_number' => ['required', 'string', 'unique:teachers,employee_number', 'max:255'],
+            'card_number'     => ['required', 'string', 'unique:user_details,card_number', 'max:255'],
             'first_name'      => ['required', 'string', 'max:255'],
             'middle_name'     => ['nullable', 'string', 'max:255'],
             'last_name'       => ['required', 'string', 'max:255'],
             'suffix'          => ['nullable', 'string', 'max:255'],
             'gender'          => ['required', 'in:male,female'],
             'birthday'        => ['required', 'date'],
-            'province'        => ['required', 'string', 'max:255'],
-            'municipality'    => ['required', 'string', 'max:255'],
-            'barangay'        => ['required', 'string', 'max:255'],
-            'mobile_number'   => ['required', 'string', 'max:255'],
-            'email'           => ['required', 'email', 'unique:teachers,email', 'max:255'],
+            'province'        => ['nullable', 'string', 'max:255'],
+            'municipality'    => ['nullable', 'string', 'max:255'],
+            'barangay'        => ['nullable', 'string', 'max:255'],
+            'mobile_number'   => ['nullable', 'string', 'max:255'],
+            'email'           => ['required', 'email', 'unique:user_details,email', 'max:255'],
             'college'         => ['required', 'exists:colleges,code'],
             'campus'          => ['required', 'exists:campuses,code'],
             'academic_rank'   => ['required', 'string', 'max:255'],
@@ -194,14 +200,13 @@ class TeacherController extends Controller
             'file'            => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ];
 
-        $teacher = Teacher::findOrFail($id);
-        if($request->post('employee_number') == $teacher->employee_number) {
-            unset($rules['employee_number']);
+        $teacher = UserDetail::findOrFail($id);
+        if($request->post('card_number') == $teacher->card_number) {
+            unset($rules['card_number']);
         }
         if($request->post('email') == $teacher->email) {
             unset($rules['email']);
         }
-
         if(Auth::user()->role == 'admin') {
             $rules['library'] = ['required', 'string', 'exists:libraries,code'];
         }
@@ -209,11 +214,11 @@ class TeacherController extends Controller
         $attributes = $request->validate($rules);
 
         if(Auth::user()->role != 'admin') {
-            $staff = Staff::where('email', Auth::user()->email)->first();
+            $staff = UserDetail::where('email', Auth::user()->email)->first();
             $attributes['library'] = $staff->library;
         }
 
-        $previousEmployeeNumber = $teacher->employee_number;
+        $previousCardNumber = $teacher->card_number;
         $previousProfile = $teacher->profile;
 
         $teacher->update($attributes);
@@ -226,31 +231,31 @@ class TeacherController extends Controller
         }
 
         if(!empty($image)) {
-            $path = "public/images/teachers";
+            $path = "public/images/users";
             Storage::makeDirectory($path);
-            $path .= "/$teacher->employee_number.png";
+            $path .= "/$teacher->card_number.png";
             Storage::put($path, (string) $image->encode());
 
-            $teacher->profile = $teacher->employee_number . ".png";
+            $teacher->profile = $teacher->card_number . ".png";
             $teacher->save();
         } else {
-            if($previousEmployeeNumber != $teacher->employee_number) {
-                $path = "public/images/teachers";
+            if($previousCardNumber != $teacher->card_number) {
+                $path = "public/images/users";
                 Storage::makeDirectory($path);
-                $newPath = $path . "/$teacher->employee_number.png";
+                $newPath = $path . "/$teacher->card_number.png";
                 $oldPath = $path . "/$previousProfile";
 
                 if (Storage::exists($oldPath)) {
                     Storage::move($oldPath, $newPath);
                 }
 
-                $teacher->profile = $teacher->employee_number . ".png";
+                $teacher->profile = $teacher->card_number . ".png";
                 $teacher->save();
             }
         }
 
         return redirect('users/teachers')->with([
-            'message' => "Successfully updated the teacher $teacher->employee_number."
+            'message' => "Successfully updated the teacher $teacher->card_number."
         ]);
     }
 }

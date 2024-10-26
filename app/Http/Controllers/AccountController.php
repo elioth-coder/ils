@@ -9,6 +9,7 @@ use App\Models\Student;
 use App\Models\College;
 use App\Models\Campus;
 use App\Models\Library;
+use App\Models\RequestedItem;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
@@ -17,14 +18,16 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Mail\ActivateAccountMail;
+use App\Models\UserDetail;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Storage;
 
 use Exception;
+use PDO;
 
-class UserAccountController extends Controller
+class AccountController extends Controller
 {
     public $suffixes = ['JR','SR','II','III','IV','V','VI'];
     public $genders  = ['male','female'];
@@ -52,26 +55,46 @@ class UserAccountController extends Controller
         'university professor',
     ];
 
-    public function profile()
+    public function index()
     {
-        $user      = Teacher::where('email', Auth::user()->email)->first();
-        $colleges  = College::latest()->get();
-        $campuses  = Campus::latest()->get();
+        $user = UserDetail::where('email', Auth::user()->email)->first();
+
+        $sql =
+        "SELECT books.*, requested_items.status AS request_status, requested_items.date_requested
+            FROM books
+            INNER JOIN requested_items
+            ON books.barcode = requested_items.barcode
+            WHERE requested_items.requester_id=:requester_id
+        ";
+
+        $pdo = DB::connection()->getPdo();
+        $query = $pdo->prepare($sql);
+        $query->execute([
+            'requester_id' => Auth::user()->id,
+        ]);
+        $results = $query->fetchAll(PDO::FETCH_CLASS, 'stdClass');
+
+        return view('account.index', [
+            'user' => $user,
+            'requested_books' => $results ?? [],
+        ]);
+    }
+
+    public function edit()
+    {
+        $user      = UserDetail::where('email', Auth::user()->email)->first();
         $libraries = Library::latest()->get();
 
-        return view('accounts.profile', [
+        return view('account.edit', [
             'user'           => $user,
             'suffixes'       => $this->suffixes,
             'genders'        => $this->genders,
             'libraries'      => $libraries,
-            'colleges'       => $colleges,
-            'campuses'       => $campuses,
-            'academic_ranks' => $this->academic_ranks,
             'statuses'       => $this->statuses,
         ]);
     }
 
-    public function edit_profile(Request $request)
+    public function update(Request $request)
     {
         $rules = [
             'first_name'      => ['required', 'string', 'max:255'],
@@ -79,19 +102,16 @@ class UserAccountController extends Controller
             'last_name'       => ['required', 'string', 'max:255'],
             'suffix'          => ['nullable', 'string', 'max:255'],
             'gender'          => ['required', 'in:male,female'],
-            'province'        => ['required', 'string', 'max:255'],
-            'municipality'    => ['required', 'string', 'max:255'],
-            'barangay'        => ['required', 'string', 'max:255'],
-            'mobile_number'   => ['required', 'string', 'max:255'],
-            'college'         => ['required', 'exists:colleges,code'],
-            'campus'          => ['required', 'exists:campuses,code'],
-            'academic_rank'   => ['required', 'string', 'max:255'],
+            'province'        => ['nullable', 'string', 'max:255'],
+            'municipality'    => ['nullable', 'string', 'max:255'],
+            'barangay'        => ['nullable', 'string', 'max:255'],
+            'mobile_number'   => ['nullable', 'string', 'max:255'],
             'file'            => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ];
         $attributes = $request->validate($rules);
 
-        $teacher = Teacher::where('email', Auth::user()->email)->first();
-        $teacher->update($attributes);
+        $user_detail = UserDetail::where('email', Auth::user()->email)->first();
+        $user_detail->update($attributes);
 
         if(!empty($attributes['file'])) {
             $manager = ImageManager::gd();
@@ -102,16 +122,21 @@ class UserAccountController extends Controller
         }
 
         if(!empty($image)) {
-            $path = "public/images/teachers";
+            $path = "public/images/users";
             Storage::makeDirectory($path);
-            $path .= "/$teacher->employee_number.png";
+            $path .= "/$user_detail->card_number.png";
             Storage::put($path, (string) $image->encode());
 
-            $teacher->profile = $teacher->employee_number . ".png";
-            $teacher->save();
+            $user_detail->profile = $user_detail->card_number . ".png";
+            $user_detail->save();
         }
 
-        return redirect('accounts/profile')->with([
+        $user = User::where('email', Auth::user()->email)->first();
+        $user->update([
+            'name' => $user_detail->first_name . " " . $user_detail->last_name,
+        ]);
+
+        return redirect('account/edit')->with([
             'message' => [
                 'type'    => 'success',
                 'content' => "Successfully updated your profile"
@@ -119,12 +144,12 @@ class UserAccountController extends Controller
         ]);
     }
 
-    public function password()
+    public function change_password()
     {
-        return view('accounts.password');
+        return view('account.change_password');
     }
 
-    public function change_password(Request $request)
+    public function update_password(Request $request)
     {
         $passwordAttributes = $request->validate([
             'current_password' => ['required'],
@@ -139,7 +164,7 @@ class UserAccountController extends Controller
                 'password' => $passwordAttributes['password'],
             ]);
 
-            return redirect('/accounts/password')->with([
+            return redirect('/account/change_password')->with([
                 'message' => [
                     'type'    => 'success',
                     'content' => 'Successfully changed the password',
@@ -155,31 +180,21 @@ class UserAccountController extends Controller
 
     public function create()
     {
-        return view('accounts.register');
+        return view('account.register');
     }
 
     public function store(Request $request)
     {
         $userAttributes = $request->validate([
-            'account_type' => ['required'],
             'first_name'   => ['required'],
             'last_name'    => ['required'],
             'email'        => ['required', 'email', 'unique:users,email'],
             'password'     => ['required', 'confirmed', Password::min(6)],
         ]);
 
-        $user = null;
-        if ($userAttributes['account_type'] == 'teacher') {
-            $user = Teacher::where('email', $userAttributes['email'])->first();
-            $role = 'teacher';
-        }
-        if ($userAttributes['account_type'] == 'student') {
-            $user = Student::where('email', $userAttributes['email'])->first();
-            $role = 'student';
+        $user = UserDetail::where('email', $userAttributes['email'])->first();
 
-        }
-
-        if ($user == null) {
+        if (!$user) {
             throw ValidationException::withMessages([
                 'email' => 'The email you entered does not exist in our database',
             ]);
@@ -188,13 +203,14 @@ class UserAccountController extends Controller
         $name = $userAttributes['first_name'] . ' ' . $userAttributes['last_name'];
         $password = Hash::make($userAttributes['password']);
         $generated_token = Str::uuid();
-        $token = Token::create([
+        Token::create([
             'token' => $generated_token,
             'data'  => json_encode([
-                'name'     => $name,
-                'email'    => $userAttributes['email'],
-                'password' => $password,
-                'role'     => $role,
+                'name'        => $name,
+                'email'       => $userAttributes['email'],
+                'password'    => $password,
+                'role'        => $user->role,
+                'card_number' => $user->card_number,
             ], JSON_UNESCAPED_UNICODE),
             'purpose'    => 'ACCOUNT_ACTIVATION',
             'expiration' => Carbon::now()->addDays(3),
@@ -207,7 +223,7 @@ class UserAccountController extends Controller
             'activation_link' => env('APP_URL') . '/accounts/activate/' . $generated_token,
         ]));
 
-        return redirect('/accounts/email_confirmation')->with([
+        return redirect('/account/email_confirmation')->with([
             'confirm' => true,
         ]);
     }
@@ -217,10 +233,10 @@ class UserAccountController extends Controller
         if(!session('confirm')) {
             return redirect('/');
         }
-        return view('accounts.email-confirmation');
+        return view('account.email_confirmation');
     }
 
-    public function activate(Request $request, $token_value)
+    public function activate($token_value)
     {
         try {
             $token = Token::where('token', $token_value)->first();
@@ -239,21 +255,22 @@ class UserAccountController extends Controller
             $data = json_decode($token->data);
 
             DB::table('users')->insert([
-                'name'       => $data->name,
-                'email'      => $data->email,
-                'password'   => $data->password,
-                'role'       => $data->role,
-                'created_at' => DB::raw('NOW()'),
-                'updated_at' => DB::raw('NOW()'),
+                'name'        => $data->name,
+                'email'       => $data->email,
+                'password'    => $data->password,
+                'role'        => $data->role,
+                'card_number' => $data->card_number,
+                'created_at'  => DB::raw('NOW()'),
+                'updated_at'  => DB::raw('NOW()'),
                 'email_verified_at' => DB::raw('NOW()'),
             ]);
 
             $token->delete();
 
-            return view('accounts.activate');
+            return view('account.activate');
 
         } catch(Exception $e) {
-            return view('accounts.activate', [
+            return view('account.activate', [
                 'error' => $e->getMessage()
             ]);
         }

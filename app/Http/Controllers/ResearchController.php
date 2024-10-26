@@ -87,7 +87,7 @@ class ResearchController extends Controller
     {
         $attributes = $request->validate([
             'accession_number' => ['nullable', 'string', 'unique:researches,accession_number', 'max:255'],
-            'barcode_number'   => ['nullable', 'string', 'unique:researches,barcode_number', 'max:255'],
+            'barcode'   => ['nullable', 'string', 'unique:researches,barcode', 'max:255'],
             'lcc_number'       => ['nullable', 'string', 'max:255'],
             'ddc_number'       => ['nullable', 'string', 'max:255'],
             'ir_number'        => ['nullable', 'string', 'max:255'],
@@ -138,7 +138,7 @@ class ResearchController extends Controller
     {
         $attributes = $request->validate([
             'accession_number' => ['nullable', 'string', 'unique:researches,accession_number', 'max:255'],
-            'barcode_number'   => ['nullable', 'string', 'unique:researches,barcode_number', 'max:255'],
+            'barcode'   => ['nullable', 'string', 'unique:researches,barcode', 'max:255'],
             'lcc_number'       => ['nullable', 'string', 'max:255'],
             'ddc_number'       => ['nullable', 'string', 'max:255'],
             'ir_number'        => ['nullable', 'string', 'max:255'],
@@ -248,7 +248,7 @@ class ResearchController extends Controller
         $research = Research::findOrFail($id);
         $rules = [
             'accession_number' => ['nullable', 'string', 'unique:researches,accession_number', 'max:255'],
-            'barcode_number'   => ['nullable', 'string', 'unique:researches,barcode_number', 'max:255'],
+            'barcode'   => ['nullable', 'string', 'unique:researches,barcode', 'max:255'],
             'lcc_number'       => ['nullable', 'string', 'max:255'],
             'ddc_number'       => ['nullable', 'string', 'max:255'],
             'ir_number'        => ['nullable', 'string', 'max:255'],
@@ -269,8 +269,8 @@ class ResearchController extends Controller
         if($request->post('accession_number') == $research->accession_number) {
             unset($rules['accession_number']);
         }
-        if($request->post('barcode_number') == $research->barcode_number) {
-            unset($rules['barcode_number']);
+        if($request->post('barcode') == $research->barcode) {
+            unset($rules['barcode']);
         }
 
         $attributes = $request->validate($rules);

@@ -6,9 +6,12 @@ use Illuminate\Http\Request;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Models\Book;
 use App\Models\Library;
-use App\Models\Staff;
+use App\Models\UserDetail;
+use App\Models\RequestedItem;
+use Exception;
 
 class BookController extends Controller
 {
@@ -92,7 +95,7 @@ class BookController extends Controller
     private function getAffiliatedLibrary() {
         $library = null;
         if(in_array(Auth::user()->role, ['librarian','assistant','clerk'])) {
-            $staff = Staff::where('email',Auth::user()->email)->first();
+            $staff = UserDetail::where('email',Auth::user()->email)->first();
             $library = $staff->library;
         }
 
@@ -118,11 +121,73 @@ class BookController extends Controller
         ]);
     }
 
+    public function request(Request $request)
+    {
+        try {
+            $attributes = $request->validate([
+                'barcode' => ['required', 'string', 'exists:books,barcode'],
+            ]);
+
+            $item = RequestedItem::where('barcode', $attributes['barcode'])
+                ->where('requester_id', Auth::user()->id)
+                ->first();
+
+            if($item) {
+                throw new Exception('You already have a pending request for this item');
+            }
+
+            RequestedItem::create([
+                'type'           => 'book',
+                'barcode'        => $attributes['barcode'],
+                'date_requested' => DB::raw('DATE(NOW())'),
+                'requester_id'   => Auth::user()->id,
+                'status'         => 'pending',
+            ]);
+
+            return response()->json([
+                'status'  => 'success',
+                'message' => 'Successfully requested item',
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    public function cancel_request(Request $request)
+    {
+        try {
+            $attributes = $request->validate([
+                'barcode' => ['required', 'string', 'exists:books,barcode'],
+            ]);
+
+            $requested_item = RequestedItem::where('barcode', $attributes['barcode'])->first();
+            $requested_item->delete();
+
+            $book = Book::where('barcode', $attributes['barcode'])->first();
+            $book->update([
+                'status' => 'available',
+            ]);
+
+            return response()->json([
+                'status'  => 'success',
+                'message' => 'Successfully cancelled request',
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+
     public function store(Request $request)
     {
         $attributes = $request->validate([
             'accession_number' => ['nullable', 'string', 'unique:books,accession_number', 'max:255'],
-            'barcode_number'   => ['nullable', 'string', 'unique:books,barcode_number', 'max:255'],
+            'barcode'   => ['nullable', 'string', 'unique:books,barcode', 'max:255'],
             'lcc_number'       => ['nullable', 'string', 'max:255'],
             'ddc_number'       => ['nullable', 'string', 'max:255'],
             'title'            => ['required', 'string', 'max:255'],
@@ -143,7 +208,7 @@ class BookController extends Controller
         ]);
 
         if(Auth::user()->role != 'admin') {
-            $staff = Staff::where('email', Auth::user()->email)->first();
+            $staff = UserDetail::where('email', Auth::user()->email)->first();
             $attributes['library'] = $staff->library;
         }
 
@@ -194,7 +259,6 @@ class BookController extends Controller
 
         return view('books.detail', [
             'book'  => $book,
-            // 'books' => $books,
             'libraries' => $libraries,
         ]);
     }
@@ -203,7 +267,7 @@ class BookController extends Controller
     {
         $attributes = $request->validate([
             'accession_number' => ['nullable', 'string', 'unique:books,accession_number', 'max:255'],
-            'barcode_number'   => ['nullable', 'string', 'unique:books,barcode_number', 'max:255'],
+            'barcode'   => ['nullable', 'string', 'unique:books,barcode', 'max:255'],
             'lcc_number'       => ['nullable', 'string', 'max:255'],
             'ddc_number'       => ['nullable', 'string', 'max:255'],
             'title'            => ['required', 'string', 'max:255'],
@@ -224,7 +288,7 @@ class BookController extends Controller
         ]);
 
         if(Auth::user()->role != 'admin') {
-            $staff = Staff::where('email', Auth::user()->email)->first();
+            $staff = UserDetail::where('email', Auth::user()->email)->first();
             $attributes['library'] = $staff->library;
         }
 
@@ -322,7 +386,7 @@ class BookController extends Controller
         $book = Book::findOrFail($id);
         $rules = [
             'accession_number' => ['nullable', 'string', 'unique:books,accession_number', 'max:255'],
-            'barcode_number'   => ['nullable', 'string', 'unique:books,barcode_number', 'max:255'],
+            'barcode'   => ['nullable', 'string', 'unique:books,barcode', 'max:255'],
             'lcc_number'       => ['nullable', 'string', 'max:255'],
             'ddc_number'       => ['nullable', 'string', 'max:255'],
             'title'            => ['required', 'string', 'max:255'],
@@ -345,8 +409,8 @@ class BookController extends Controller
         if($request->post('accession_number') == $book->accession_number) {
             unset($rules['accession_number']);
         }
-        if($request->post('barcode_number') == $book->barcode_number) {
-            unset($rules['barcode_number']);
+        if($request->post('barcode') == $book->barcode) {
+            unset($rules['barcode']);
         }
         if($request->post('isbn') == $book->isbn) {
             unset($rules['isbn']);
@@ -358,7 +422,7 @@ class BookController extends Controller
         $previousCover = $book->cover_image;
 
         if(Auth::user()->role != 'admin') {
-            $staff = Staff::where('email', Auth::user()->email)->first();
+            $staff = UserDetail::where('email', Auth::user()->email)->first();
             $attributes['library'] = $staff->library;
         }
 

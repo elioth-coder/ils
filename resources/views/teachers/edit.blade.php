@@ -40,15 +40,15 @@
                     <div class="d-flex column-gap-2">
                         <div class="mb-2 w-100">
                             @php
-                                if($errors->has('employee_number')) {
-                                    $employee_number = old('employee_number');
+                                if($errors->has('card_number')) {
+                                    $card_number = old('card_number');
                                 } else {
-                                    $employee_number = (old('employee_number')) ? old('employee_number') : $selected->employee_number;
+                                    $card_number = (old('card_number')) ? old('card_number') : $selected->card_number;
                                 }
                             @endphp
-                            <label for="employee_number" class="form-label">Employee No.</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--" name="employee_number" id="employee_number" value="{{ $employee_number }}">
-                            @error('employee_number')
+                            <label for="card_number" class="form-label">Card No. / ID No.</label>
+                            <input type="text" class="form-control form-control-sm" placeholder="--" name="card_number" id="card_number" value="{{ $card_number }}">
+                            @error('card_number')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
                         </div>
@@ -238,7 +238,7 @@
                 <div class="w-100 d-flex flex-column">
                     <div class="flex-grow-1 rounded d-flex align-items-center justify-content-center">
                         <div id="profile-container" class="border text-center shadow">
-                            @php $profile = ($selected->profile) ? "/storage/images/teachers/$selected->profile" : '/images/profile.jpg'; @endphp
+                            @php $profile = ($selected->profile) ? "/storage/images/users/$selected->profile" : '/images/profile.jpg'; @endphp
                             <img id="profile" class="h-100 d-block" src="{{ asset($profile) }}" alt="">
                         </div>
                         <input class="d-none" type="file" name="file" id="file">
@@ -348,7 +348,7 @@
             </div>
             <hr>
             <div class="d-flex gap-2 flex-row-reverse">
-                <a href="/users/teachers" class="w-25 btn btn-outline-dark px-3">Cancel</a>
+                <a href="{{ url()->previous() }}" class="w-25 btn btn-outline-dark px-3">Cancel</a>
                 <button type="submit" class="w-25 btn btn-primary px-3">Update</button>
             </div>
         </form>

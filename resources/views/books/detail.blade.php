@@ -1,5 +1,6 @@
 <x-layout>
     <x-slot:head>
+        <meta name="csrf-token" content="{{ csrf_token() }}">
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </x-slot:head>
     <x-header />
@@ -25,20 +26,18 @@
                             Back
                         </a>
                     </div>
-                    <div class="w-50 text-end">
-                        <a href="/collections/books/{{ $book->id }}/copy#books-form" class="btn btn-outline-secondary btn-sm">
-                            Duplicate
-                            <i class="bi bi-copy"></i>
-                        </a>
-                        <a href="/collections/books/{{ $book->id }}/edit#books-form" class="btn btn-outline-primary btn-sm">
-                            Edit
-                            <i class="bi bi-pencil"></i>
-                        </a>
-                        <button class="btn btn-outline-danger btn-sm">
-                            Delete
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </div>
+                    @if(in_array(Auth::user()->role, ['admin','librarian','staff','clerk']))
+                        <div class="w-50 text-end">
+                            <a href="/collections/books/{{ $book->id }}/copy#books-form" class="btn btn-outline-secondary btn-sm">
+                                Duplicate
+                                <i class="bi bi-copy"></i>
+                            </a>
+                            <a href="/collections/books/{{ $book->id }}/edit#books-form" class="btn btn-outline-primary btn-sm">
+                                Edit
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </div>
+                    @endif
                 </section>
 
                 <section class="d-flex w-100">
@@ -56,14 +55,12 @@
                         </section>
                         <hr style="margin-top: 0; margin-bottom: 12px;">
                         <p style="margin: 0;">
-                            <b>ISBN:</b> {{ $book->isbn }} <br>
                             <b>Author(s):</b> {{ $book->author }} <br>
-                            <b>Published in:</b> {{ $book->publisher }} ({{ $book->publication_year }}) <br>
-                            <b>Abstract/Summary:</b>
+                            <b>Published:</b> {{ $book->publisher }} ({{ $book->publication_year }}) <br>
+                            <b>ISBN:</b> {{ $book->isbn }} <br>
                         </p>
-                        <p class="multiline-ellipsis" style="text-align: justify; margin: 0; text-indent: 50px;">
-                            <i>{{ $book->summary }}</i></p>
-                        <hr>
+                        <p class="multiline-ellipsis my-0 mb-2" style="text-align: justify;">
+                            <b>Abstract:</b> <i>{{ $book->summary }}</i></p>
                         @if ($book->tags)
                             <p>
                                 @php
@@ -117,60 +114,55 @@
                         @foreach($libraries as $library)
                             <div class="accordion mb-2" id="libray-{{ $library->code }}">
                                 <div class="accordion-item">
-                                <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" aria-expanded="false" data-bs-target="#libray-{{ $library->code }}-content"  aria-controls="libray-{{ $library->code }}-content">
-                                        <div class="w-50">[{{ $library->code ?? '--' }}] - {{ $library->name ?? '--' }}</div>
-                                        <div class="w-50">Items: {{ count($library->books) }}</div>
-                                    </button>
-                                </h2>
-                                <div id="libray-{{ $library->code }}-content" class="accordion-collapse collapse" data-bs-parent="#libray-{{ $library->code }}">
-                                    <div class="accordion-body">
-                                        @forelse($library->books as $copy)
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" aria-expanded="false" data-bs-target="#libray-{{ $library->code }}-content"  aria-controls="libray-{{ $library->code }}-content">
+                                            <div class="w-50">[{{ $library->code ?? '--' }}] - {{ $library->name ?? '--' }}</div>
+                                            <div class="w-50">Items: {{ count($library->books) }}</div>
+                                        </button>
+                                    </h2>
+                                    <div id="libray-{{ $library->code }}-content" class="accordion-collapse collapse" data-bs-parent="#libray-{{ $library->code }}">
+                                        <div class="accordion-body">
                                             <div class="d-flex mb-1 border m-3 p-3">
                                                 <table class="w-100">
-                                                    <tbody>
-                                                        <tr>
-                                                            <th class="text-nowrap px-2">Library code: </th>
-                                                            <td class="text-capitalize">{{ $copy->library ?? '--'}}</td>
-                                                        </tr>
+                                                <tbody>
+                                                    @forelse($library->books as $copy)
                                                         <tr>
                                                             <th class="text-nowrap px-2">Barcode: </th>
-                                                            <td>{{ $copy->barcode_number ?? '--'}}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th class="text-nowrap px-2">LCC / Call number: </th>
-                                                            <td>{{ $copy->lcc_number ?? '--'}}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th class="text-nowrap px-2">DDC number: </th>
-                                                            <td>{{ $copy->ddc_number ?? '--'}}</td>
+                                                            <td>{{ $copy->barcode ?? '--'}}</td>
+                                                            <td>
+                                                                <div class="text-end" style="min-width: 200px;">
+                                                                    @if($copy->status=='available')
+                                                                        <button onclick="requestItem({{ $copy->barcode ?? 'null' }})" title="Request item" class="btn btn-outline-success">
+                                                                            <i class="bi bi-basket"></i>
+                                                                        </button>
+                                                                    @endif
+                                                                    @if(in_array(Auth::user()->role, ['admin','librarian','clerk','staff']))
+                                                                        <button title="Delete item" class="btn btn-outline-danger">
+                                                                            <i class="bi bi-trash"></i>
+                                                                        </button>
+                                                                    @endif
+                                                                </div>
+                                                            </td>
                                                         </tr>
                                                         <tr>
                                                             <th class="text-nowrap px-2">Price: </th>
                                                             <td class="text-capitalize">{{ $copy->price ?? '--'}}</td>
+                                                            <td></td>
                                                         </tr>
                                                         <tr>
                                                             <th class="text-nowrap px-2">Status: </th>
                                                             <td class="text-capitalize">{{ $copy->status ?? '--'}}</td>
+                                                            <td></td>
                                                         </tr>
-                                                    </tbody>
+                                                        <tr><td colspan="3"><hr></td></tr>
+                                                    @empty
+                                                        <tr><td colspan="3"><h5 class="text-center my-3 text-secondary">No data found.</h5></td></tr>
+                                                    @endforelse
+                                                </tbody>
                                                 </table>
-                                                <div class="text-end" style="min-width: 200px;">
-                                                    <button onclick="requestItem({{ $copy->barcode_number ?? 'null' }})" title="Request item" class="btn btn-outline-success">
-                                                        <i class="bi bi-basket"></i>
-                                                    </button>
-                                                    @if(in_array(Auth::user()->role, ['admin','librarian','clerk','staff']))
-                                                        <button title="Delete item" class="btn btn-outline-danger">
-                                                            <i class="bi bi-trash"></i>
-                                                        </button>
-                                                    @endif
-                                                </div>
                                             </div>
-                                        @empty
-                                            <h5 class="text-center my-3 text-secondary">No items found.</h5>
-                                        @endforelse
+                                        </div>
                                     </div>
-                                </div>
                                 </div>
                             </div>
                         @endforeach
@@ -252,12 +244,29 @@
     <x-footer />
     <x-slot:script>
         <script>
+        async function deleteBook(id) {
+            let result = await Swal.fire({
+                title: "Delete this book?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#0d6efd",
+                cancelButtonColor: "#bb2d3b",
+                confirmButtonText: "Continue"
+            });
+
+            if (result.isConfirmed) {
+                document.querySelector(`#delete-book-${id} button`).click();
+            }
+        }
+
         function requestItem(barcode) {
             if(barcode==null) {
                 Swal.fire({
                     title: "No Barcode",
                     text: "Item is not yet available for loan ",
-                    icon: "error"
+                    icon: "error",
+                    showConfirmButton: false,
+                    timer: 2000,
                 });
             } else {
                 Swal.fire({
@@ -267,12 +276,31 @@
                     confirmButtonText: "Confirm"
                 }).then(async (result) => {
                     if (result.isConfirmed) {
-                        Swal.fire({
-                            title: "Item requested successfully",
-                            icon: "success",
+                        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                        let formData = new FormData();
+                        formData.set('type', 'book');
+                        formData.set('barcode', barcode);
+
+                        let response = await fetch('/collections/books/request', {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'X-CSRF-TOKEN': csrfToken
+                            },
+                        });
+
+                        let { status, message } = await response.json();
+
+                        await Swal.fire({
+                            title: message,
+                            icon: status,
                             showConfirmButton: false,
                             timer: 2000,
                         });
+
+                        if(status=='success') {
+                            window.location.reload();
+                        }
                     }
                 });
             }

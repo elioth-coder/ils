@@ -163,7 +163,7 @@
         </div>
     </div>
 
-    <div class="accordion mb-2" id="accordion-status">
+    {{-- <div class="accordion mb-2" id="accordion-status">
         <div class="accordion-item">
             @php
                 $qsStatus = request('status');
@@ -192,7 +192,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 
 
     <div class="accordion mb-2" id="accordion-tag">

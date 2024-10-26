@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('researches', function (Blueprint $table) {
             $table->id();
             $table->string('accession_number')->nullable()->unique();
-            $table->string('barcode_number')->nullable()->unique();
+            $table->string('barcode')->nullable()->unique();
             $table->string('lcc_number')->nullable();
             $table->string('ddc_number')->nullable();
             $table->string('ir_number');

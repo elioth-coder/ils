@@ -12,22 +12,22 @@
     @endslot
     @slot('form')
         <style>
-        #profile-container {
-          width: 225px;
-          height: 225px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          overflow: hidden;
-          position: relative;
-        }
+            #profile-container {
+                width: 225px;
+                height: 225px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                overflow: hidden;
+                position: relative;
+            }
 
-        #profile-container img {
-          height: 100%;
-          width: auto;
-          object-fit: cover;
-          position: absolute;
-        }
+            #profile-container img {
+                height: 100%;
+                width: auto;
+                object-fit: cover;
+                position: absolute;
+            }
         </style>
         <form action="/users/students" method="POST" enctype="multipart/form-data">
             @csrf
@@ -38,9 +38,10 @@
                 <div class="w-100">
                     <div class="d-flex column-gap-2">
                         <div class="mb-2 w-100">
-                            <label for="student_number" class="form-label">Student No.</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--" name="student_number" id="student_number" value="{{ old('student_number') ?? '' }}">
-                            @error('student_number')
+                            <label for="card_number" class="form-label">Card No. / ID No.</label>
+                            <input type="text" class="form-control form-control-sm" placeholder="--" name="card_number"
+                                id="card_number" value="{{ old('card_number') ?? '' }}">
+                            @error('card_number')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
                         </div>
@@ -50,8 +51,9 @@
                                 <label for="suffix" class="form-label">Suffix</label>
                                 <select class="form-control form-control-sm" name="suffix" id="suffix">
                                     <option value="">--</option>
-                                    @foreach($suffixes as $suffix)
-                                        <option {{ $suffix==old('suffix') ? "selected" : "" }} value="{{ $suffix }}">{{ $suffix }}</option>
+                                    @foreach ($suffixes as $suffix)
+                                        <option {{ $suffix == old('suffix') ? 'selected' : '' }} value="{{ $suffix }}">
+                                            {{ $suffix }}</option>
                                     @endforeach
                                 </select>
                                 @error('suffix')
@@ -64,7 +66,8 @@
                         <label for="first_name" class="form-label">
                             First Name
                         </label>
-                        <input type="text" class="form-control form-control-sm" placeholder="--" name="first_name" id="first_name" value="{{ old('first_name') ?? '' }}">
+                        <input type="text" class="form-control form-control-sm" placeholder="--" name="first_name"
+                            id="first_name" value="{{ old('first_name') ?? '' }}">
                         @error('first_name')
                             <div class="form-text text-danger">{{ $message }}</div>
                         @enderror
@@ -72,14 +75,16 @@
                     <div class="d-flex column-gap-2">
                         <div class="mb-2 w-100">
                             <label for="middle_name" class="form-label">Middle Name</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--" name="middle_name" id="middle_name" value="{{ old('middle_name') ?? '' }}">
+                            <input type="text" class="form-control form-control-sm" placeholder="--" name="middle_name"
+                                id="middle_name" value="{{ old('middle_name') ?? '' }}">
                             @error('middle_name')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="mb-2 w-100">
                             <label for="last_name" class="form-label">Last Name</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--" name="last_name" id="last_name" value="{{ old('last_name') ?? '' }}">
+                            <input type="text" class="form-control form-control-sm" placeholder="--" name="last_name"
+                                id="last_name" value="{{ old('last_name') ?? '' }}">
                             @error('last_name')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
@@ -90,8 +95,9 @@
                             <label for="gender" class="form-label">Gender</label>
                             <select class="form-control form-control-sm text-capitalize" name="gender" id="gender">
                                 <option value="">--</option>
-                                @foreach($genders as $gender)
-                                    <option {{ $gender==old('gender') ? "selected" : "" }} value="{{ $gender }}">{{ $gender }}</option>
+                                @foreach ($genders as $gender)
+                                    <option {{ $gender == old('gender') ? 'selected' : '' }} value="{{ $gender }}">
+                                        {{ $gender }}</option>
                                 @endforeach
                             </select>
                             @error('gender')
@@ -100,7 +106,8 @@
                         </div>
                         <div class="mb-2 w-100">
                             <label for="birthday" class="form-label">Birthday</label>
-                            <input type="date" class="form-control form-control-sm" placeholder="--" name="birthday" id="birthday" value="{{ old('birthday') ?? '' }}">
+                            <input type="date" class="form-control form-control-sm" placeholder="--" name="birthday"
+                                id="birthday" value="{{ old('birthday') ?? '' }}">
                             @error('birthday')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
@@ -109,51 +116,81 @@
                     <div class="d-flex column-gap-2">
                         <div class="mb-2 w-100">
                             <label for="province" class="form-label">Province</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--" name="province" id="province" value="{{ old('province') ?? '' }}">
+                            <input type="text" class="form-control form-control-sm" placeholder="--" name="province"
+                                id="province" value="{{ old('province') ?? '' }}">
                             @error('province')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="mb-2 w-100">
                             <label for="municipality" class="form-label">Municipality</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--" name="municipality" id="municipality" value="{{ old('municipality') ?? '' }}">
+                            <input type="text" class="form-control form-control-sm" placeholder="--" name="municipality"
+                                id="municipality" value="{{ old('municipality') ?? '' }}">
                             @error('municipality')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
-                    <div class="d-flex coumn-gap-2">
-                        <div class="mb-2 w-100">
-                            <label for="barangay" class="form-label">Barangay</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--" name="barangay" id="barangay" value="{{ old('barangay') ?? '' }}">
-                            @error('barangay')
-                                <div class="form-text text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="mb-2 w-100"></div>
+                    <div class="mb-2">
+                        <label for="barangay" class="form-label">Barangay</label>
+                        <input type="text" class="form-control form-control-sm" placeholder="--" name="barangay"
+                            id="barangay" value="{{ old('barangay') ?? '' }}">
+                        @error('barangay')
+                            <div class="form-text text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="d-flex column-gap-2">
                         <div class="mb-2 w-100">
                             <label for="mobile_number" class="form-label">Mobile No.</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--" name="mobile_number" id="mobile_number" value="{{ old('mobile_number') ?? '' }}">
+                            <input type="text" class="form-control form-control-sm" placeholder="--" name="mobile_number"
+                                id="mobile_number" value="{{ old('mobile_number') ?? '' }}">
                             @error('mobile_number')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="mb-2 w-100">
                             <label for="email" class="form-label">Email</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--" name="email" id="email" value="{{ old('email') ?? '' }}">
+                            <input type="text" class="form-control form-control-sm" placeholder="--" name="email"
+                                id="email" value="{{ old('email') ?? '' }}">
                             @error('email')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
-
+                    <div class="d-flex column-gap-2">
+                        <div class="mb-2 w-100">
+                            <label for="college" class="form-label">College</label>
+                            <select class="form-control form-control-sm" name="college" id="college">
+                                <option value="">--</option>
+                                @foreach ($colleges as $college)
+                                    <option {{ $college->code == old('college') ? 'selected' : '' }}
+                                        value="{{ $college->code }}">{{ $college->code }}</option>
+                                @endforeach
+                            </select>
+                            @error('college')
+                                <div class="form-text text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="mb-2 w-100">
+                            <label for="campus" class="form-label">Campus</label>
+                            <select class="form-control form-control-sm" name="campus" id="campus">
+                                <option value="">--</option>
+                                @foreach ($campuses as $campus)
+                                    <option {{ $campus->code == old('campus') ? 'selected' : '' }} value="{{ $campus->code }}">
+                                        {{ $campus->code }}</option>
+                                @endforeach
+                            </select>
+                            @error('campus')
+                                <div class="form-text text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
                 </div>
                 <div class="w-100 d-flex flex-column">
                     <div class="flex-grow-1 rounded d-flex align-items-center justify-content-center">
                         <div id="profile-container" class="border text-center shadow">
-                            <img id="profile" class="h-100 d-block" src="{{ asset('images/profile.jpg') }}" alt="">
+                            <img id="profile" class="h-100 d-block" src="{{ asset('images/profile.jpg') }}"
+                                alt="">
                         </div>
                         <input class="d-none" type="file" name="file" id="file">
                     </div>
@@ -163,7 +200,8 @@
                             <select class="form-control form-control-sm text-capitalize" name="year" id="year">
                                 <option value="">--</option>
                                 @foreach ($year_levels as $year_level)
-                                    <option {{ $year_level['value']==old('year') ? "selected" : "" }} value="{{ $year_level['value'] }}">{{ $year_level['key'] }} year</option>
+                                    <option {{ $year_level['value'] == old('year') ? 'selected' : '' }}
+                                        value="{{ $year_level['value'] }}">{{ $year_level['key'] }} year</option>
                                 @endforeach
                             </select>
                             @error('year')
@@ -175,7 +213,8 @@
                             <select class="form-control form-control-sm text-capitalize" name="section" id="section">
                                 <option value="">--</option>
                                 @foreach ($sections as $section)
-                                    <option {{ $section==old('section') ? "selected" : "" }} value="{{ $section }}">{{ $section }}</option>
+                                    <option {{ $section == old('section') ? 'selected' : '' }} value="{{ $section }}">
+                                        {{ $section }}</option>
                                 @endforeach
                             </select>
                             @error('section')
@@ -189,7 +228,8 @@
                             <select class="form-control form-control-sm text-capitalize" name="program" id="program">
                                 <option value="">--</option>
                                 @foreach ($programs as $program)
-                                    <option {{ $program->code==old('program') ? "selected" : "" }} value="{{ $program->code }}">{{ $program->code }}</option>
+                                    <option {{ $program->code == old('program') ? 'selected' : '' }}
+                                        value="{{ $program->code }}">{{ $program->code }}</option>
                                 @endforeach
                             </select>
                             @error('program')
@@ -201,13 +241,28 @@
                             <select class="form-control form-control-sm text-capitalize" name="status" id="status">
                                 <option value="">--</option>
                                 @foreach ($statuses as $status)
-                                    <option {{ $status==old('status') ? "selected" : "" }} value="{{ $status }}">{{ $status }}</option>
+                                    <option {{ $status == old('status') ? 'selected' : '' }} value="{{ $status }}">
+                                        {{ $status }}</option>
                                 @endforeach
                             </select>
                             @error('status')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
                         </div>
+                    </div>
+                    <div class="mb-2">
+                        <label for="library" class="form-label">
+                            Library
+                        </label>
+                        <select class="form-control form-control-sm" name="library" id="library">
+                            <option value="">--</option>
+                            @foreach($libraries as $library)
+                                <option {{ (old('library')==$library->code) ? 'selected' : '' }} value="{{ $library->code }}">{{ $library->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('library')
+                            <div class="form-text text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
             </div>

@@ -108,7 +108,7 @@ class MediaDiscController extends Controller
     {
         $attributes = $request->validate([
             'accession_number' => ['nullable', 'string', 'unique:media_discs,accession_number', 'max:255'],
-            'barcode_number'   => ['nullable', 'string', 'unique:media_discs,barcode_number', 'max:255'],
+            'barcode'   => ['nullable', 'string', 'unique:media_discs,barcode', 'max:255'],
             'lcc_number'       => ['nullable', 'string', 'max:255'],
             'ddc_number'       => ['nullable', 'string', 'max:255'],
             'ir_number'        => ['nullable', 'string', 'max:255'],
@@ -160,7 +160,7 @@ class MediaDiscController extends Controller
     {
         $attributes = $request->validate([
             'accession_number' => ['nullable', 'string', 'unique:media_discs,accession_number', 'max:255'],
-            'barcode_number'   => ['nullable', 'string', 'unique:media_discs,barcode_number', 'max:255'],
+            'barcode'   => ['nullable', 'string', 'unique:media_discs,barcode', 'max:255'],
             'lcc_number'       => ['nullable', 'string', 'max:255'],
             'ddc_number'       => ['nullable', 'string', 'max:255'],
             'ir_number'        => ['nullable', 'string', 'max:255'],
@@ -271,7 +271,7 @@ class MediaDiscController extends Controller
         $media_disc = MediaDisc::findOrFail($id);
         $rules = [
             'accession_number' => ['nullable', 'string', 'unique:media_discs,accession_number', 'max:255'],
-            'barcode_number'   => ['nullable', 'string', 'unique:media_discs,barcode_number', 'max:255'],
+            'barcode'   => ['nullable', 'string', 'unique:media_discs,barcode', 'max:255'],
             'lcc_number'       => ['nullable', 'string', 'max:255'],
             'ddc_number'       => ['nullable', 'string', 'max:255'],
             'ir_number'        => ['nullable', 'string', 'max:255'],
@@ -293,8 +293,8 @@ class MediaDiscController extends Controller
         if($request->post('accession_number') == $media_disc->accession_number) {
             unset($rules['accession_number']);
         }
-        if($request->post('barcode_number') == $media_disc->barcode_number) {
-            unset($rules['barcode_number']);
+        if($request->post('barcode') == $media_disc->barcode) {
+            unset($rules['barcode']);
         }
 
         $attributes = $request->validate($rules);

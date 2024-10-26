@@ -25,26 +25,12 @@
             <section class="d-flex flex-column w-100 h-100 align-items-center justify-content-center">
                 <div style="width: 470px;" class="card mx-auto p-3">
                     <div class="card-body">
-                        <form autocomplete="off" action="/register" method="POST">
+                        <form autocomplete="off" action="/account" method="POST">
                             @csrf
                             @method('POST')
 
                             <h3 class="text-body-secondary">Create Patron Account</h3>
                             <br>
-                            <div class="mb-3">
-                                <label for="account_type" class="form-label">Account type</label>
-                                <select class="form-control" name="account_type" id="account_type">
-                                    @php
-                                    $account_type = old('account_type') ?? '';
-                                    @endphp
-                                    <option value="">--</option>
-                                    <option {{ ($account_type=='teacher') ? 'selected' : '' }} value="teacher">Teacher / Faculty</option>
-                                    <option {{ ($account_type=='student') ? 'selected' : '' }} value="student">Student</option>
-                                </select>
-                                @error('account_type')
-                                    <div class="form-text text-danger">{{ $message }}</div>
-                                @enderror
-                            </div>
                             <div class="mb-3 d-flex column-gap-3">
                                 <section>
                                     <label for="first_name" class="form-label">First name</label>

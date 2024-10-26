@@ -45,9 +45,9 @@
                             @enderror
                         </div>
                         <div class="mb-2 w-100">
-                            <label for="barcode_number" class="form-label">Barcode No.</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--" name="barcode_number" id="barcode_number" value="{{ old('barcode_number') ?? '' }}">
-                            @error('barcode_number')
+                            <label for="barcode" class="form-label">Barcode No.</label>
+                            <input type="text" class="form-control form-control-sm" placeholder="--" name="barcode" id="barcode" value="{{ old('barcode') ?? '' }}">
+                            @error('barcode')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
                         </div>

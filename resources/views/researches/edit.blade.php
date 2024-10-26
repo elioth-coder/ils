@@ -57,18 +57,18 @@
                         </div>
                         <div class="mb-2 w-100">
                             @php
-                                if ($errors->has('barcode_number')) {
-                                    $barcode_number = old('barcode_number');
+                                if ($errors->has('barcode')) {
+                                    $barcode = old('barcode');
                                 } else {
-                                    $barcode_number = old('barcode_number')
-                                        ? old('barcode_number')
-                                        : $selected->barcode_number;
+                                    $barcode = old('barcode')
+                                        ? old('barcode')
+                                        : $selected->barcode;
                                 }
                             @endphp
-                            <label for="barcode_number" class="form-label">Barcode No.</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--" name="barcode_number"
-                                id="barcode_number" value="{{ $barcode_number }}">
-                            @error('barcode_number')
+                            <label for="barcode" class="form-label">Barcode No.</label>
+                            <input type="text" class="form-control form-control-sm" placeholder="--" name="barcode"
+                                id="barcode" value="{{ $barcode }}">
+                            @error('barcode')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
                         </div>
@@ -320,7 +320,7 @@
             </div>
             <hr>
             <div class="d-flex gap-2 flex-row-reverse">
-                <a href="/collections/researches" class="w-25 btn btn-outline-dark px-3">Cancel</a>
+                <a href="{{ url()->previous() }}" class="w-25 btn btn-outline-dark px-3">Cancel</a>
                 <button type="submit" class="w-25 btn btn-primary px-3">Update</button>
             </div>
         </form>

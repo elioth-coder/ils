@@ -35,7 +35,7 @@
                     <thead>
                         <tr>
                             <th>Action</th>
-                            <th>Employee #</th>
+                            <th>ID No.</th>
                             <th>Name</th>
                             <th>Rank</th>
                             <th>Email Address</th>
@@ -59,7 +59,7 @@
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </td>
-                                <td>{{ $teacher->employee_number }}</td>
+                                <td>{{ $teacher->card_number }}</td>
                                 <td>{{ $teacher->first_name }} {{ $teacher->last_name }}</td>
                                 <td class="text-uppercase">{{ $teacher->academic_rank }}</td>
                                 <td>{{ $teacher->email }}</td>

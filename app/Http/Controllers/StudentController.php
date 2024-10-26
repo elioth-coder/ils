@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Campus;
+use App\Models\College;
+use App\Models\Library;
 use Illuminate\Http\Request;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Student;
 use App\Models\Program;
-use App\Models\Staff;
+use App\Models\UserDetail;
 
 class StudentController extends Controller
 {
@@ -36,10 +38,28 @@ class StudentController extends Controller
 
     public function index()
     {
-        $students = Student::latest()->get();
-        $programs = Program::latest()->get();
+        if(Auth::user()->role != 'admin') {
+            $staff = UserDetail::where('email', Auth::user()->email)->first();
+            $students =
+                UserDetail::whereIn('role', ['student'])
+                    ->where('library', $staff->library)
+                    ->latest()
+                    ->get();
+        } else {
+            $students = UserDetail::whereIn('role', ['student'])
+                ->latest()
+                ->get();
+        }
+
+        $colleges  = College::latest()->get();
+        $campuses  = Campus::latest()->get();
+        $libraries = Library::latest()->get();
+        $programs  = Program::latest()->get();
 
         return view('students.index', [
+            'libraries'   => $libraries,
+            'colleges'    => $colleges,
+            'campuses'    => $campuses,
             'students'    => $students,
             'programs'    => $programs,
             'suffixes'    => $this->suffixes,
@@ -52,30 +72,39 @@ class StudentController extends Controller
 
     public function store(Request $request)
     {
-        $attributes = $request->validate([
-            'student_number' => ['required', 'string', 'unique:students,student_number', 'max:255'],
+        $rules = [
+            'card_number'    => ['required', 'string', 'unique:user_details,card_number', 'max:255'],
             'first_name'     => ['required', 'string', 'max:255'],
             'middle_name'    => ['nullable', 'string', 'max:255'],
             'last_name'      => ['required', 'string', 'max:255'],
             'suffix'         => ['nullable', 'string', 'max:255'],
             'gender'         => ['required', 'in:male,female'],
             'birthday'       => ['required', 'date'],
-            'province'       => ['required', 'string', 'max:255'],
-            'municipality'   => ['required', 'string', 'max:255'],
-            'barangay'       => ['required', 'string', 'max:255'],
-            'mobile_number'  => ['required', 'string', 'max:255'],
-            'email'          => ['required', 'email', 'unique:students,email', 'max:255'],
+            'province'       => ['nullable', 'string', 'max:255'],
+            'municipality'   => ['nullable', 'string', 'max:255'],
+            'barangay'       => ['nullable', 'string', 'max:255'],
+            'mobile_number'  => ['nullable', 'string', 'max:255'],
+            'email'          => ['required', 'email', 'unique:user_details,email', 'max:255'],
             'program'        => ['required','exists:programs,code'],
             'year'           => ['required','integer', 'min:1', 'max:10'],
             'section'        => ['required','in:A,B,C,D,E,F'],
             'status'         => ['required','in:active,inactive'],
             'file'           => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
-        ]);
+        ];
 
-        $staff = Staff::where('email', Auth::user()->email)->first();
-        $attributes['library'] = $staff->library;
+        if(Auth::user()->role == 'admin') {
+            $rules['library'] = ['required', 'string', 'exists:libraries,code'];
+        }
 
-        $student = Student::create($attributes);
+        $attributes = $request->validate($rules);
+        $attributes['role'] = 'student';
+
+        if(Auth::user()->role != 'admin') {
+            $staff = UserDetail::where('email', Auth::user()->email)->first();
+            $attributes['library'] = $staff->library;
+        }
+
+        $student = UserDetail::create($attributes);
         if(!empty($attributes['file'])) {
             $manager = ImageManager::gd();
             $image = $manager->read($request->file('file'));
@@ -85,24 +114,24 @@ class StudentController extends Controller
         }
 
         if(!empty($image)) {
-            $path = "public/images/students";
+            $path = "public/images/users";
             Storage::makeDirectory($path);
-            $path .= "/$student->number.png";
+            $path .= "/$student->card_number.png";
             Storage::put($path, (string) $image->encode());
 
-            $student->profile = $student->number . ".png";
+            $student->profile = $student->card_number . ".png";
             $student->save();
         }
 
         return redirect('users/students')->with([
-            'message' => "Successfully created the student $student->student_number."
+            'message' => "Successfully created the student $student->card_number."
         ]);
     }
 
     public function destroy($id)
     {
-        $student = Student::findOrFail($id);
-        $path = "public/images/students/$student->profile";
+        $student = UserDetail::findOrFail($id);
+        $path = "public/images/users/$student->profile";
 
         if (Storage::exists($path)) {
             Storage::delete($path);
@@ -112,17 +141,38 @@ class StudentController extends Controller
 
         return redirect("users/students")
             ->with([
-                'message' => 'Successfully deleted the student ' . $student->student_number . '.',
+                'message' => 'Successfully deleted the student ' . $student->card_number . '.',
             ]);
     }
 
     public function edit($id)
     {
-        $selected = Student::findOrFail($id);
-        $students = Student::latest()->get();
-        $programs = Program::latest()->get();
+        if(Auth::user()->role != 'admin') {
+            $staff = UserDetail::where('email', Auth::user()->email)->first();
+            $students =
+                UserDetail::whereIn('role', ['student'])
+                    ->where('library', $staff->library)
+                    ->latest()
+                    ->get();
+        } else {
+            $students = UserDetail::whereIn('role', ['student'])
+                ->latest()
+                ->get();
+        }
+
+        $colleges  = College::latest()->get();
+        $campuses  = Campus::latest()->get();
+        $libraries = Library::latest()->get();
+        $programs  = Program::latest()->get();
+
+
+        $selected = UserDetail::findOrFail($id);
 
         return view('students.edit', [
+            'colleges'    => $colleges,
+            'campuses'    => $campuses,
+            'libraries'   => $libraries,
+            'students'    => $students,
             'students'    => $students,
             'programs'    => $programs,
             'selected'    => $selected,
@@ -137,17 +187,17 @@ class StudentController extends Controller
     public function update(Request $request, $id)
     {
         $rules = [
-            'student_number' => ['required', 'string', 'unique:students,student_number', 'max:255'],
+            'card_number'    => ['required', 'string', 'unique:user_details,card_number', 'max:255'],
             'first_name'     => ['required', 'string', 'max:255'],
             'middle_name'    => ['nullable', 'string', 'max:255'],
             'last_name'      => ['required', 'string', 'max:255'],
             'suffix'         => ['nullable', 'string', 'max:255'],
             'gender'         => ['required', 'in:male,female'],
             'birthday'       => ['required', 'date'],
-            'province'       => ['required', 'string', 'max:255'],
-            'municipality'   => ['required', 'string', 'max:255'],
-            'barangay'       => ['required', 'string', 'max:255'],
-            'mobile_number'  => ['required', 'string', 'max:255'],
+            'province'       => ['nullable', 'string', 'max:255'],
+            'municipality'   => ['nullable', 'string', 'max:255'],
+            'barangay'       => ['nullable', 'string', 'max:255'],
+            'mobile_number'  => ['nullable', 'string', 'max:255'],
             'email'          => ['required', 'email', 'unique:students,email', 'max:255'],
             'program'        => ['required','exists:programs,code'],
             'year'           => ['required','integer', 'min:1', 'max:10'],
@@ -156,21 +206,27 @@ class StudentController extends Controller
             'file'           => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ];
 
-        $student = Student::findOrFail($id);
-        if($request->post('student_number') == $student->student_number) {
-            unset($rules['student_number']);
+        $student = UserDetail::findOrFail($id);
+        if($request->post('card_number') == $student->card_number) {
+            unset($rules['card_number']);
         }
         if($request->post('email') == $student->email) {
             unset($rules['email']);
         }
+        if(Auth::user()->role == 'admin') {
+            $rules['library'] = ['required', 'string', 'exists:libraries,code'];
+        }
 
         $attributes = $request->validate($rules);
 
-        $previousStudentNumber = $student->student_number;
+        if(Auth::user()->role != 'admin') {
+            $staff = UserDetail::where('email', Auth::user()->email)->first();
+            $attributes['library'] = $staff->library;
+        }
+
+        $previousCardNumber = $student->card_number;
         $previousProfile = $student->profile;
 
-        $staff = Staff::where('email', Auth::user()->email)->first();
-        $attributes['library'] = $staff->library;
         $student->update($attributes);
         if(!empty($attributes['file'])) {
             $manager = ImageManager::gd();
@@ -181,31 +237,31 @@ class StudentController extends Controller
         }
 
         if(!empty($image)) {
-            $path = "public/images/students";
+            $path = "public/images/users";
             Storage::makeDirectory($path);
-            $path .= "/$student->student_number.png";
+            $path .= "/$student->card_number.png";
             Storage::put($path, (string) $image->encode());
 
-            $student->profile = $student->student_number . ".png";
+            $student->profile = $student->card_number . ".png";
             $student->save();
         } else {
-            if($previousStudentNumber != $student->student_number) {
-                $path = "public/images/students";
+            if($previousCardNumber != $student->card_number) {
+                $path = "public/images/users";
                 Storage::makeDirectory($path);
-                $newPath = $path . "/$student->student_number.png";
+                $newPath = $path . "/$student->card_number.png";
                 $oldPath = $path . "/$previousProfile";
 
                 if (Storage::exists($oldPath)) {
                     Storage::move($oldPath, $newPath);
                 }
 
-                $student->profile = $student->student_number . ".png";
+                $student->profile = $student->card_number . ".png";
                 $student->save();
             }
         }
 
         return redirect('users/students')->with([
-            'message' => "Successfully updated the student $student->student_number."
+            'message' => "Successfully updated the student $student->card_number."
         ]);
     }
 }

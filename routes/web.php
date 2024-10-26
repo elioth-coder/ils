@@ -4,6 +4,7 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\CampusController;
 use App\Http\Controllers\CollegeController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\MediaDiscController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\ResearchController;
@@ -12,19 +13,34 @@ use App\Http\Controllers\SessionController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherController;
-use App\Http\Controllers\UserAccountController;
+use App\Http\Controllers\AccountController;
+use App\Http\Controllers\CurrentLoanController;
+use App\Http\Controllers\ItemRequestController;
+use App\Http\Controllers\PatronController;
+use App\Models\RequestedItem;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Models\Teacher;
 use App\Models\Student;
+
+Route::get('/test', function () {
+    $pdo = DB::connection()->getPdo();
+    $query = $pdo->prepare('SELECT * FROM books');
+    $query->execute();
+
+    $results = $query->fetchAll(PDO::FETCH_CLASS, 'stdClass');
+
+    dd($results);
+});
 
 Route::delete('/logout', [SessionController::class, 'destroy'])->middleware('auth');
 
 Route::middleware('guest')->group(function () {
-    Route::get('/register', [UserAccountController::class, 'create']);
-    Route::post('/register', [UserAccountController::class, 'store']);
-    Route::get('/accounts/email_confirmation', [UserAccountController::class, 'email_confirmation']);
-    Route::get('/accounts/activate/{token_value}', [UserAccountController::class, 'activate']);
+    Route::get('/register', [AccountController::class, 'create']);
+    Route::post('/account', [AccountController::class, 'store']);
+    Route::get('/account/email_confirmation', [AccountController::class, 'email_confirmation']);
+    Route::get('/account/activate/{token_value}', [AccountController::class, 'activate']);
 
     Route::get('/login', [SessionController::class, 'create']);
     Route::post('/login', [SessionController::class, 'store'])->name('login');
@@ -34,28 +50,47 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::get('/dashboard', function () {
-    if(in_array(Auth::user()->role, ['teacher','student'])) {
-        $user = null;
-        if(Auth::user()->role == 'teacher') {
-            $user = Teacher::where('email', Auth::user()->email)->first();
-        }
-        if(Auth::user()->role == 'student') {
-            $user = Student::where('email', Auth::user()->email)->first();
-        }
-
-        return view('dashboard.index', [
-            'user' => $user,
-        ]);
-    }
-
     return view('dashboard.index');
 })->middleware('auth');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/accounts/profile', [UserAccountController::class, 'profile']);
-    Route::patch('/accounts/edit_profile', [UserAccountController::class, 'edit_profile']);
-    Route::get('/accounts/password', [UserAccountController::class, 'password']);
-    Route::post('/accounts/change_password', [UserAccountController::class, 'change_password']);
+
+    Route::get('/account', [AccountController::class, 'index']);
+    Route::get('/account/edit', [AccountController::class, 'edit']);
+    Route::patch('/account/update', [AccountController::class, 'update']);
+    Route::get('/account/change_password', [AccountController::class, 'change_password']);
+    Route::post('/account/update_password', [AccountController::class, 'update_password']);
+
+    Route::prefix('services/checkouts')->group(function () {
+        Route::controller(CheckoutController::class)->group(function () {
+            Route::get('/', 'index');
+            Route::post('/find_barcode', 'find_barcode');
+            Route::post('/reserve_item', 'reserve_item');
+            Route::post('/checkout_item', 'checkout_item');
+            Route::post('/cancel_item', 'cancel_item');
+            Route::post('/return_item', 'return_item');
+            Route::post('/renew_item', 'renew_item');
+            Route::get('/{card_number}/patron', 'patron');
+        });
+    });
+
+    Route::prefix('services/item_requests')->group(function () {
+        Route::controller(ItemRequestController::class)->group(function () {
+            Route::get('/', 'index');
+        });
+    });
+
+    Route::prefix('services/current_loans')->group(function () {
+        Route::controller(CurrentLoanController::class)->group(function () {
+            Route::get('/', 'index');
+        });
+    });
+
+    Route::prefix('services/patrons')->group(function () {
+        Route::controller(PatronController::class)->group(function () {
+            Route::get('/', 'index');
+        });
+    });
 
     Route::get('/settings', function () {
         return view('dashboard.settings');
@@ -67,6 +102,10 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/users', function () {
         return view('dashboard.users');
+    });
+
+    Route::get('/services', function () {
+        return view('dashboard.services');
     });
 
     Route::prefix('search')->group(function () {
@@ -111,6 +150,8 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('collections/books')->group(function () {
         Route::controller(BookController::class)->group(function () {
+            Route::post('/request', 'request');
+            Route::post('/cancel_request', 'cancel_request');
             Route::get('/', 'index');
             Route::post('/', 'store');
             Route::get('/{isbn}/detail', 'detail');

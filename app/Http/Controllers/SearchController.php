@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\Library;
-use App\Models\Staff;
+use App\Models\UserDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -88,10 +88,10 @@ class SearchController extends Controller
     {
         $library = null;
         if(in_array(Auth::user()->role, ['librarian','assistant','clerk'])) {
-            $staff = Staff::where('email',Auth::user()->email)->first();
+            $user = UserDetail::where('email',Auth::user()->email)->first();
 
-            $this->filters[] = ['library', $staff->library];
-            $library = $staff->library;
+            $this->filters[] = ['library', $user->library];
+            $library = $user->library;
         }
 
         $q = $request->input('q');
@@ -105,7 +105,6 @@ class SearchController extends Controller
         $hasYearFilter  = false;
         $hasGenreFilter = false;
         $hasFormatFilter = false;
-        $hasStatusFilter = false;
         $hasPublisherFilter = false;
         $hasLibraryFilter = false;
         $hasTagFilter = false;
@@ -128,15 +127,6 @@ class SearchController extends Controller
 
             if(count($formats) > 0) {
                 $hasFormatFilter = true;
-            }
-        }
-
-        $statuses = [];
-        if($request->input('status')) {
-            $statuses = explode(',', $request->input('status'));
-
-            if(count($statuses) > 0) {
-                $hasStatusFilter = true;
             }
         }
 
@@ -176,7 +166,6 @@ class SearchController extends Controller
             }
         }
 
-
         if($library) {
             $libraries[] = $library;
             $hasLibraryFilter = true;
@@ -188,7 +177,7 @@ class SearchController extends Controller
 
         if($isbn != null) {
             $books = Book::select(
-                'barcode_number',
+                'barcode',
                 'isbn',
                 'id',
                 'title',
@@ -198,13 +187,13 @@ class SearchController extends Controller
                 'format',
                 'tags',
                 'cover_image',
-                'status',
                 'library',
             )
             ->where('isbn', $isbn)
             ->when($hasLibraryFilter, function ($query) use ($libraries) {
                 return $query->whereIn('library', $libraries);
-            })->get();
+            })
+            ->get();
         } else {
             $books = Book::select(
                 DB::raw('DISTINCT isbn'),
@@ -215,7 +204,6 @@ class SearchController extends Controller
                 'format',
                 'tags',
                 'cover_image',
-                'status',
             )
             ->where('title', 'LIKE', "%$q%")
             ->when($hasYearFilter, function ($query) use ($start_year, $end_year) {
@@ -226,9 +214,6 @@ class SearchController extends Controller
             })
             ->when($hasFormatFilter, function ($query) use ($formats) {
                 return $query->whereIn('format', $formats);
-            })
-            ->when($hasStatusFilter, function ($query) use ($statuses) {
-                return $query->whereIn('status', $statuses);
             })
             ->when($hasLibraryFilter, function ($query) use ($libraries) {
                 return $query->whereIn('library', $libraries);
@@ -282,7 +267,6 @@ class SearchController extends Controller
         $this->addFilters('publisher', $request->input('publisher'));
         $this->addFilters('genre', $request->input('genre'));
         $this->addFilters('format', $request->input('format'));
-        $this->addFilters('status', $request->input('status'));
         $this->addFilters('tag', $request->input('tag'));
 
         return view('search.books', [
@@ -302,10 +286,10 @@ class SearchController extends Controller
     {
         $library = null;
         if(in_array(Auth::user()->role, ['librarian','assistant','clerk'])) {
-            $staff = Staff::where('email',Auth::user()->email)->first();
+            $user = UserDetail::where('email',Auth::user()->email)->first();
 
-            $this->filters[] = ['library', $staff->library];
-            $library = $staff->library;
+            $this->filters[] = ['library', $user->library];
+            $library = $user->library;
         }
 
         $this->publishers = Book::select('publisher')->distinct()->get();

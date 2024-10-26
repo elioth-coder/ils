@@ -35,10 +35,11 @@
                     <thead>
                         <tr>
                             <th>Action</th>
-                            <th>Student #</th>
+                            <th>Card No.</th>
                             <th>Name</th>
                             <th>Course</th>
                             <th>Email Address</th>
+                            <th>Library Code</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -58,10 +59,11 @@
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </td>
-                                <td class="text-end">{{ $student->student_number }}</td>
+                                <td>{{ $student->card_number }}</td>
                                 <td>{{ $student->first_name }} {{ $student->last_name }}</td>
                                 <td>{{ $student->program }} {{ $student->year }}</td>
                                 <td>{{ $student->email }}</td>
+                                <td>{{ $student->library }}</td>
                             </tr>
                         @endforeach
                     </tbody>

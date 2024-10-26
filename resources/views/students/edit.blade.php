@@ -40,15 +40,15 @@
                     <div class="d-flex column-gap-2">
                         <div class="mb-2 w-100">
                             @php
-                                if($errors->has('student_number')) {
-                                    $student_number = old('student_number');
+                                if($errors->has('card_number')) {
+                                    $card_number = old('card_number');
                                 } else {
-                                    $student_number = (old('student_number')) ? old('student_number') : $selected->student_number;
+                                    $card_number = (old('card_number')) ? old('card_number') : $selected->card_number;
                                 }
                             @endphp
-                            <label for="student_number" class="form-label">Student No.</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--" name="student_number" id="student_number" value="{{ $student_number }}">
-                            @error('student_number')
+                            <label for="card_number" class="form-label">Card No. / ID No.</label>
+                            <input type="text" class="form-control form-control-sm" placeholder="--" name="card_number" id="card_number" value="{{ $card_number }}">
+                            @error('card_number')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
                         </div>
@@ -186,22 +186,19 @@
                             @enderror
                         </div>
                     </div>
-                    <div class="d-flex coumn-gap-2">
-                        <div class="mb-2 w-100">
-                            @php
-                                if($errors->has('barangay')) {
-                                    $barangay = old('barangay');
-                                } else {
-                                    $barangay = (old('barangay')) ? old('barangay') : $selected->barangay;
-                                }
-                            @endphp
-                            <label for="barangay" class="form-label">Barangay</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--" name="barangay" id="barangay" value="{{ $barangay }}">
-                            @error('barangay')
-                                <div class="form-text text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="mb-2 w-100"></div>
+                    <div class="mb-2">
+                        @php
+                            if($errors->has('barangay')) {
+                                $barangay = old('barangay');
+                            } else {
+                                $barangay = (old('barangay')) ? old('barangay') : $selected->barangay;
+                            }
+                        @endphp
+                        <label for="barangay" class="form-label">Barangay</label>
+                        <input type="text" class="form-control form-control-sm" placeholder="--" name="barangay" id="barangay" value="{{ $barangay }}">
+                        @error('barangay')
+                            <div class="form-text text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="d-flex column-gap-2">
                         <div class="mb-2 w-100">
@@ -233,12 +230,51 @@
                             @enderror
                         </div>
                     </div>
-
+                    <div class="d-flex column-gap-2">
+                        <div class="mb-2 w-100">
+                            @php
+                                if($errors->has('college')) {
+                                    $college = old('college');
+                                } else {
+                                    $college = (old('college')) ? old('college') : $selected->college;
+                                }
+                            @endphp
+                            <label for="college" class="form-label">College</label>
+                            <select class="form-control form-control-sm" name="college" id="college">
+                                <option value="">--</option>
+                                @foreach ($colleges as $_college)
+                                    <option {{ $_college->code==$college ? "selected" : "" }} value="{{ $_college->code }}">{{ $_college->code }}</option>
+                                @endforeach
+                            </select>
+                            @error('college')
+                                <div class="form-text text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="mb-2 w-100">
+                            @php
+                                if($errors->has('campus')) {
+                                    $campus = old('campus');
+                                } else {
+                                    $campus = (old('campus')) ? old('campus') : $selected->campus;
+                                }
+                            @endphp
+                            <label for="campus" class="form-label">Campus</label>
+                            <select class="form-control form-control-sm" name="campus" id="campus">
+                                <option value="">--</option>
+                                @foreach ($campuses as $_campus)
+                                    <option {{ $_campus->code==$campus ? "selected" : "" }} value="{{ $_campus->code }}">{{ $_campus->code }}</option>
+                                @endforeach
+                            </select>
+                            @error('campus')
+                                <div class="form-text text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
                 </div>
                 <div class="w-100 d-flex flex-column">
                     <div class="flex-grow-1 rounded d-flex align-items-center justify-content-center">
                         <div id="profile-container" class="border text-center shadow">
-                            @php $profile = ($selected->profile) ? "/storage/images/students/$selected->profile" : '/images/profile.jpg'; @endphp
+                            @php $profile = ($selected->profile) ? "/storage/images/users/$selected->profile" : '/images/profile.jpg'; @endphp
                             <img id="profile" class="h-100 d-block" src="{{ asset($profile) }}" alt="">
                         </div>
                         <input class="d-none" type="file" name="file" id="file">
@@ -323,11 +359,32 @@
                             @enderror
                         </div>
                     </div>
+                    <div class="mb-2">
+                        @php
+                            if($errors->has('library')) {
+                                $library = old('library');
+                            } else {
+                                $library = (old('library')) ? old('library') : $selected->library;
+                            }
+                        @endphp
+                        <label for="library" class="form-label">
+                            Library
+                        </label>
+                        <select class="form-control form-control-sm" name="library" id="library">
+                            <option value="">--</option>
+                            @foreach($libraries as $_library)
+                                <option {{ ($library==$_library->code) ? 'selected' : '' }} value="{{ $_library->code }}">{{ $_library->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('library')
+                            <div class="form-text text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
                 </div>
             </div>
             <hr>
             <div class="d-flex gap-2 flex-row-reverse">
-                <a href="/users/students" class="w-25 btn btn-outline-dark px-3">Cancel</a>
+                <a href="{{ url()->previous() }}" class="w-25 btn btn-outline-dark px-3">Cancel</a>
                 <button type="submit" class="w-25 btn btn-primary px-3">Update</button>
             </div>
         </form>

@@ -38,9 +38,9 @@
                 <div class="w-100">
                     <div class="d-flex column-gap-2">
                         <div class="mb-2 w-100">
-                            <label for="employee_number" class="form-label">Employee No.</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--" name="employee_number" id="employee_number" value="{{ old('employee_number') ?? '' }}">
-                            @error('employee_number')
+                            <label for="card_number" class="form-label">Card No. / ID No.</label>
+                            <input type="text" class="form-control form-control-sm" placeholder="--" name="card_number" id="card_number" value="{{ old('card_number') ?? '' }}">
+                            @error('card_number')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
                         </div>

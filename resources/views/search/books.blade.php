@@ -35,58 +35,18 @@
                                         <h4>{{ $book->title }}</h4>
                                     </a>
                                 </div>
-                                @if(request('isbn'))
-                                    <div style="min-width: 80px;" class="text-end">
-                                        <a href="/collections/books/{{ $book->id }}/edit#books-form" class="btn btn-outline-primary btn-sm">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-                                        <button class="btn btn-outline-danger btn-sm">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </div>
-                                @endif
                             </section>
                             <p>
-                                @if(request('isbn'))
-                                    Barcode: [ {{ $book->barcode_number ?? '--' }} ] <br>
-                                @endif
-                                ISBN: {{ $book->isbn }} <br>
-                                Author: {{ $book->author }} <br>
-                                Published in: {{ $book->publisher }} ({{ $book->publication_year }}) <br>
-                                Format: <span class="text-capitalize">{{ $book->format }}</span> <br>
-                                @if(request('isbn'))
-                                    Library: {{ $book->library }} <br>
+                                <b>Author(s):</b> {{ $book->author }} <br>
+                                <b>Published:</b> {{ $book->publisher }} ({{ $book->publication_year }}) <br>
+                                <b>ISBN:</b> {{ $book->isbn }}
+                                <p class="my-1">
+                                @if ($book->available > 0)
+                                    <i class="bi bi-circle-fill text-success me-1"></i> Available
                                 @else
-                                    @php
-                                        $copies_url = "/search/books?isbn=$book->isbn";
-
-                                        if(request()->input('library')) {
-                                            $copies_url .= "&library=" . request()->input('library');
-                                        }
-                                    @endphp
-                                    Copies: <a href="{{ $copies_url }}">({{ $book->copies }})</a><br>
+                                    <i class="bi bi-circle-fill text-danger me-1"></i> Not Available
                                 @endif
-
-                                <br>
-                                @if(request('isbn'))
-                                    @php
-                                    $colors = [
-                                        'available'   => 'success',
-                                        'checked out' => 'warning',
-                                        'damaged'     => 'warning',
-                                        'missing'     => 'danger',
-                                    ];
-                                    @endphp
-
-                                    <i class="bi bi-circle-fill text-{{ $colors[$book->status] }} me-2"></i>
-                                    <span class="text-capitalize">{{ $book->status }}</span>
-                                @else
-                                    @if ($book->available > 0)
-                                        <i class="bi bi-circle-fill text-success me-2"></i> Available
-                                    @else
-                                        <i class="bi bi-circle-fill text-danger me-2"></i> Not Available
-                                    @endif
-                                @endif
+                                </p>
 
                                 @if ($book->tags)
                                     <p>
