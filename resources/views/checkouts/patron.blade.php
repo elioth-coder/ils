@@ -94,9 +94,10 @@
                 <div class="tab-pane active" id="on-loan" role="tabpanel" aria-labelledby="on-loan-tab"
                     tabindex="0">
                     <div class="w-50 mb-3">
-                        <p class="fw-bold m-1">Checkout/check-in: please enter an item barcode.</p>
-                        <form onsubmit="return checkBarcodeNumber(event);" class="flex-grow-1" method="GET">
+                        <p class="fw-bold mb-2">Check-out/check-in: please enter an item barcode.</p>
+                        <form onsubmit="return findBarcode(event);" class="flex-grow-1" method="GET">
                             <div class="input-group bg-white rounded-3">
+                                <input type="hidden" name="user_id" value="{{ $patron->user_id }}">
                                 <input type="text" class="form-control" name="barcode" placeholder="--">
                                 <button class="btn btn-light border" type="submit">
                                     <i class="bi bi-search"></i>
@@ -475,6 +476,74 @@
     <x-footer />
     <x-slot:script>
         <script>
+            async function findBarcode(event) {
+                event.preventDefault();
+
+                let $form = event.target;
+                let formData = new FormData($form);
+                let csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+                let response = await fetch('/services/checkouts/find_barcode', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                });
+
+                let {
+                    status,
+                    message,
+                    patron,
+                    item
+                } = await response.json();
+
+                if (status == 'error') {
+                    Swal.fire({
+                        title: message,
+                        icon: status,
+                        showConfirmButton: false,
+                        timer: 2000,
+                    });
+                } else {
+                    if (patron) {
+                        window.location.href = `/services/checkouts/${patron.card_number}/patron`;
+                    }
+                    if (item) {
+                        if (item.status == 'available') {
+                            return checkoutItem({
+                                barcode: item.barcode,
+                                requester_id: item.requester_id,
+                            });
+                        }
+                        if (item.status == 'checked out') {
+                            return returnItem({
+                                barcode : item.barcode,
+                                loaner_id : item.loaner_id,
+                            });
+                        }
+                        if (item.status == 'reserved') {
+                            if(item.requester_id == $formData.get('user_id')) {
+                                return checkoutItem({
+                                    barcode: item.barcode,
+                                    requester_id: item.requester_id,
+                                });
+                            }
+                        }
+
+                        Swal.fire({
+                            title: `The item is [${item.status.toUpperCase()}] and cannot be checked out`,
+                            icon: 'error',
+                            showConfirmButton: false,
+                            timer: 3000,
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    }
+                }
+                return false;
+            }
+
             function checkoutItem(data) {
                 Swal.fire({
                     title: "Checking out item..",
@@ -624,7 +693,6 @@
                     }
                 });
             }
-
 
             function renewItem(data) {
                 Swal.fire({

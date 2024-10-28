@@ -27,39 +27,42 @@ class CheckoutController extends Controller
             $patron = UserDetail::where('card_number', $request->input('barcode'))->first();
 
             if ($patron) {
+                $user = User::where('card_number', $request->input('barcode'))->first();
+                $patron->user_id = $user->id;
+
                 return response()->json([
                     'status'  => 'success',
                     'message' => 'Success',
                     'patron'  => $patron,
                 ]);
             }
-        } catch (Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $e->getMessage(),
-            ]);
-        }
 
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Patron or item not found',
-        ]);
-    }
+            $item = Book::where('barcode', $request->input('barcode'))->first();
 
-    public function check_item_barcode(Request $request)
-    {
-        try {
-            $teacher = Teacher::where('card_number', $request->input('barcode'))->first();
+            if ($item) {
+                if($item->status=='checked out') {
+                    $loaned_item =
+                        LoanedItem::where('barcode', $item->barcode)
+                            ->where('status','checked out')->first();
+                    $item->loaner_id = $loaned_item->loaner_id;
+                }
 
-            if ($teacher) {
-                $teacher->role = 'teacher';
+                if($item->status=='reserved') {
+                    $requested_item =
+                        RequestedItem::where('barcode', $item->barcode)
+                            ->where('status','reserved')->first();
+                    $item->requester_id = $requested_item->requester_id;
+                }
 
                 return response()->json([
                     'status'  => 'success',
                     'message' => 'Success',
-                    'patron'  => $teacher,
+                    'item'    => $item,
                 ]);
             }
+
+            throw new Exception("Barcode not found");
+
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -217,6 +220,7 @@ class CheckoutController extends Controller
 
             $item = LoanedItem::where('barcode', $attributes['barcode'])
                 ->where('loaner_id', $attributes['loaner_id'])
+                ->where('status', 'checked out')
                 ->first();
 
             $item->update([
@@ -277,13 +281,16 @@ class CheckoutController extends Controller
                 'requester_id' => ['required', 'string', 'exists:users,id'],
             ]);
 
-            $item = RequestedItem::where('barcode', $attributes['barcode'])
+            $requested_item = RequestedItem::where('barcode', $attributes['barcode'])
                 ->where('requester_id', $attributes['requester_id'])
+                ->where('status', 'reserved')
                 ->first();
 
-            $item->update([
-                'status' => 'checked out',
-            ]);
+            if($requested_item) {
+                $requested_item->update([
+                    'status' => 'checked out',
+                ]);
+            }
 
             $book = Book::where('barcode', $attributes['barcode'])->first();
             $book->update([
@@ -291,11 +298,11 @@ class CheckoutController extends Controller
             ]);
 
             LoanedItem::create([
-                'type' => $item->type,
-                'barcode' => $item->barcode,
+                'type' => $requested_item->type,
+                'barcode' => $requested_item->barcode,
                 'date_loaned' => DB::raw('DATE(NOW())'),
                 'due_date' => DB::raw('DATE_ADD(DATE(NOW()), INTERVAL 1 WEEK)'),
-                'loaner_id' => $item->requester_id,
+                'loaner_id' => $requested_item->requester_id,
                 'status' => 'checked out',
             ]);
 
