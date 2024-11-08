@@ -34,15 +34,15 @@ class CurrentLoanController extends Controller
         $pdo = DB::connection()->getPdo();
         $_sql =
         "SELECT
-            books.*,
+            items.*,
             loaned_items.status AS loan_status,
             loaned_items.date_loaned,
             loaned_items.date_returned,
             loaned_items.due_date,
             loaned_items.loaner_id
-         FROM books
+         FROM items
          INNER JOIN loaned_items
-         ON books.barcode = loaned_items.barcode
+         ON items.barcode = loaned_items.barcode
          WHERE loaned_items.status
         ";
 

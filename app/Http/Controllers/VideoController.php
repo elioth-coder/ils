@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Item;
 use App\Models\UserDetail;
 
-class BookController extends Controller
+class VideoController extends Controller
 {
     public $languages = [
         'english',
@@ -68,8 +68,6 @@ class BookController extends Controller
         'short stories',
     ];
 
-    public $formats = ['hardcover','paperback','ebook'];
-
     public $statuses = [
         'available',
         'checked out',
@@ -102,18 +100,17 @@ class BookController extends Controller
     {
         $library = $this->getAffiliatedLibrary();
 
-        $items = Item::latest()
-            ->where('type', 'book')
+        $videos = Item::latest()
+            ->where('type', 'video')
             ->when($library, function ($query) use ($library) {
                 return $query->where('library', $library);
             })
             ->get();
 
-        return view('books.index', [
-            'books'     => $items,
+        return view('videos.index', [
+            'videos'    => $videos,
             'languages' => $this->languages,
             'genres'    => $this->genres,
-            'formats'   => $this->formats,
             'statuses'  => $this->statuses,
         ]);
     }
@@ -127,28 +124,24 @@ class BookController extends Controller
             'date_acquired'    => ['nullable', 'date'],
             'title'            => ['required', 'string', 'max:255'],
             'author'           => ['required', 'string', 'max:255'],
-            'isbn'             => ['required', 'string', 'max:255'],
-            'publisher'        => ['required', 'string', 'max:255'],
+            'publisher'        => ['nullable', 'string', 'max:255'],
             'publication_year' => ['required', 'integer'],
+            'duration'         => ['required', 'integer'],
             'language'         => ['nullable', 'string', 'max:255'],
             'genre'            => ['nullable', 'string', 'max:255'],
-            'number_of_pages'  => ['nullable', 'integer', 'min:1'],
-            'format'           => ['nullable', 'in:hardcover,paperback,ebook'],
             'summary'          => ['nullable', 'string'],
-            'price'            => ['nullable', 'numeric', 'min:0'],
-            'location'         => ['nullable', 'string', 'max:255'],
             'tags'             => ['nullable', 'string', 'max:255'],
-            'status'           => ['required','string', 'max:255'],
+            'status'           => ['required', 'string', 'max:255'],
             'file'             => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ]);
 
         if(Auth::user()->role != 'admin') {
-            $staff = UserDetail::where('email', Auth::user()->email)->first();
-            $attributes['library'] = $staff->library;
+            $user = UserDetail::where('email', Auth::user()->email)->first();
+            $attributes['library'] = $user->library;
         }
 
-        $attributes['type'] = 'book';
-        $item = Item::create($attributes);
+        $attributes['type'] = 'video';
+        $video = Item::create($attributes);
         if(!empty($attributes['file'])) {
             $manager = ImageManager::gd();
             $image = $manager->read($request->file('file'));
@@ -158,17 +151,17 @@ class BookController extends Controller
         }
 
         if(!empty($image)) {
-            $path = "public/images/book";
+            $path = "public/images/video";
             Storage::makeDirectory($path);
-            $path .= "/$item->isbn.png";
+            $path .= "/$video->id.png";
             Storage::put($path, (string) $image->encode());
 
-            $item->cover_image = $item->isbn . ".png";
-            $item->save();
+            $video->cover_image = $video->id . ".png";
+            $video->save();
         }
 
-        return redirect('collections/book')->with([
-            'message' => "Successfully created the book $item->title."
+        return redirect('collections/video')->with([
+            'message' => "Successfully created the video $video->title."
         ]);
     }
 
@@ -181,28 +174,24 @@ class BookController extends Controller
             'date_acquired'    => ['nullable', 'date'],
             'title'            => ['required', 'string', 'max:255'],
             'author'           => ['required', 'string', 'max:255'],
-            'isbn'             => ['required', 'string', 'max:255'],
-            'publisher'        => ['required', 'string', 'max:255'],
+            'publisher'        => ['nullable', 'string', 'max:255'],
             'publication_year' => ['required', 'integer'],
+            'duration'         => ['required', 'integer'],
             'language'         => ['nullable', 'string', 'max:255'],
             'genre'            => ['nullable', 'string', 'max:255'],
-            'number_of_pages'  => ['nullable', 'integer', 'min:1'],
-            'format'           => ['nullable', 'string', 'max:255'],
             'summary'          => ['nullable', 'string'],
-            'price'            => ['nullable', 'numeric', 'min:0'],
-            'location'         => ['nullable', 'string', 'max:255'],
             'tags'             => ['nullable', 'string', 'max:255'],
             'status'           => ['required', 'string', 'max:255'],
             'file'             => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ]);
 
         if(Auth::user()->role != 'admin') {
-            $staff = UserDetail::where('email', Auth::user()->email)->first();
-            $attributes['library'] = $staff->library;
+            $user = UserDetail::where('email', Auth::user()->email)->first();
+            $attributes['library'] = $user->library;
         }
 
-        $attributes['type'] = 'book';
-        $item = Item::create($attributes);
+        $attributes['type'] = 'video';
+        $video = Item::create($attributes);
         if(!empty($attributes['file'])) {
             $manager = ImageManager::gd();
             $image = $manager->read($request->file('file'));
@@ -211,85 +200,93 @@ class BookController extends Controller
             $image->crop(235, 350, position: 'center');
         }
 
+        $source = Item::findOrFail($id);
+
         if(!empty($image)) {
-            $path = "public/images/book";
+            $path = "public/images/video";
             Storage::makeDirectory($path);
-            $path .= "/$item->isbn.png";
+            $path .= "/$video->id.png";
             Storage::put($path, (string) $image->encode());
 
-            $item->cover_image = "$item->isbn.png";
-            $item->save();
+            $video->cover_image = "$video->id.png";
+            $video->save();
+        } else {
+            if($source->cover_image) {
+                $video->cover_image = $source->cover_image;
+                $video->save();
+            }
         }
 
-        return redirect('collections/book')->with([
-            'message' => "Successfully copied the book $item->title."
+        $video->save();
+
+
+        return redirect('collections/video')->with([
+            'message' => "Successfully copied the video $video->title."
         ]);
     }
 
     public function destroy($id)
     {
-        $item = Item::findOrFail($id);
-        $path = "public/images/book/$item->cover_image";
+        $video = Item::findOrFail($id);
+        $path = "public/images/video/$video->cover_image";
 
         if (Storage::exists($path)) {
             Storage::delete($path);
         }
 
-        $item->delete();
+        $video->delete();
 
-        return redirect("collections/book")
+        return redirect("collections/video")
             ->with([
-                'message' => 'Successfully deleted the book ' . $item->title . '.',
+                'message' => 'Successfully deleted the video ' . $video->title . '.',
             ]);
     }
 
     public function copy($id)
     {
-        $selected  = Item::findOrFail($id);
         $library = $this->getAffiliatedLibrary();
 
-        $items = Item::latest()
-            ->where('type', 'book')
+        $selected  = Item::findOrFail($id);
+        $videos = Item::latest()
+            ->where('type', 'video')
             ->when($library, function ($query) use ($library) {
                 return $query->where('library', $library);
             })
             ->get();
 
-        return view('books.copy', [
-            'books' => $items,
-            'selected' => $selected,
-            'languages' => $this->languages,
-            'genres'    => $this->genres,
-            'formats'   => $this->formats,
-            'statuses'  => $this->statuses,
+        return view('videos.copy', [
+            'videos' => $videos,
+            'selected'    => $selected,
+            'languages'   => $this->languages,
+            'genres'      => $this->genres,
+            'statuses'    => $this->statuses,
         ]);
     }
 
     public function edit($id)
     {
-        $selected  = Item::findOrFail($id);
         $library = $this->getAffiliatedLibrary();
 
-        $items = Item::latest()
-            ->where('type', 'book')
+        $selected  = Item::findOrFail($id);
+        $videos = Item::latest()
+            ->where('type', 'video')
             ->when($library, function ($query) use ($library) {
                 return $query->where('library', $library);
             })
             ->get();
 
-        return view('books.edit', [
-            'books' => $items,
-            'selected' => $selected,
-            'languages' => $this->languages,
-            'genres'    => $this->genres,
-            'formats'   => $this->formats,
-            'statuses'  => $this->statuses,
+        return view('videos.edit', [
+            'videos'     => $videos,
+            'selected'   => $selected,
+            'genres'     => $this->genres,
+            'languages'  => $this->languages,
+            'statuses'   => $this->statuses,
         ]);
     }
 
     public function update(Request $request, $id)
     {
-        $item = Item::findOrFail($id);
+        $video = Item::findOrFail($id);
         $rules = [
             'accession_number' => ['nullable', 'string', 'unique:items,accession_number', 'max:255'],
             'barcode'          => ['nullable', 'string', 'unique:items,barcode', 'max:255'],
@@ -297,56 +294,32 @@ class BookController extends Controller
             'date_acquired'    => ['nullable', 'date'],
             'title'            => ['required', 'string', 'max:255'],
             'author'           => ['required', 'string', 'max:255'],
-            'isbn'             => ['required', 'string', 'max:255'],
-            'publisher'        => ['required', 'string', 'max:255'],
+            'publisher'        => ['nullable', 'string', 'max:255'],
             'publication_year' => ['required', 'integer'],
+            'duration'         => ['required', 'integer'],
             'language'         => ['nullable', 'string', 'max:255'],
             'genre'            => ['nullable', 'string', 'max:255'],
-            'number_of_pages'  => ['nullable', 'integer', 'min:1'],
-            'format'           => ['nullable', 'in:hardcover,paperback,ebook'],
             'summary'          => ['nullable', 'string'],
-            'price'            => ['nullable', 'numeric', 'min:0'],
-            'location'         => ['nullable', 'string', 'max:255'],
             'tags'             => ['nullable', 'string', 'max:255'],
             'status'           => ['required', 'string', 'max:255'],
             'file'             => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ];
 
-        if($request->post('accession_number') == $item->accession_number) {
+        if($request->post('accession_number') == $video->accession_number) {
             unset($rules['accession_number']);
         }
-        if($request->post('barcode') == $item->barcode) {
+        if($request->post('barcode') == $video->barcode) {
             unset($rules['barcode']);
-        }
-        if($request->post('isbn') == $item->isbn) {
-            unset($rules['isbn']);
         }
 
         $attributes = $request->validate($rules);
 
-        $previousIsbn  = $item->isbn;
-        $previousCover = $item->cover_image;
-
         if(Auth::user()->role != 'admin') {
-            $staff = UserDetail::where('email', Auth::user()->email)->first();
-            $attributes['library'] = $staff->library;
+            $user = UserDetail::where('email', Auth::user()->email)->first();
+            $attributes['library'] = $user->library;
         }
 
-        $item->update($attributes);
-
-        Item::where('title', $item->title)->update([
-            'title'            => $attributes['title'],
-            'author'           => $attributes['author'],
-            'publisher'        => $attributes['publisher'],
-            'publication_year' => $attributes['publication_year'],
-            'genre'            => $attributes['genre'],
-            'summary'          => $attributes['summary'],
-            'number_of_pages'  => $attributes['number_of_pages'],
-            'format'           => $attributes['format'],
-            'language'         => $attributes['language'],
-            'tags'             => $attributes['tags'],
-        ]);
-
+        $video->update($attributes);
         if(!empty($attributes['file'])) {
             $manager = ImageManager::gd();
             $image = $manager->read($request->file('file'));
@@ -356,31 +329,17 @@ class BookController extends Controller
         }
 
         if(!empty($image)) {
-            $path = "public/images/book";
+            $path = "public/images/video";
             Storage::makeDirectory($path);
-            $path .= "/$item->isbn.png";
+            $path .= "/$video->id.png";
             Storage::put($path, (string) $image->encode());
 
-            $item->cover_image = $item->isbn . ".png";
-            $item->save();
-        } else {
-            if($previousIsbn != $item->isbn) {
-                $path = "public/images/book";
-                Storage::makeDirectory($path);
-                $newPath = $path . "/$item->isbn.png";
-                $oldPath = $path . "/$previousCover";
-
-                if (Storage::exists($oldPath)) {
-                    Storage::move($oldPath, $newPath);
-                }
-
-                $item->cover_image = $item->isbn . ".png";
-                $item->save();
-            }
+            $video->cover_image = $video->id . ".png";
+            $video->save();
         }
 
-        return redirect('collections/book')->with([
-            'message' => "Successfully updated the book $item->title."
+        return redirect('collections/video')->with([
+            'message' => "Successfully updated the video $video->title."
         ]);
     }
 }

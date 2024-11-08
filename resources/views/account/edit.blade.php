@@ -5,7 +5,7 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0 border py-2 px-3 bg-white rounded">
                     <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
-                    <li class="breadcrumb-item"><a href="/accoutn">Account</a></li>
+                    <li class="breadcrumb-item"><a href="/account">Account</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Profile</li>
                 </ol>
             </nav>
@@ -215,7 +215,7 @@
                         <div class="w-100 d-flex flex-column">
                             <div class="flex-grow-1 rounded d-flex align-items-center justify-content-center">
                                 <div id="profile-container" class="border text-center shadow">
-                                    @php $profile = ($user->profile) ? "/storage/images/teachers/$user->profile" : '/images/profile.jpg'; @endphp
+                                    @php $profile = ($user->profile) ? "/storage/images/users/$user->profile" : '/images/profile.jpg'; @endphp
                                     <img id="profile" class="h-100 d-block" src="{{ asset($profile) }}" alt="">
                                 </div>
                                 <input class="d-none" type="file" name="file" id="file">

@@ -85,10 +85,12 @@ class StudentController extends Controller
             'barangay'       => ['nullable', 'string', 'max:255'],
             'mobile_number'  => ['nullable', 'string', 'max:255'],
             'email'          => ['required', 'email', 'unique:user_details,email', 'max:255'],
-            'program'        => ['required','exists:programs,code'],
-            'year'           => ['required','integer', 'min:1', 'max:10'],
-            'section'        => ['required','in:A,B,C,D,E,F'],
-            'status'         => ['required','in:active,inactive'],
+            'program'        => ['required', 'exists:programs,code'],
+            'college'        => ['required', 'exists:colleges,code'],
+            'campus'         => ['required', 'exists:campuses,code'],
+            'year'           => ['required', 'integer', 'min:1', 'max:10'],
+            'section'        => ['required', 'in:A,B,C,D,E,F'],
+            'status'         => ['required', 'in:active,inactive'],
             'file'           => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ];
 
@@ -199,10 +201,12 @@ class StudentController extends Controller
             'barangay'       => ['nullable', 'string', 'max:255'],
             'mobile_number'  => ['nullable', 'string', 'max:255'],
             'email'          => ['required', 'email', 'unique:students,email', 'max:255'],
-            'program'        => ['required','exists:programs,code'],
-            'year'           => ['required','integer', 'min:1', 'max:10'],
-            'section'        => ['required','in:A,B,C,D,E,F'],
-            'status'         => ['required','in:active,inactive'],
+            'program'        => ['required', 'exists:programs,code'],
+            'college'        => ['required', 'exists:colleges,code'],
+            'campus'         => ['required', 'exists:campuses,code'],
+            'year'           => ['required', 'integer', 'min:1', 'max:10'],
+            'section'        => ['required', 'in:A,B,C,D,E,F'],
+            'status'         => ['required', 'in:active,inactive'],
             'file'           => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ];
 

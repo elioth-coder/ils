@@ -71,7 +71,11 @@
                                             <i title="Student" class="bi bi-circle-fill text-primary"></i>
                                         @endif
                                     </td>
-                                    <td style="min-width: 150px;">{{ $patron->card_number }}</td>
+                                    <td style="min-width: 150px;">
+                                        <a href="/services/checkouts/{{ $patron->card_number }}/patron" class="text-capitalize link-primary">
+                                            {{ $patron->card_number }}
+                                        </a>
+                                    </td>
                                     <td class="w-100">
                                         <div class="d-flex">
                                             <section style="height: 90px;" class="me-3">

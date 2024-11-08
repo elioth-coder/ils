@@ -15,7 +15,7 @@
 
         <div class="container d-flex flex-column pb-5 row-gap-4">
             <section class="w-100">
-                <a href="/collections/books#books-form" class="btn btn-outline-success">
+                <a href="/collections/book#book-form" class="btn btn-outline-success">
                     New Book
                     <i class="bi bi-plus"></i>
                 </a>
@@ -47,15 +47,15 @@
                             <tr>
                                 <td style="width: 150px;">
                                     <form id="delete-book-{{ $book->id }}"
-                                        action="/collections/books/{{ $book->id }}" method="POST" class="d-none">
+                                        action="/collections/book/{{ $book->id }}" method="POST" class="d-none">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit">DELETE</button>
                                     </form>
-                                    <a title="Copy" href="/collections/books/{{ $book->id }}/copy#books-form" class="btn btn-light btn-sm">
+                                    <a title="Copy" href="/collections/book/{{ $book->id }}/copy#book-form" class="btn btn-light btn-sm">
                                         <i class="bi bi-copy"></i>
                                     </a>
-                                    <a title="Edit" href="/collections/books/{{ $book->id }}/edit#books-form" class="btn btn-light btn-sm">
+                                    <a title="Edit" href="/collections/book/{{ $book->id }}/edit#book-form" class="btn btn-light btn-sm">
                                         <i class="bi bi-pencil"></i>
                                     </a>
                                     <button title="Delete" onclick="deleteBook({{ $book->id }});" class="btn btn-light btn-sm">
@@ -73,7 +73,7 @@
                 </table>
             </section>
             <section class="d-block">
-                <div id="books-form" class="card p-3 w-full shadow">
+                <div id="book-form" class="card p-3 w-full shadow">
                     <div class="card-body">
                         {{ $form ?? '' }}
                     </div>
@@ -115,7 +115,7 @@
 
                         cover_img.src = image;
                     } else {
-                        cover_img.src = '/images/book_cover_not_available.jpg';
+                        cover_img.src = '/images/cover_not_available.jpg';
                     }
                 });
             })();

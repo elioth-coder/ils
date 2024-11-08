@@ -1,18 +1,18 @@
-@component('researches.layout', [
-    'researches' => $researches,
+@component('videos.layout', [
+    'videos' => $videos,
 ])
     @slot('breadcrumb')
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0 border py-2 px-3 bg-white rounded">
                 <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
                 <li class="breadcrumb-item"><a href="/collections">Collections</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Research</li>
+                <li class="breadcrumb-item active" aria-current="page">Videos</li>
             </ol>
         </nav>
     @endslot
     @slot('form')
         <style>
-        #research-cover-container {
+        #video-cover-container {
           width: 235px;
           height: 350px;
           display: flex;
@@ -22,17 +22,17 @@
           position: relative;
         }
 
-        #research-cover-container img {
+        #video-cover-container img {
           height: 100%;
           width: auto;
           object-fit: cover;
           position: absolute;
         }
         </style>
-        <form action="/collections/research" method="POST" enctype="multipart/form-data">
+        <form id="video-form" action="/collections/video" method="POST" enctype="multipart/form-data">
             @csrf
             @method('POST')
-            <h4 class="text-body-secondary">Create new research</h4>
+            <h4 class="text-body-secondary">Create new video</h4>
             <hr>
             <div class="d-flex column-gap-4">
                 <div class="w-100">
@@ -84,41 +84,25 @@
                     </div>
                     <div class="d-flex column-gap-2">
                         <div class="mb-2 w-100">
-                            <label for="advisor" class="form-label">Advisor</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--" name="advisor" id="advisor" value="{{ old('advisor') ?? '' }}">
-                            @error('advisor')
-                                <div class="form-text text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="mb-2 w-100">
                             <label for="publisher" class="form-label">Publisher</label>
                             <input type="text" class="form-control form-control-sm" placeholder="--" name="publisher" id="publisher" value="{{ old('publisher') ?? '' }}">
                             @error('publisher')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
                         </div>
-                    </div>
-                    <div class="d-flex column-gap-2">
-                        <div class="mb-2 w-100">
+                            <div class="mb-2 w-100">
                             @php
                                 $max_year = (int) date('Y');
-                                $min_year = 2000;
+                                $min_year = 1950;
                             @endphp
-                            <label for="publication_year" class="form-label">Year Submitted</label>
+                            <label for="publication_year" class="form-label">Publication Year</label>
                             <select class="form-control form-control-sm" name="publication_year" id="publication_year">
                                 <option value="">--</option>
                                 @for($i=$max_year; $i>=$min_year; $i--)
-                                    <option {{($i==old('publication_year')) ? 'selected' : '' }}  value="{{ $i }}">{{ $i }}</option>
+                                    <option value="{{ $i }}">{{ $i }}</option>
                                 @endfor
                             </select>
                             @error('publication_year')
-                                <div class="form-text text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="mb-2 w-100">
-                            <label for="number_of_pages" class="form-label">No. of Pages</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--" name="number_of_pages" id="number_of_pages" value="{{ old('number_of_pages') ?? '' }}">
-                            @error('number_of_pages')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
                         </div>
@@ -133,8 +117,8 @@
                 </div>
                 <div class="w-100 d-flex flex-column">
                     <div class="flex-grow-1 rounded d-flex align-items-center justify-content-center">
-                        <div id="research-cover-container" class="border text-center shadow">
-                            <img id="research-cover" class="h-100 d-block" src="{{ asset('images/cover_not_available.jpg') }}" alt="">
+                        <div id="video-cover-container" class="border text-center shadow">
+                            <img id="video-cover" class="h-100 d-block" src="{{ asset('images/cover_not_available.jpg') }}" alt="">
                         </div>
                         <input class="d-none" type="file" name="file" id="file">
                     </div>
@@ -151,7 +135,7 @@
                             <select class="form-control form-control-sm text-capitalize" name="language" id="language">
                                 <option value="">--</option>
                                 @foreach($languages as $language)
-                                    <option {{($language==old('language')) ? 'selected' : '' }} value="{{ $language }}">{{ $language }}</option>
+                                    <option value="{{ $language }}">{{ $language }}</option>
                                 @endforeach
                             </select>
                             @error('language')
@@ -163,7 +147,7 @@
                             <select class="form-control form-control-sm text-capitalize" name="genre" id="genre">
                                 <option value="">--</option>
                                 @foreach($genres as $genre)
-                                    <option {{($genre==old('genre')) ? 'selected' : '' }} value="{{ $genre }}">{{ $genre }}</option>
+                                    <option value="{{ $genre }}">{{ $genre }}</option>
                                 @endforeach
                             </select>
                             @error('genre')
@@ -173,38 +157,9 @@
                     </div>
                     <div class="d-flex column-gap-2">
                         <div class="mb-2 w-100">
-                            <label for="doi" class="form-label">DOI</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--" name="doi" id="doi" value="{{ old('doi') ?? '' }}">
-                            @error('doi')
-                                <div class="form-text text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="mb-2 w-100">
-                            @php
-                                $degrees = ['Bachelor','Master','Doctor'];
-                            @endphp
-                            <label for="degree" class="form-label">Degree</label>
-                            <select class="form-control form-control-sm" name="degree" id="degree">
-                                <option value="">--</option>
-                                @foreach($degrees as $degree)
-                                    <option {{($degree==old('degree')) ? 'selected' : '' }}  value="{{ $degree }}">{{ $degree }}</option>
-                                @endforeach
-                            </select>
-                            @error('degree')
-                                <div class="form-text text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="d-flex column-gap-2">
-                        <div class="mb-2 w-100">
-                            <label for="format" class="form-label">Format</label>
-                            <select class="form-control form-control-sm text-capitalize" name="format" id="format">
-                                <option value="">--</option>
-                                @foreach ($formats as $format)
-                                    <option {{($format==old('format')) ? 'selected' : '' }}  value="{{ $format }}">{{ $format }}</option>
-                                @endforeach
-                            </select>
-                            @error('format')
+                            <label for="duration" class="form-label">Duration (seconds)</label>
+                            <input type="text" class="form-control form-control-sm" placeholder="--" name="duration" id="duration" value="{{ old('duration') ?? '' }}">
+                            @error('duration')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
                         </div>

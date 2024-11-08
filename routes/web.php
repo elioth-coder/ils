@@ -1,11 +1,10 @@
 <?php
-
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\CampusController;
 use App\Http\Controllers\CollegeController;
 use App\Http\Controllers\CheckoutController;
-use App\Http\Controllers\MediaDiscController;
+use App\Http\Controllers\AudioController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\ResearchController;
 use App\Http\Controllers\SearchController;
@@ -15,14 +14,13 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\CurrentLoanController;
+use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ItemRequestController;
 use App\Http\Controllers\PatronController;
-use App\Models\RequestedItem;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\VideoController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use App\Models\Teacher;
-use App\Models\Student;
 
 Route::get('/test', function () {
     $pdo = DB::connection()->getPdo();
@@ -53,7 +51,23 @@ Route::get('/dashboard', function () {
     return view('dashboard.index');
 })->middleware('auth');
 
+Route::prefix('search')->group(function () {
+    Route::controller(SearchController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{type}', 'index');
+    });
+});
+
 Route::middleware('auth')->group(function () {
+
+    Route::prefix('reports')->group(function () {
+        Route::controller(ReportController::class)->group(function () {
+            Route::get('/', 'index');
+            Route::get('/item_list', 'item_list');
+            Route::get('/item_count', 'item_count');
+            Route::get('/patron_list', 'patron_list');
+        });
+    });
 
     Route::get('/account', [AccountController::class, 'index']);
     Route::get('/account/edit', [AccountController::class, 'edit']);
@@ -108,13 +122,6 @@ Route::middleware('auth')->group(function () {
         return view('dashboard.services');
     });
 
-    Route::prefix('search')->group(function () {
-        Route::controller(SearchController::class)->group(function () {
-            Route::get('/books', 'books');
-            Route::get('/books/{isbn}', 'book_copies');
-        });
-    });
-
     Route::prefix('users/teachers')->group(function () {
         Route::controller(TeacherController::class)->group(function () {
             Route::get('/', 'index');
@@ -148,13 +155,19 @@ Route::middleware('auth')->group(function () {
         });
     });
 
-    Route::prefix('collections/books')->group(function () {
-        Route::controller(BookController::class)->group(function () {
+    Route::prefix('collections/items')->group(function () {
+        Route::controller(ItemController::class)->group(function () {
             Route::post('/request', 'request');
             Route::post('/cancel_request', 'cancel_request');
+            Route::get('/{title}/detail', 'detail');
+            Route::get('/{title}/copy/{barcode}', 'barcode');
+        });
+    });
+
+    Route::prefix('collections/book')->group(function () {
+        Route::controller(BookController::class)->group(function () {
             Route::get('/', 'index');
             Route::post('/', 'store');
-            Route::get('/{isbn}/detail', 'detail');
             Route::get('/{id}', 'show');
             Route::get('/{id}/edit', 'edit');
             Route::get('/{id}/copy', 'copy');
@@ -164,7 +177,7 @@ Route::middleware('auth')->group(function () {
         });
     });
 
-    Route::prefix('collections/researches')->group(function () {
+    Route::prefix('collections/research')->group(function () {
         Route::controller(ResearchController::class)->group(function () {
             Route::get('/', 'index');
             Route::post('/', 'store');
@@ -177,8 +190,21 @@ Route::middleware('auth')->group(function () {
         });
     });
 
-    Route::prefix('collections/media_discs')->group(function () {
-        Route::controller(MediaDiscController::class)->group(function () {
+    Route::prefix('collections/audio')->group(function () {
+        Route::controller(AudioController::class)->group(function () {
+            Route::get('/', 'index');
+            Route::post('/', 'store');
+            Route::get('/{id}', 'show');
+            Route::get('/{id}/edit', 'edit');
+            Route::get('/{id}/copy', 'copy');
+            Route::put('/{id}', 'duplicate');
+            Route::patch('/{id}', 'update');
+            Route::delete('/{id}', 'destroy');
+        });
+    });
+
+    Route::prefix('collections/video')->group(function () {
+        Route::controller(VideoController::class)->group(function () {
             Route::get('/', 'index');
             Route::post('/', 'store');
             Route::get('/{id}', 'show');

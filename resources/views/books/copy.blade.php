@@ -6,7 +6,7 @@
             <ol class="breadcrumb mb-0 border py-2 px-3 bg-white rounded">
                 <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
                 <li class="breadcrumb-item"><a href="/collections">Collections</a></li>
-                <li class="breadcrumb-item"><a href="/collections/books">Books</a></li>
+                <li class="breadcrumb-item"><a href="/collections/book">Books</a></li>
                 <li class="breadcrumb-item active" aria-current="page">{{ $selected->id }}</li>
             </ol>
         </nav>
@@ -30,7 +30,7 @@
                 position: absolute;
             }
         </style>
-        <form action="/collections/books/{{ $selected->id }}" method="POST" enctype="multipart/form-data">
+        <form action="/collections/book/{{ $selected->id }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             <h4 class="text-body-secondary">Create copy of book</h4>
@@ -76,31 +76,30 @@
                     <div class="d-flex column-gap-2">
                         <div class="mb-2 w-100">
                             @php
-                                if ($errors->has('lcc_number')) {
-                                    $lcc_number = old('lcc_number');
+                                if ($errors->has('call_number')) {
+                                    $call_number = old('call_number');
                                 } else {
-                                    $lcc_number = old('lcc_number') ? old('lcc_number') : $selected->lcc_number;
+                                    $call_number = old('call_number') ? old('call_number') : $selected->call_number;
                                 }
                             @endphp
-                            <label for="lcc_number" class="form-label">LCC No.</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--" name="lcc_number"
-                                id="lcc_number" value="{{ $lcc_number }}">
-                            @error('lcc_number')
+                            <label for="call_number" class="form-label">Call No.</label>
+                            <input type="text" class="form-control form-control-sm" placeholder="--" name="call_number"
+                                id="call_number" value="{{ $call_number }}">
+                            @error('call_number')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="mb-2 w-100">
                             @php
-                                if ($errors->has('ddc_number')) {
-                                    $ddc_number = old('ddc_number');
+                                if($errors->has('date_acquired')) {
+                                    $date_acquired = old('date_acquired');
                                 } else {
-                                    $ddc_number = old('ddc_number') ? old('ddc_number') : $selected->ddc_number;
+                                    $date_acquired = (old('date_acquired')) ? old('date_acquired') : $selected->date_acquired;
                                 }
                             @endphp
-                            <label for="ddc_number" class="form-label">DDC No.</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--" name="ddc_number"
-                                id="ddc_number" value="{{ $ddc_number }}">
-                            @error('ddc_number')
+                            <label for="date_acquired" class="form-label">Date Acquired</label>
+                            <input type="date" class="form-control form-control-sm" placeholder="--" name="date_acquired" id="date_acquired" value="{{ $date_acquired }}">
+                            @error('date_acquired')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
                         </div>
@@ -245,7 +244,7 @@
                 <div class="w-100 d-flex flex-column">
                     <div class="flex-grow-1 rounded d-flex align-items-center justify-content-center">
                         <div id="book-cover-container" class="border text-center shadow">
-                            @php $book_cover = ($selected->cover_image) ? "/storage/images/books/$selected->cover_image" : '/images/book_cover_not_available.jpg'; @endphp
+                            @php $book_cover = ($selected->cover_image) ? "/storage/images/$selected->type/$selected->cover_image" : '/images/cover_not_available.jpg'; @endphp
                             <img id="book-cover" class="h-100 d-block" src="{{ asset($book_cover) }}" alt="">
                         </div>
                         <input class="d-none" type="file" name="file" id="file">
@@ -353,7 +352,7 @@
             </div>
             <hr>
             <div class="d-flex gap-2 flex-row-reverse">
-                <a href="/collections/books" class="w-25 btn btn-outline-dark px-3">Cancel</a>
+                <a href="/collections/book" class="w-25 btn btn-outline-dark px-3">Cancel</a>
                 <button type="submit" class="w-25 btn btn-primary px-3">Submit</button>
             </div>
         </form>

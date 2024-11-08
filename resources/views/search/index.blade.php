@@ -1,7 +1,7 @@
 <x-layout>
     <x-header />
     <main class="d-flex flex-column align-items-center justify-content-center w-100 bg-light">
-        <x-search.searchbar :$books />
+        <x-search.searchbar :$totalItems :$limit :$sort_by :$order />
         <div class="container pb-3">
             @foreach ($filters as $filter)
                 @php
@@ -20,38 +20,55 @@
         <div class="container py-2 d-flex">
             <x-search.sidebar :$libraries :$publishers :$genres :$formats :$statuses :$tags :$filters />
             <div class="w-100 ps-4">
-                @forelse ($books as $book)
+                @forelse ($items as $item)
                     <section class="d-flex w-100">
                         <div class="px-4">
                             <section style="height: 150px;" class="card p-1">
-                                @php $book_cover = ($book->cover_image) ? "/storage/images/books/$book->cover_image" : '/images/book_cover_not_available.jpg'; @endphp
-                                <img class="h-100 d-block" src="{{ asset($book_cover) }}" alt="">
+                                @php $item_cover = ($item->cover_image) ? "/storage/images/$item->type/$item->cover_image" : '/images/cover_not_available.jpg'; @endphp
+                                <img class="h-100 d-block" src="{{ asset($item_cover) }}" alt="">
                             </section>
                         </div>
                         <div class="w-100 px-1">
                             <section class="d-flex">
                                 <div class="w-100">
-                                    <a href="/collections/books/{{ $book->isbn }}/detail" class="link-primary">
-                                        <h4>{{ $book->title }}</h4>
+                                    <a href="/collections/items/{{ $item->title }}/detail" class="link-primary">
+                                        <h4>{{ $item->title }}</h4>
                                     </a>
                                 </div>
                             </section>
                             <p>
-                                <b>Author(s):</b> {{ $book->author }} <br>
-                                <b>Published:</b> {{ $book->publisher }} ({{ $book->publication_year }}) <br>
-                                <b>ISBN:</b> {{ $book->isbn }}
+                                <b>Author:</b> {{ $item->author }} <br>
+                                <b>Published:</b> {{ $item->publisher }} ({{ $item->publication_year }}) <br>
+                                <b>Genre:</b> <span class="badge text-bg-info">{{ $item->genre }}</span> <br>
+                                *
+                                @if($item->type=='book')
+                                    <i class="bi bi-book"></i>
+                                @endif
+                                @if($item->type=='research')
+                                    <i class="bi bi-journals"></i>
+                                @endif
+                                @if($item->type=='audio')
+                                    <i class="bi bi-music-note-beamed"></i>
+                                @endif
+                                @if($item->type=='video')
+                                    <i class="bi bi-film"></i>
+                                @endif
+
+                                <i class="text-capitalize">{{ $item->type }}</i>
+                                <br>
+
                                 <p class="my-1">
-                                @if ($book->available > 0)
+                                @if ($item->available > 0)
                                     <i class="bi bi-circle-fill text-success me-1"></i> Available
                                 @else
                                     <i class="bi bi-circle-fill text-danger me-1"></i> Not Available
                                 @endif
                                 </p>
 
-                                @if ($book->tags)
+                                @if ($item->tags)
                                     <p>
                                         @php
-                                            $tags = explode(',', $book->tags) ?? [];
+                                            $tags = explode(',', $item->tags) ?? [];
                                         @endphp
                                         @foreach ($tags as $tag)
                                             <a onclick="appendFilter('{{ $tag }}', 'tag')" style="cursor:pointer;" class="badge text-bg-secondary link-light">
@@ -69,6 +86,8 @@
                 @empty
                     <h3 class="text-center">No results found.</h3>
                 @endforelse
+
+                <x-search.pagination :$totalPages :$currentPage :$items :$totalItems :$offset :$limit />
             </div>
         </div>
     </main>
@@ -157,7 +176,7 @@
                     parsed[parameter] = parameters.join(',');
                 }
 
-                delete parsed['isbn'];
+                delete parsed['page'];
                 location.search = queryString.stringify(parsed);
             }
         </script>

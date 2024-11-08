@@ -1,18 +1,18 @@
-@component('media_discs.layout', [
-    'media_discs' => $media_discs,
+@component('audios.layout', [
+    'audios' => $audios,
 ])
     @slot('breadcrumb')
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0 border py-2 px-3 bg-white rounded">
                 <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
                 <li class="breadcrumb-item"><a href="/collections">Collections</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Media Discs</li>
+                <li class="breadcrumb-item active" aria-current="page">Audios</li>
             </ol>
         </nav>
     @endslot
     @slot('form')
         <style>
-        #media_disc-cover-container {
+        #audio-cover-container {
           width: 235px;
           height: 350px;
           display: flex;
@@ -22,17 +22,17 @@
           position: relative;
         }
 
-        #media_disc-cover-container img {
+        #audio-cover-container img {
           height: 100%;
           width: auto;
           object-fit: cover;
           position: absolute;
         }
         </style>
-        <form action="/collections/media_discs" method="POST" enctype="multipart/form-data">
+        <form id="audio-form" action="/collections/audio" method="POST" enctype="multipart/form-data">
             @csrf
             @method('POST')
-            <h4 class="text-body-secondary">Create new media disc</h4>
+            <h4 class="text-body-secondary">Create new audio</h4>
             <hr>
             <div class="d-flex column-gap-4">
                 <div class="w-100">
@@ -54,26 +54,19 @@
                     </div>
                     <div class="d-flex column-gap-2">
                         <div class="mb-2 w-100">
-                            <label for="lcc_number" class="form-label">LCC No.</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--" name="lcc_number" id="lcc_number" value="{{ old('lcc_number') ?? '' }}">
-                            @error('lcc_number')
+                            <label for="call_number" class="form-label">Call No.</label>
+                            <input type="text" class="form-control form-control-sm" placeholder="--" name="call_number" id="call_number" value="{{ old('call_number') ?? '' }}">
+                            @error('call_number')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="mb-2 w-100">
-                            <label for="ddc_number" class="form-label">DDC No.</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--" name="ddc_number" id="ddc_number" value="{{ old('ddc_number') ?? '' }}">
-                            @error('ddc_number')
+                            <label for="date_acquired" class="form-label">Date Acquired</label>
+                            <input type="date" class="form-control form-control-sm" placeholder="--" name="date_acquired" id="date_acquired" value="{{ old('date_acquired') ?? date('Y-m-d') }}">
+                            @error('date_acquired')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
                         </div>
-                    </div>
-                    <div class="mb-2">
-                        <label for="ir_number" class="form-label">Institution Repository No.</label>
-                        <input type="text" class="form-control form-control-sm" placeholder="--" name="ir_number" id="ir_number" value="{{ old('ir_number') ?? '' }}">
-                        @error('ir_number')
-                            <div class="form-text text-danger">{{ $message }}</div>
-                        @enderror
                     </div>
                     <div class="mb-2">
                         <label for="title" class="form-label">Title</label>
@@ -83,40 +76,33 @@
                         @enderror
                     </div>
                     <div class="mb-2">
-                        <label for="author" class="form-label">Author(s)</label>
+                        <label for="author" class="form-label">Author</label>
                         <input type="text" class="form-control form-control-sm" placeholder="--" name="author" id="author" value="{{ old('author') ?? '' }}">
                         @error('author')
                             <div class="form-text text-danger">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="mb-2">
-                        <label for="publisher" class="form-label">Publisher</label>
-                        <input type="text" class="form-control form-control-sm" placeholder="--" name="publisher" id="publisher" value="{{ old('publisher') ?? '' }}">
-                        @error('publisher')
-                            <div class="form-text text-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
                     <div class="d-flex column-gap-2">
                         <div class="mb-2 w-100">
+                            <label for="publisher" class="form-label">Publisher</label>
+                            <input type="text" class="form-control form-control-sm" placeholder="--" name="publisher" id="publisher" value="{{ old('publisher') ?? '' }}">
+                            @error('publisher')
+                                <div class="form-text text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                            <div class="mb-2 w-100">
                             @php
                                 $max_year = (int) date('Y');
                                 $min_year = 1950;
                             @endphp
-                            <label for="year_released" class="form-label">Year Released</label>
-                            <select class="form-control form-control-sm" name="year_released" id="year_released">
+                            <label for="publication_year" class="form-label">Publication Year</label>
+                            <select class="form-control form-control-sm" name="publication_year" id="publication_year">
                                 <option value="">--</option>
                                 @for($i=$max_year; $i>=$min_year; $i--)
                                     <option value="{{ $i }}">{{ $i }}</option>
                                 @endfor
                             </select>
-                            @error('year_released')
-                                <div class="form-text text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="mb-2 w-100">
-                            <label for="duration" class="form-label">Duration in minutes</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--" name="duration" id="duration" value="{{ old('duration') ?? '' }}">
-                            @error('duration')
+                            @error('publication_year')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
                         </div>
@@ -131,8 +117,8 @@
                 </div>
                 <div class="w-100 d-flex flex-column">
                     <div class="flex-grow-1 rounded d-flex align-items-center justify-content-center">
-                        <div id="media_disc-cover-container" class="border text-center shadow">
-                            <img id="media_disc-cover" class="h-100 d-block" src="{{ asset('images/book_cover_not_available.jpg') }}" alt="">
+                        <div id="audio-cover-container" class="border text-center shadow">
+                            <img id="audio-cover" class="h-100 d-block" src="{{ asset('images/cover_not_available.jpg') }}" alt="">
                         </div>
                         <input class="d-none" type="file" name="file" id="file">
                     </div>
@@ -171,14 +157,9 @@
                     </div>
                     <div class="d-flex column-gap-2">
                         <div class="mb-2 w-100">
-                            <label for="type" class="form-label">Type</label>
-                            <select class="form-control form-control-sm text-uppercase" name="type" id="type">
-                                <option value="">--</option>
-                                @foreach ($types as $type)
-                                    <option value="{{ $type }}">{{ $type }}</option>
-                                @endforeach
-                            </select>
-                            @error('type')
+                            <label for="duration" class="form-label">Duration (seconds)</label>
+                            <input type="text" class="form-control form-control-sm" placeholder="--" name="duration" id="duration" value="{{ old('duration') ?? '' }}">
+                            @error('duration')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
                         </div>

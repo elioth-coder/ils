@@ -6,8 +6,12 @@ use Illuminate\Http\Request;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Research;
-use App\Models\Staff;
+use Illuminate\Support\Facades\DB;
+use App\Models\Item;
+use App\Models\Library;
+use App\Models\UserDetail;
+use App\Models\RequestedItem;
+use Exception;
 
 class ResearchController extends Controller
 {
@@ -34,7 +38,7 @@ class ResearchController extends Controller
         'finnish',
     ];
 
-    public $types = [
+    public $genres = [
         "developmental",
         "descriptive",
         "analytical",
@@ -70,47 +74,67 @@ class ResearchController extends Controller
         'overdue'
     ];
 
+    private function getAffiliatedLibrary() {
+        $library = null;
+        if(in_array(Auth::user()->role, ['librarian','assistant','clerk'])) {
+            $staff = UserDetail::where('email',Auth::user()->email)->first();
+            $library = $staff->library;
+        }
+
+        return $library;
+    }
+
     public function index()
     {
-        $researches = Research::latest()->get();
+        $library = $this->getAffiliatedLibrary();
+
+        $items = Item::latest()
+            ->where('type', 'research')
+            ->when($library, function ($query) use ($library) {
+                return $query->where('library', $library);
+            })
+            ->get();
 
         return view('researches.index', [
-            'researches'     => $researches,
-            'languages' => $this->languages,
-            'types'    => $this->types,
-            'formats'   => $this->formats,
-            'statuses'  => $this->statuses,
+            'researches' => $items,
+            'languages'  => $this->languages,
+            'genres'     => $this->genres,
+            'formats'    => $this->formats,
+            'statuses'   => $this->statuses,
         ]);
     }
 
     public function store(Request $request)
     {
         $attributes = $request->validate([
-            'accession_number' => ['nullable', 'string', 'unique:researches,accession_number', 'max:255'],
-            'barcode'   => ['nullable', 'string', 'unique:researches,barcode', 'max:255'],
-            'lcc_number'       => ['nullable', 'string', 'max:255'],
-            'ddc_number'       => ['nullable', 'string', 'max:255'],
-            'ir_number'        => ['nullable', 'string', 'max:255'],
+            'accession_number' => ['nullable', 'string', 'unique:items,accession_number', 'max:255'],
+            'barcode'          => ['nullable', 'string', 'unique:items,barcode', 'max:255'],
+            'call_number'      => ['nullable', 'string', 'max:255'],
+            'date_acquired'    => ['nullable', 'date'],
             'title'            => ['required', 'string', 'max:255'],
             'author'           => ['required', 'string', 'max:255'],
-            'year_submitted'   => ['required', 'integer'],
+            'advisor'          => ['nullable', 'string', 'max:255'],
+            'publisher'        => ['nullable', 'string', 'max:255'],
+            'publication_year' => ['required', 'integer'],
             'language'         => ['nullable', 'string', 'max:255'],
-            'type'            => ['nullable', 'string', 'max:255'],
+            'genre'            => ['required', 'string', 'max:255'],
+            'doi'              => ['nullable', 'string', 'max:255'],
+            'degree'           => ['nullable', 'string', 'max:255'],
             'number_of_pages'  => ['nullable', 'integer', 'min:1'],
             'format'           => ['nullable', 'in:hardcover,paperback,ebook'],
             'summary'          => ['nullable', 'string'],
-            'location'         => ['nullable', 'string', 'max:255'],
             'tags'             => ['nullable', 'string', 'max:255'],
-            'status'           => ['required', 'string', 'max:255'],
+            'status'           => ['required','string', 'max:255'],
             'file'             => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ]);
 
         if(Auth::user()->role != 'admin') {
-            $staff = Staff::where('email', Auth::user()->email)->first();
+            $staff = UserDetail::where('email', Auth::user()->email)->first();
             $attributes['library'] = $staff->library;
         }
 
-        $research = Research::create($attributes);
+        $attributes['type'] = 'research';
+        $item = Item::create($attributes);
         if(!empty($attributes['file'])) {
             $manager = ImageManager::gd();
             $image = $manager->read($request->file('file'));
@@ -120,48 +144,51 @@ class ResearchController extends Controller
         }
 
         if(!empty($image)) {
-            $path = "public/images/researches";
+            $path = "public/images/research";
             Storage::makeDirectory($path);
-            $path .= "/$research->id.png";
+            $path .= "/$item->id.png";
             Storage::put($path, (string) $image->encode());
 
-            $research->cover_image = $research->id . ".png";
-            $research->save();
+            $item->cover_image = $item->id . ".png";
+            $item->save();
         }
 
-        return redirect('collections/researches')->with([
-            'message' => "Successfully created the thesis/research $research->title."
+        return redirect('collections/research')->with([
+            'message' => "Successfully created the research $item->title."
         ]);
     }
 
     public function duplicate(Request $request, $id)
     {
         $attributes = $request->validate([
-            'accession_number' => ['nullable', 'string', 'unique:researches,accession_number', 'max:255'],
-            'barcode'   => ['nullable', 'string', 'unique:researches,barcode', 'max:255'],
-            'lcc_number'       => ['nullable', 'string', 'max:255'],
-            'ddc_number'       => ['nullable', 'string', 'max:255'],
-            'ir_number'        => ['nullable', 'string', 'max:255'],
+            'accession_number' => ['nullable', 'string', 'unique:items,accession_number', 'max:255'],
+            'barcode'          => ['nullable', 'string', 'unique:items,barcode', 'max:255'],
+            'call_number'      => ['nullable', 'string', 'max:255'],
+            'date_acquired'    => ['nullable', 'date'],
             'title'            => ['required', 'string', 'max:255'],
             'author'           => ['required', 'string', 'max:255'],
-            'year_submitted'   => ['required', 'integer'],
+            'advisor'          => ['nullable', 'string', 'max:255'],
+            'publisher'        => ['nullable', 'string', 'max:255'],
+            'publication_year' => ['required', 'integer'],
             'language'         => ['nullable', 'string', 'max:255'],
-            'type'            => ['nullable', 'string', 'max:255'],
+            'genre'            => ['required', 'string', 'max:255'],
+            'doi'              => ['nullable', 'string', 'max:255'],
+            'degree'           => ['nullable', 'string', 'max:255'],
             'number_of_pages'  => ['nullable', 'integer', 'min:1'],
             'format'           => ['nullable', 'in:hardcover,paperback,ebook'],
             'summary'          => ['nullable', 'string'],
-            'location'         => ['nullable', 'string', 'max:255'],
             'tags'             => ['nullable', 'string', 'max:255'],
-            'status'           => ['required', 'string', 'max:255'],
+            'status'           => ['required','string', 'max:255'],
             'file'             => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ]);
 
         if(Auth::user()->role != 'admin') {
-            $staff = Staff::where('email', Auth::user()->email)->first();
+            $staff = UserDetail::where('email', Auth::user()->email)->first();
             $attributes['library'] = $staff->library;
         }
 
-        $research = Research::create($attributes);
+        $attributes['type'] = 'research';
+        $item = Item::create($attributes);
         if(!empty($attributes['file'])) {
             $manager = ImageManager::gd();
             $image = $manager->read($request->file('file'));
@@ -170,74 +197,77 @@ class ResearchController extends Controller
             $image->crop(235, 350, position: 'center');
         }
 
-        $source = Research::findOrFail($id);
-
         if(!empty($image)) {
-            $path = "public/images/researches";
+            $path = "public/images/research";
             Storage::makeDirectory($path);
-            $path .= "/$research->id.png";
+            $path .= "/$item->id.png";
             Storage::put($path, (string) $image->encode());
 
-            $research->cover_image = "$research->id.png";
-            $research->save();
-        } else {
-            if($source->cover_image) {
-                $research->cover_image = $source->cover_image;
-                $research->save();
-            }
+            $item->cover_image = "$item->id.png";
+            $item->save();
         }
 
-        $research->ir_number = $source->ir_number;
-        $research->save();
-
-
-        return redirect('collections/researches')->with([
-            'message' => "Successfully copied the thesis/research $research->title."
+        return redirect('collections/research')->with([
+            'message' => "Successfully copied the research $item->title."
         ]);
     }
 
     public function destroy($id)
     {
-        $research = Research::findOrFail($id);
-        $path = "public/images/researches/$research->cover_image";
+        $item = Item::findOrFail($id);
+        $path = "public/images/research/$item->cover_image";
 
         if (Storage::exists($path)) {
             Storage::delete($path);
         }
 
-        $research->delete();
+        $item->delete();
 
-        return redirect("collections/researches")
+        return redirect("collections/research")
             ->with([
-                'message' => 'Successfully deleted the thesis/research ' . $research->title . '.',
+                'message' => 'Successfully deleted the research ' . $item->title . '.',
             ]);
     }
 
     public function copy($id)
     {
-        $selected  = Research::findOrFail($id);
-        $researches = Research::latest()->get();
+        $selected  = Item::findOrFail($id);
+        $library = $this->getAffiliatedLibrary();
+
+        $items = Item::latest()
+            ->where('type', 'research')
+            ->when($library, function ($query) use ($library) {
+                return $query->where('library', $library);
+            })
+            ->get();
 
         return view('researches.copy', [
-            'researches' => $researches,
-            'selected' => $selected,
-            'languages' => $this->languages,
-            'types'     => $this->types,
-            'formats'   => $this->formats,
-            'statuses'  => $this->statuses,
+            'researches' => $items,
+            'selected'   => $selected,
+            'languages'  => $this->languages,
+            'genres'     => $this->genres,
+            'formats'    => $this->formats,
+            'statuses'   => $this->statuses,
         ]);
     }
 
     public function edit($id)
     {
-        $selected  = Research::findOrFail($id);
-        $researches = Research::latest()->get();
+        $selected  = Item::findOrFail($id);
+        $library = $this->getAffiliatedLibrary();
+
+        $items = Item::latest()
+            ->where('type', 'research')
+            ->when($library, function ($query) use ($library) {
+                return $query->where('library', $library);
+            })
+            ->get();
 
         return view('researches.edit', [
-            'researches' => $researches,
+            'researches' => $items,
             'selected'   => $selected,
             'languages'  => $this->languages,
-            'types'      => $this->types,
+            'genres'     => $this->genres,
             'formats'    => $this->formats,
             'statuses'   => $this->statuses,
         ]);
@@ -245,42 +275,61 @@ class ResearchController extends Controller
 
     public function update(Request $request, $id)
     {
-        $research = Research::findOrFail($id);
+        $item = Item::findOrFail($id);
         $rules = [
-            'accession_number' => ['nullable', 'string', 'unique:researches,accession_number', 'max:255'],
-            'barcode'   => ['nullable', 'string', 'unique:researches,barcode', 'max:255'],
-            'lcc_number'       => ['nullable', 'string', 'max:255'],
-            'ddc_number'       => ['nullable', 'string', 'max:255'],
-            'ir_number'        => ['nullable', 'string', 'max:255'],
+            'accession_number' => ['nullable', 'string', 'unique:items,accession_number', 'max:255'],
+            'barcode'          => ['nullable', 'string', 'unique:items,barcode', 'max:255'],
+            'call_number'      => ['nullable', 'string', 'max:255'],
+            'date_acquired'    => ['nullable', 'date'],
             'title'            => ['required', 'string', 'max:255'],
             'author'           => ['required', 'string', 'max:255'],
-            'year_submitted'   => ['required', 'integer'],
+            'advisor'          => ['nullable', 'string', 'max:255'],
+            'publisher'        => ['nullable', 'string', 'max:255'],
+            'publication_year' => ['required', 'integer'],
             'language'         => ['nullable', 'string', 'max:255'],
-            'type'             => ['nullable', 'string', 'max:255'],
+            'genre'            => ['required', 'string', 'max:255'],
+            'doi'              => ['nullable', 'string', 'max:255'],
+            'degree'           => ['nullable', 'string', 'max:255'],
             'number_of_pages'  => ['nullable', 'integer', 'min:1'],
             'format'           => ['nullable', 'in:hardcover,paperback,ebook'],
             'summary'          => ['nullable', 'string'],
-            'location'         => ['nullable', 'string', 'max:255'],
             'tags'             => ['nullable', 'string', 'max:255'],
-            'status'           => ['required', 'string', 'max:255'],
+            'status'           => ['required','string', 'max:255'],
             'file'             => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ];
 
-        if($request->post('accession_number') == $research->accession_number) {
+        if($request->post('accession_number') == $item->accession_number) {
             unset($rules['accession_number']);
         }
-        if($request->post('barcode') == $research->barcode) {
+        if($request->post('barcode') == $item->barcode) {
             unset($rules['barcode']);
+        }
+        if($request->post('isbn') == $item->isbn) {
+            unset($rules['isbn']);
         }
 
         $attributes = $request->validate($rules);
 
         if(Auth::user()->role != 'admin') {
-            $staff = Staff::where('email', Auth::user()->email)->first();
+            $staff = UserDetail::where('email', Auth::user()->email)->first();
             $attributes['library'] = $staff->library;
         }
 
-        $research->update($attributes);
+        $item->update($attributes);
+
+        Item::where('title', $item->title)->update([
+            'title'            => $attributes['title'],
+            'author'           => $attributes['author'],
+            'publisher'        => $attributes['publisher'],
+            'publication_year' => $attributes['publication_year'],
+            'genre'            => $attributes['genre'],
+            'summary'          => $attributes['summary'],
+            'number_of_pages'  => $attributes['number_of_pages'],
+            'format'           => $attributes['format'],
+            'language'         => $attributes['language'],
+            'tags'             => $attributes['tags'],
+        ]);
+
         if(!empty($attributes['file'])) {
             $manager = ImageManager::gd();
             $image = $manager->read($request->file('file'));
@@ -290,17 +339,17 @@ class ResearchController extends Controller
         }
 
         if(!empty($image)) {
-            $path = "public/images/researches";
+            $path = "public/images/research";
             Storage::makeDirectory($path);
-            $path .= "/$research->id.png";
+            $path .= "/$item->id.png";
             Storage::put($path, (string) $image->encode());
 
-            $research->cover_image = $research->id . ".png";
-            $research->save();
+            $item->cover_image = $item->id . ".png";
+            $item->save();
         }
 
-        return redirect('collections/researches')->with([
-            'message' => "Successfully updated the thesis/research $research->name."
+        return redirect('collections/research')->with([
+            'message' => "Successfully updated the research $item->title."
         ]);
     }
 }

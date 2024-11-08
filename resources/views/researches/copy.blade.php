@@ -6,34 +6,34 @@
             <ol class="breadcrumb mb-0 border py-2 px-3 bg-white rounded">
                 <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
                 <li class="breadcrumb-item"><a href="/collections">Collections</a></li>
-                <li class="breadcrumb-item"><a href="/collections/researches">Researches</a></li>
+                <li class="breadcrumb-item"><a href="/collections/research">Research</a></li>
                 <li class="breadcrumb-item active" aria-current="page">{{ $selected->id }}</li>
             </ol>
         </nav>
     @endslot
     @slot('form')
         <style>
-            #research-cover-container {
-                width: 235px;
-                height: 350px;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                overflow: hidden;
-                position: relative;
-            }
+        #research-cover-container {
+          width: 235px;
+          height: 350px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          overflow: hidden;
+          position: relative;
+        }
 
-            #research-cover-container img {
-                height: 100%;
-                width: auto;
-                object-fit: cover;
-                position: absolute;
-            }
+        #research-cover-container img {
+          height: 100%;
+          width: auto;
+          object-fit: cover;
+          position: absolute;
+        }
         </style>
-        <form action="/collections/researches/{{ $selected->id }}" method="POST" enctype="multipart/form-data">
+        <form action="/collections/research/{{ $selected->id }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
-            <h4 class="text-body-secondary">Copy this thesis/research</h4>
+            <h4 class="text-body-secondary">Create copy of research</h4>
             <hr>
             <div class="d-flex column-gap-4">
                 <div class="w-100">
@@ -76,48 +76,33 @@
                     <div class="d-flex column-gap-2">
                         <div class="mb-2 w-100">
                             @php
-                                if ($errors->has('lcc_number')) {
-                                    $lcc_number = old('lcc_number');
+                                if ($errors->has('call_number')) {
+                                    $call_number = old('call_number');
                                 } else {
-                                    $lcc_number = old('lcc_number') ? old('lcc_number') : $selected->lcc_number;
+                                    $call_number = old('call_number') ? old('call_number') : $selected->call_number;
                                 }
                             @endphp
-                            <label for="lcc_number" class="form-label">LCC No.</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--" name="lcc_number"
-                                id="lcc_number" value="{{ $lcc_number }}">
-                            @error('lcc_number')
+                            <label for="call_number" class="form-label">Call No.</label>
+                            <input type="text" class="form-control form-control-sm" placeholder="--" name="call_number"
+                                id="call_number" value="{{ $call_number }}">
+                            @error('call_number')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="mb-2 w-100">
                             @php
-                                if ($errors->has('ddc_number')) {
-                                    $ddc_number = old('ddc_number');
+                                if($errors->has('date_acquired')) {
+                                    $date_acquired = old('date_acquired');
                                 } else {
-                                    $ddc_number = old('ddc_number') ? old('ddc_number') : $selected->ddc_number;
+                                    $date_acquired = (old('date_acquired')) ? old('date_acquired') : $selected->date_acquired;
                                 }
                             @endphp
-                            <label for="ddc_number" class="form-label">DDC No.</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--" name="ddc_number"
-                                id="ddc_number" value="{{ $ddc_number }}">
-                            @error('ddc_number')
+                            <label for="date_acquired" class="form-label">Date Acquired</label>
+                            <input type="date" class="form-control form-control-sm" placeholder="--" name="date_acquired" id="date_acquired" value="{{ $date_acquired }}">
+                            @error('date_acquired')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
                         </div>
-                    </div>
-                    <div class="mb-2">
-                        @php
-                            if ($errors->has('ir_number')) {
-                                $ir_number = old('ir_number');
-                            } else {
-                                $ir_number = old('ir_number') ? old('ir_number') : $selected->ir_number;
-                            }
-                        @endphp
-                        <label for="ir_number" class="form-label">Institution Repository No.</label>
-                        <input type="text" readonly class="form-control form-control-sm" placeholder="--" name="ir_number" id="ir_number" value="{{ $ir_number }}">
-                        @error('ir_number')
-                            <div class="form-text text-danger">{{ $message }}</div>
-                        @enderror
                     </div>
                     <div class="mb-2">
                         @php
@@ -152,25 +137,57 @@
                     <div class="d-flex column-gap-2">
                         <div class="mb-2 w-100">
                             @php
-                                if ($errors->has('year_submitted')) {
-                                    $year_submitted = old('year_submitted');
+                                if ($errors->has('publisher')) {
+                                    $publisher = old('publisher');
                                 } else {
-                                    $year_submitted = old('year_submitted')
-                                        ? old('year_submitted')
-                                        : $selected->year_submitted;
+                                    $publisher = old('publisher') ? old('publisher') : $selected->publisher;
+                                }
+                            @endphp
+                            <label for="publisher" class="form-label">Publisher</label>
+                            <input type="text" class="form-control form-control-sm" placeholder="--" name="publisher"
+                                id="publisher" value="{{ $publisher }}">
+                            @error('publisher')
+                                <div class="form-text text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="mb-2 w-100">
+                            @php
+                                if ($errors->has('publication_year')) {
+                                    $publication_year = old('publication_year');
+                                } else {
+                                    $publication_year = old('publication_year')
+                                        ? old('publication_year')
+                                        : $selected->publication_year;
                                 }
 
                                 $max_year = (int) date('Y');
-                                $min_year = 2000;
+                                $min_year = 1500;
                             @endphp
-                            <label for="year_submitted" class="form-label">Year Submitted</label>
-                            <select class="form-control form-control-sm" name="year_submitted" id="year_submitted">
+                            <label for="publication_year" class="form-label">Publication Year</label>
+                            <select class="form-control form-control-sm" name="publication_year" id="publication_year">
                                 <option value="">--</option>
-                                @for($i=$max_year; $i>=$min_year; $i--)
-                                    <option {{ $year_submitted == $i ? 'selected' : '' }} value="{{ $i }}">{{ $i }}</option>
+                                @for ($i = $max_year; $i >= $min_year; $i--)
+                                    <option {{ $publication_year == $i ? 'selected' : '' }} value="{{ $i }}">
+                                        {{ $i }}</option>
                                 @endfor
                             </select>
-                            @error('year_submitted')
+                            @error('publication_year')
+                                <div class="form-text text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="d-flex column-gap-2">
+                        <div class="mb-2 w-100">
+                            @php
+                                if ($errors->has('advisor')) {
+                                    $advisor = old('advisor');
+                                } else {
+                                    $advisor = old('advisor') ? old('advisor') : $selected->advisor;
+                                }
+                            @endphp
+                            <label for="advisor" class="form-label">Advisor</label>
+                            <input type="text" class="form-control form-control-sm" placeholder="--" name="advisor" id="advisor" value="{{ $advisor }}">
+                            @error('advisor')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
                         </div>
@@ -179,20 +196,16 @@
                                 if ($errors->has('number_of_pages')) {
                                     $number_of_pages = old('number_of_pages');
                                 } else {
-                                    $number_of_pages = old('number_of_pages')
-                                        ? old('number_of_pages')
-                                        : $selected->number_of_pages;
+                                    $number_of_pages = old('number_of_pages') ? old('number_of_pages') : $selected->number_of_pages;
                                 }
                             @endphp
                             <label for="number_of_pages" class="form-label">No. of Pages</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--"
-                                name="number_of_pages" id="number_of_pages" value="{{ $number_of_pages }}">
+                            <input type="text" class="form-control form-control-sm" placeholder="--" name="number_of_pages" id="number_of_pages" value="{{ $number_of_pages }}">
                             @error('number_of_pages')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
-
                     <div class="mb-2">
                         @php
                             if ($errors->has('summary')) {
@@ -212,8 +225,8 @@
                 <div class="w-100 d-flex flex-column">
                     <div class="flex-grow-1 rounded d-flex align-items-center justify-content-center">
                         <div id="research-cover-container" class="border text-center shadow">
-                            @php $book_cover = ($selected->cover_image) ? "/storage/images/researches/$selected->cover_image" : '/images/book_cover_not_available.jpg'; @endphp
-                            <img id="research-cover" class="h-100 d-block" src="{{ asset($book_cover) }}" alt="">
+                            @php $research_cover = ($selected->cover_image) ? "/storage/images/$selected->type/$selected->cover_image" : '/images/cover_not_available.jpg'; @endphp
+                            <img id="research-cover" class="h-100 d-block" src="{{ asset($research_cover) }}" alt="">
                         </div>
                         <input class="d-none" type="file" name="file" id="file">
                     </div>
@@ -255,21 +268,60 @@
                         </div>
                         <div class="mb-2 w-100">
                             @php
-                                if ($errors->has('type')) {
-                                    $type = old('type');
+                                if ($errors->has('genre')) {
+                                    $genre = old('genre');
                                 } else {
-                                    $type = old('type') ? old('type') : $selected->type;
+                                    $genre = old('genre') ? old('genre') : $selected->genre;
                                 }
                             @endphp
-                            <label for="type" class="form-label">Type</label>
-                            <select class="form-control form-control-sm text-capitalize" name="type" id="type">
+                            <label for="genre" class="form-label">Genre</label>
+                            <select class="form-control form-control-sm text-capitalize" name="genre" id="genre">
                                 <option value="">--</option>
-                                @foreach ($types as $_type)
-                                    <option {{ $_type == $type ? 'selected' : '' }} value="{{ $_type }}">
-                                        {{ $_type }}</option>
+                                @foreach ($genres as $_genre)
+                                    <option {{ $_genre == $genre ? 'selected' : '' }} value="{{ $_genre }}">
+                                        {{ $_genre }}</option>
                                 @endforeach
                             </select>
-                            @error('type')
+                            @error('genre')
+                                <div class="form-text text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="d-flex column-gap-2">
+                        <div class="mb-2 w-100">
+                            @php
+                                if ($errors->has('doi')) {
+                                    $doi = old('doi');
+                                } else {
+                                    $doi = old('doi')
+                                        ? old('doi')
+                                        : $selected->doi;
+                                }
+                            @endphp
+                            <label for="doi" class="form-label">DOI</label>
+                            <input type="text" class="form-control form-control-sm" placeholder="--" name="doi"
+                                id="doi" value="{{ $doi }}">
+                            @error('doi')
+                                <div class="form-text text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="mb-2 w-100">
+                            @php
+                                $degrees = ['Bachelor','Master','Doctor'];
+                                if ($errors->has('degree')) {
+                                    $degree = old('degree');
+                                } else {
+                                    $degree = old('degree') ? old('degree') : $selected->degree;
+                                }
+                            @endphp
+                            <label for="degree" class="form-label">Degree</label>
+                            <select class="form-control form-control-sm" name="degree" id="degree">
+                                <option value="">--</option>
+                                @foreach($degrees as $_degree)
+                                    <option {{ $_degree == $degree ? 'selected' : '' }}  value="{{ $_degree }}">{{ $_degree }}</option>
+                                @endforeach
+                            </select>
+                            @error('degree')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
                         </div>
@@ -320,7 +372,7 @@
             </div>
             <hr>
             <div class="d-flex gap-2 flex-row-reverse">
-                <a href="/collections/researches" class="w-25 btn btn-outline-dark px-3">Cancel</a>
+                <a href="{{ url()->previous() }}" class="w-25 btn btn-outline-dark px-3">Cancel</a>
                 <button type="submit" class="w-25 btn btn-primary px-3">Submit</button>
             </div>
         </form>

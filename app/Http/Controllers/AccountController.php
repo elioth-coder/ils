@@ -57,26 +57,67 @@ class AccountController extends Controller
 
     public function index()
     {
-        $user = UserDetail::where('email', Auth::user()->email)->first();
+        $patron = UserDetail::where('card_number', Auth::user()->card_number)->first();
+        $user   = User::where('email', $patron->email)->first();
 
-        $sql =
-        "SELECT books.*, requested_items.status AS request_status, requested_items.date_requested
-            FROM books
-            INNER JOIN requested_items
-            ON books.barcode = requested_items.barcode
-            WHERE requested_items.requester_id=:requester_id
-        ";
+        $patron->user_id = $user->id;
+        $birth_date   = Carbon::parse($patron->birthday);
+        $current_date = Carbon::now();
+        $age = $birth_date->diffInYears($current_date);
+        $patron->age = (int) $age;
 
         $pdo = DB::connection()->getPdo();
+        $sql =
+        "SELECT items.*, requested_items.status AS request_status, requested_items.date_requested, requested_items.due_date
+         FROM items
+         INNER JOIN requested_items
+         ON items.barcode = requested_items.barcode
+         WHERE requested_items.requester_id=:requester_id
+         AND requested_items.status=:status
+        ";
         $query = $pdo->prepare($sql);
         $query->execute([
-            'requester_id' => Auth::user()->id,
+            'requester_id' => $user->id,
+            'status' => 'pending',
         ]);
-        $results = $query->fetchAll(PDO::FETCH_CLASS, 'stdClass');
+        $pending_items = $query->fetchAll(PDO::FETCH_CLASS, 'stdClass');
+
+        $query = $pdo->prepare($sql);
+        $query->execute([
+            'requester_id' => $user->id,
+            'status' => 'for pickup',
+        ]);
+        $for_pickup_items = $query->fetchAll(PDO::FETCH_CLASS, 'stdClass');
+
+        $sql =
+        "SELECT items.*, loaned_items.status AS loan_status, loaned_items.date_loaned, loaned_items.due_date, loaned_items.date_returned
+         FROM items
+         INNER JOIN loaned_items
+         ON items.barcode = loaned_items.barcode
+         WHERE loaned_items.loaner_id=:loaner_id
+         AND loaned_items.status=:status
+        ";
+        $query = $pdo->prepare($sql);
+        $query->execute([
+            'loaner_id' => $user->id,
+            'status' => 'checked out',
+        ]);
+        $loaned_items = $query->fetchAll(PDO::FETCH_CLASS, 'stdClass');
+
+        $query = $pdo->prepare($sql);
+        $query->execute([
+            'loaner_id' => $user->id,
+            'status' => 'returned',
+        ]);
+        $returned_items = $query->fetchAll(PDO::FETCH_CLASS, 'stdClass');
 
         return view('account.index', [
-            'user' => $user,
-            'requested_books' => $results ?? [],
+            'patron'           => $patron,
+            'user'             => $user,
+            'pending_items'    => $pending_items ?? [],
+            'for_pickup_items' => $for_pickup_items ?? [],
+            'loaned_items'     => $loaned_items ?? [],
+            'returned_items'   => $returned_items ?? [],
         ]);
     }
 

@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Book;
+use App\Models\Item;
 use App\Models\LoanedItem;
 use App\Models\RequestedItem;
-use App\Models\Teacher;
 use App\Models\User;
 use App\Models\UserDetail;
 use Carbon\Carbon;
@@ -37,7 +36,7 @@ class CheckoutController extends Controller
                 ]);
             }
 
-            $item = Book::where('barcode', $request->input('barcode'))->first();
+            $item = Item::where('barcode', $request->input('barcode'))->first();
 
             if ($item) {
                 if($item->status=='checked out') {
@@ -50,7 +49,7 @@ class CheckoutController extends Controller
                 if($item->status=='reserved') {
                     $requested_item =
                         RequestedItem::where('barcode', $item->barcode)
-                            ->where('status','reserved')->first();
+                            ->where('status','for pickup')->first();
                     $item->requester_id = $requested_item->requester_id;
                 }
 
@@ -89,10 +88,10 @@ class CheckoutController extends Controller
 
         $pdo = DB::connection()->getPdo();
         $sql =
-        "SELECT books.*, requested_items.status AS request_status, requested_items.date_requested, requested_items.due_date
-         FROM books
+        "SELECT items.*, requested_items.status AS request_status, requested_items.date_requested, requested_items.due_date
+         FROM items
          INNER JOIN requested_items
-         ON books.barcode = requested_items.barcode
+         ON items.barcode = requested_items.barcode
          WHERE requested_items.requester_id=:requester_id
          AND requested_items.status=:status
         ";
@@ -101,20 +100,20 @@ class CheckoutController extends Controller
             'requester_id' => $user->id,
             'status' => 'pending',
         ]);
-        $pending_books = $query->fetchAll(PDO::FETCH_CLASS, 'stdClass');
+        $pending_items = $query->fetchAll(PDO::FETCH_CLASS, 'stdClass');
 
         $query = $pdo->prepare($sql);
         $query->execute([
             'requester_id' => $user->id,
             'status' => 'for pickup',
         ]);
-        $for_pickup_books = $query->fetchAll(PDO::FETCH_CLASS, 'stdClass');
+        $for_pickup_items = $query->fetchAll(PDO::FETCH_CLASS, 'stdClass');
 
         $sql =
-        "SELECT books.*, loaned_items.status AS loan_status, loaned_items.date_loaned, loaned_items.due_date, loaned_items.date_returned
-         FROM books
+        "SELECT items.*, loaned_items.status AS loan_status, loaned_items.date_loaned, loaned_items.due_date, loaned_items.date_returned
+         FROM items
          INNER JOIN loaned_items
-         ON books.barcode = loaned_items.barcode
+         ON items.barcode = loaned_items.barcode
          WHERE loaned_items.loaner_id=:loaner_id
          AND loaned_items.status=:status
         ";
@@ -123,22 +122,22 @@ class CheckoutController extends Controller
             'loaner_id' => $user->id,
             'status' => 'checked out',
         ]);
-        $loaned_books = $query->fetchAll(PDO::FETCH_CLASS, 'stdClass');
+        $loaned_items = $query->fetchAll(PDO::FETCH_CLASS, 'stdClass');
 
         $query = $pdo->prepare($sql);
         $query->execute([
             'loaner_id' => $user->id,
             'status' => 'returned',
         ]);
-        $returned_books = $query->fetchAll(PDO::FETCH_CLASS, 'stdClass');
+        $returned_items = $query->fetchAll(PDO::FETCH_CLASS, 'stdClass');
 
         return view('checkouts.patron', [
             'patron'           => $patron,
             'user'             => $user,
-            'pending_books'    => $pending_books ?? [],
-            'for_pickup_books' => $for_pickup_books ?? [],
-            'loaned_books'     => $loaned_books ?? [],
-            'returned_books'   => $returned_books ?? [],
+            'pending_items'    => $pending_items ?? [],
+            'for_pickup_items' => $for_pickup_items ?? [],
+            'loaned_items'     => $loaned_items ?? [],
+            'returned_items'   => $returned_items ?? [],
         ]);
     }
 
@@ -146,27 +145,27 @@ class CheckoutController extends Controller
     {
         try {
             $attributes = $request->validate([
-                'barcode'      => ['required', 'string', 'exists:books,barcode'],
+                'barcode'      => ['required', 'string', 'exists:items,barcode'],
                 'requester_id' => ['required', 'string', 'exists:users,id'],
             ]);
 
-            $item = RequestedItem::where('barcode', $attributes['barcode'])
+            $requested_item = RequestedItem::where('barcode', $attributes['barcode'])
                 ->where('requester_id', $attributes['requester_id'])
                 ->first();
 
-            $item->update([
+            $requested_item->update([
                 'status'   => 'for pickup',
                 'due_date' => Carbon::now()->addDays(3),
             ]);
 
-            $book = Book::where('barcode', $attributes['barcode'])->first();
-            $book->update([
+            $item = Item::where('barcode', $attributes['barcode'])->first();
+            $item->update([
                 'status'   => 'reserved',
             ]);
 
             return response()->json([
                 'status'  => 'success',
-                'message' => 'Successfully reserved/prepared item for pickup',
+                'message' => 'Successfully reserved item for pickup',
             ]);
         } catch (Exception $e) {
             return response()->json([
@@ -180,7 +179,7 @@ class CheckoutController extends Controller
     {
         try {
             $attributes = $request->validate([
-                'barcode'      => ['required', 'string', 'exists:books,barcode'],
+                'barcode'      => ['required', 'string', 'exists:items,barcode'],
                 'requester_id' => ['required', 'string', 'exists:users,id'],
             ]);
 
@@ -193,7 +192,7 @@ class CheckoutController extends Controller
                 'due_date' => Carbon::now()->addDays(3),
             ]);
 
-            $book = Book::where('barcode', $attributes['barcode'])->first();
+            $book = Item::where('barcode', $attributes['barcode'])->first();
             $book->update([
                 'status'   => 'available',
             ]);
@@ -214,7 +213,7 @@ class CheckoutController extends Controller
     {
         try {
             $attributes = $request->validate([
-                'barcode'   => ['required', 'string', 'exists:books,barcode'],
+                'barcode'   => ['required', 'string', 'exists:items,barcode'],
                 'loaner_id' => ['required', 'string', 'exists:users,id'],
             ]);
 
@@ -228,7 +227,7 @@ class CheckoutController extends Controller
                 'date_returned' => Carbon::now(),
             ]);
 
-            $book = Book::where('barcode', $attributes['barcode'])->first();
+            $book = Item::where('barcode', $attributes['barcode'])->first();
             $book->update([
                 'status'   => 'available',
             ]);
@@ -249,7 +248,7 @@ class CheckoutController extends Controller
     {
         try {
             $attributes = $request->validate([
-                'barcode'   => ['required', 'string', 'exists:books,barcode'],
+                'barcode'   => ['required', 'string', 'exists:items,barcode'],
                 'loaner_id' => ['required', 'string', 'exists:users,id'],
             ]);
 
@@ -277,13 +276,13 @@ class CheckoutController extends Controller
     {
         try {
             $attributes = $request->validate([
-                'barcode'      => ['required', 'string', 'exists:books,barcode'],
+                'barcode'      => ['required', 'string', 'exists:items,barcode'],
                 'requester_id' => ['required', 'string', 'exists:users,id'],
             ]);
 
             $requested_item = RequestedItem::where('barcode', $attributes['barcode'])
                 ->where('requester_id', $attributes['requester_id'])
-                ->where('status', 'reserved')
+                ->where('status', 'for pickup')
                 ->first();
 
             if($requested_item) {
@@ -292,18 +291,18 @@ class CheckoutController extends Controller
                 ]);
             }
 
-            $book = Book::where('barcode', $attributes['barcode'])->first();
-            $book->update([
+            $item = Item::where('barcode', $attributes['barcode'])->first();
+            $item->update([
                 'status'   => 'checked out',
             ]);
 
             LoanedItem::create([
-                'type' => $requested_item->type,
-                'barcode' => $requested_item->barcode,
+                'type'        => $item->type,
+                'barcode'     => $item->barcode,
                 'date_loaned' => DB::raw('DATE(NOW())'),
-                'due_date' => DB::raw('DATE_ADD(DATE(NOW()), INTERVAL 1 WEEK)'),
-                'loaner_id' => $requested_item->requester_id,
-                'status' => 'checked out',
+                'due_date'    => DB::raw('DATE_ADD(DATE(NOW()), INTERVAL 1 WEEK)'),
+                'loaner_id'   => $attributes['requester_id'],
+                'status'      => 'checked out',
             ]);
 
             return response()->json([

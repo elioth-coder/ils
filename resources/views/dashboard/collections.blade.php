@@ -17,7 +17,7 @@
                     $links = [
                         [
                             'icon'  => 'book',
-                            'href'  => '/collections/books',
+                            'href'  => '/collections/book',
                             'title' => 'Books',
                         ],
                         [

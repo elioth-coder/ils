@@ -15,8 +15,8 @@
 
         <div class="container d-flex flex-column pb-5 row-gap-4">
             <section class="w-100">
-                <a href="/collections/research#research-form" class="btn btn-outline-success">
-                    New Research
+                <a href="/collections/audio#audio-form" class="btn btn-outline-success">
+                    New Audio
                     <i class="bi bi-plus"></i>
                 </a>
             </section>
@@ -31,47 +31,45 @@
                     </div>
                 @endif
 
-                <table id="researches-table" class="table table-striped table-hover">
+                <table id="audios-table" class="table table-striped table-hover">
                     <thead>
                         <tr>
                             <th>Action</th>
-                            <th>Genre</th>
                             <th>Title</th>
                             <th>Year</th>
                             <th>Author</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($researches as $research)
+                        @foreach ($audios as $audio)
                             <tr>
                                 <td style="min-width: 140px;">
-                                    <form id="delete-research-{{ $research->id }}"
-                                        action="/collections/research/{{ $research->id }}" method="POST" class="d-none">
+                                    <form id="delete-audio-{{ $audio->id }}"
+                                        action="/collections/audio/{{ $audio->id }}" method="POST" class="d-none">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit">DELETE</button>
                                     </form>
-                                    <a title="Copy" href="/collections/research/{{ $research->id }}/copy#research-form" class="btn btn-light btn-sm">
+                                    <a title="Copy" href="/collections/audio/{{ $audio->id }}/copy#audio-form" class="btn btn-light btn-sm">
                                         <i class="bi bi-copy"></i>
                                     </a>
-                                    <a title="Edit" href="/collections/research/{{ $research->id }}/edit#research-form" class="btn btn-light btn-sm">
+                                    <a title="Edit" href="/collections/audio/{{ $audio->id }}/edit#audio-form" class="btn btn-light btn-sm">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <button title="Delete" onclick="deleteBook({{ $research->id }});" class="btn btn-light btn-sm">
+                                    <button title="Delete" onclick="deleteAudio({{ $audio->id }});" class="btn btn-light btn-sm">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </td>
-                                <td class="text-capitalize">{{ $research->genre }}</td>
-                                <td>{{ $research->title }}</td>
-                                <td class="text-end">{{ $research->publication_year }}</td>
-                                <td>{{ $research->author }}</td>
+                                <td>{{ $audio->title }}</td>
+                                <td class="text-end">{{ $audio->publication_year }}</td>
+                                <td>{{ $audio->author }}</td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
             </section>
             <section class="d-block">
-                <div id="research-form" class="card p-3 w-full shadow">
+                <div id="audio-form" class="card p-3 w-full shadow">
                     <div class="card-body">
                         {{ $form ?? '' }}
                     </div>
@@ -82,11 +80,11 @@
     <x-footer />
     <x-slot:script>
         <script>
-            new DataTable('#researches-table');
+            new DataTable('#audios-table');
 
-            async function deleteBook(id) {
+            async function deleteAudio(id) {
                 let result = await Swal.fire({
-                    title: "Delete this research?",
+                    title: "Delete this audio?",
                     icon: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#0d6efd",
@@ -95,14 +93,14 @@
                 });
 
                 if (result.isConfirmed) {
-                    document.querySelector(`#delete-research-${id} button`).click();
+                    document.querySelector(`#delete-audio-${id} button`).click();
                 }
             }
 
             (function() {
                 const fileInput = document.getElementById('file');
-                const container = document.getElementById('research-cover-container');
-                const cover_img = document.getElementById('research-cover');
+                const container = document.getElementById('audio-cover-container');
+                const cover_img = document.getElementById('audio-cover');
 
                 container.addEventListener('click', ()=> { file.click() });
                 fileInput.addEventListener('change', (e)=> {

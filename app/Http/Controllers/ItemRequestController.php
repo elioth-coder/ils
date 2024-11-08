@@ -34,14 +34,14 @@ class ItemRequestController extends Controller
         $pdo = DB::connection()->getPdo();
         $_sql =
         "SELECT
-            books.*,
+            items.*,
             requested_items.status AS request_status,
             requested_items.date_requested,
             requested_items.due_date,
             requested_items.requester_id
-         FROM books
+         FROM items
          INNER JOIN requested_items
-         ON books.barcode = requested_items.barcode
+         ON items.barcode = requested_items.barcode
          WHERE requested_items.status
         ";
 

@@ -36,7 +36,7 @@
                     <h1 class="text-center text-white mb-3">Get into your library</h1>
                     <h3 class="text-center text-white">A wealth of knowledge just a click away</h3>
                 </section>
-                <form action="/search/books" class="mb-4" style="width: 700px;">
+                <form action="/search" class="mb-4" style="width: 700px;">
                     <div class="input-group input-group-lg bg-white rounded-3 shadow">
                         <input type="text" name="q" class="form-control" placeholder="What are you looking for?">
                         <button class="btn btn-light border" type="submit">

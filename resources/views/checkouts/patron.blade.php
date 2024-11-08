@@ -19,7 +19,7 @@
             <div class="d-flex">
                 <section class="card w-50 p-3 d-flex flex-row mb-4 position-relative">
                     <div class="p-1 pe-4">
-                        @php $profile = ($patron->profile) ? "/storage/images/teachers/$patron->profile" : '/images/profile.jpg'; @endphp
+                        @php $profile = ($patron->profile) ? "/storage/images/users/$patron->profile" : '/images/profile.jpg'; @endphp
                         <img class="d-block rounded-circle" style="height: 100px;" src="{{ asset($profile) }}"
                             alt="">
                     </div>
@@ -45,15 +45,14 @@
                 <section class="w-50 p-2"></section>
             </div>
 
-
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="on-loan-tab" data-bs-toggle="tab"
                         data-bs-target="#on-loan" type="button" role="tab" aria-controls="on-loan"
                         aria-selected="true">
                         On loan
-                        @if (count($loaned_books))
-                            <span class="badge text-bg-primary">{{ count($loaned_books) }}</span>
+                        @if (count($loaned_items))
+                            <span class="badge text-bg-primary">{{ count($loaned_items) }}</span>
                         @endif
                     </button>
                 </li>
@@ -62,8 +61,8 @@
                         data-bs-target="#pick-up" type="button" role="tab" aria-controls="pick-up"
                         aria-selected="false">
                         To pickup
-                        @if (count($for_pickup_books))
-                            <span class="badge text-bg-primary">{{ count($for_pickup_books) }}</span>
+                        @if (count($for_pickup_items))
+                            <span class="badge text-bg-primary">{{ count($for_pickup_items) }}</span>
                         @endif
                     </button>
                 </li>
@@ -72,8 +71,8 @@
                         data-bs-target="#pending" type="button" role="tab" aria-controls="pending"
                         aria-selected="false">
                         Pending
-                        @if (count($pending_books))
-                            <span class="badge text-bg-primary">{{ count($pending_books) }}</span>
+                        @if (count($pending_items))
+                            <span class="badge text-bg-primary">{{ count($pending_items) }}</span>
                         @endif
                     </button>
                 </li>
@@ -98,7 +97,7 @@
                         <form onsubmit="return findBarcode(event);" class="flex-grow-1" method="GET">
                             <div class="input-group bg-white rounded-3">
                                 <input type="hidden" name="user_id" value="{{ $patron->user_id }}">
-                                <input type="text" class="form-control" name="barcode" placeholder="--">
+                                <input type="text" class="form-control" name="barcode" placeholder="--" autofocus="on">
                                 <button class="btn btn-light border" type="submit">
                                     <i class="bi bi-search"></i>
                                 </button>
@@ -117,62 +116,57 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($loaned_books as $book)
+                                @forelse ($loaned_items as $item)
                                     <tr>
                                         <td>
-                                            @php
-                                            $color = [
-                                                'available'   => 'success',
-                                                'reserved'    => 'warning',
-                                                'checked out' => 'danger',
-                                            ];
-                                            @endphp
-                                            <i title="{{ strtoupper($book->status) }}" class="bi bi-circle-fill text-{{ $color[$book->status] }}"></i>
+                                            <i class="bi bi-circle-fill text-secondary"></i>
                                         </td>
                                         <td>
-                                            {{ $book->barcode }}
+                                            <a href="/collections/items/{{ $item->title }}/copy/{{ $item->barcode }}" class="link-primary">
+                                                {{ $item->barcode }}
+                                            </a>
                                         </td>
                                         <td>
                                             <div class="d-flex">
                                                 <section style="height: 110px;" class="card p-1 me-2">
-                                                    @php $book_cover = ($book->cover_image) ? "/storage/images/books/$book->cover_image" : '/images/book_cover_not_available.jpg'; @endphp
-                                                    <img class="h-100 d-block" src="{{ asset($book_cover) }}" alt="">
+                                                    @php $item_cover = ($item->cover_image) ? "/storage/images/$item->type/$item->cover_image" : '/images/cover_not_available.jpg'; @endphp
+                                                    <img class="h-100 d-block" src="{{ asset($item_cover) }}" alt="">
                                                 </section>
                                                 <section>
                                                     <div class="d-flex">
                                                         <div class="w-100">
-                                                            <a href="/collections/books/{{ $book->isbn }}/detail" class="link-primary">
-                                                                <h5>{{ $book->title }}</h5>
+                                                            <a href="/collections/items/{{ $item->title }}/detail" class="link-primary">
+                                                                <h5>{{ $item->title }}</h5>
                                                             </a>
                                                         </div>
                                                     </div>
                                                     <p>
-                                                        <b>Author(s):</b> {{ $book->author }} <br>
-                                                        <b>Published:</b> {{ $book->publisher }} ({{ $book->publication_year }}) <br>
-                                                        <b>ISBN:</b> {{ $book->isbn }}
+                                                        <b>Author:</b> {{ $item->author }} <br>
+                                                        <b>Published:</b> {{ $item->publisher }} ({{ $item->publication_year }}) <br>
+                                                        <b>Status:</b> <span class="badge text-bg-secondary">{{ $item->status }}</span>
                                                     </p>
                                                 </section>
                                             </div>
                                         </td>
                                         @php
                                             $today = strtotime(date('Y-m-d'));
-                                            $duedate = strtotime($book->due_date);
+                                            $duedate = strtotime($item->due_date);
                                         @endphp
                                         <td>
-                                            {{ $book->due_date }}
+                                            {{ $item->due_date }} <br>
                                             @if($today > $duedate)
                                                 <span class="badge text-bg-danger">Overdue</span>
                                             @endif
                                         </td>
                                         <td class="text-center">
                                             @php
-                                                $data = "{ barcode: $book->barcode, loaner_id: $patron->user_id }";
+                                                $data = "{ barcode: $item->barcode, loaner_id: $patron->user_id }";
                                             @endphp
-                                            <button onclick="returnItem({{ $data }});" class="mt-1 btn btn-success">
+                                            <button onclick="returnItem({{ $data }});" class="mt-1 btn btn-primary">
                                                 Return
                                             </button>
                                             @if($today > $duedate)
-                                                <button onclick="renewItem({{ $data }});" class="mt-1 btn btn-danger">
+                                                <button onclick="renewItem({{ $data }});" class="mt-1 btn btn-info">
                                                     Renew
                                                 </button>
                                             @endif
@@ -197,58 +191,53 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($for_pickup_books as $book)
+                            @forelse ($for_pickup_items as $item)
                                 <tr>
                                     <td>
-                                        @php
-                                        $color = [
-                                            'available'   => 'success',
-                                            'reserved'    => 'warning',
-                                            'checked out' => 'danger',
-                                        ];
-                                        @endphp
-                                        <i title="{{ strtoupper($book->status) }}" class="bi bi-circle-fill text-{{ $color[$book->status] }}"></i>
+                                        <i class="bi bi-circle-fill text-secondary"></i>
                                     </td>
                                     <td>
-                                        {{ $book->barcode }}
+                                        <a href="/collections/items/{{ $item->title }}/copy/{{ $item->barcode }}" class="link-primary">
+                                            {{ $item->barcode }}
+                                        </a>
                                     </td>
                                     <td>
                                         <div class="d-flex">
                                             <section style="height: 110px;" class="card p-1 me-2">
-                                                @php $book_cover = ($book->cover_image) ? "/storage/images/books/$book->cover_image" : '/images/book_cover_not_available.jpg'; @endphp
-                                                <img class="h-100 d-block" src="{{ asset($book_cover) }}" alt="">
+                                                @php $item_cover = ($item->cover_image) ? "/storage/images/$item->type/$item->cover_image" : '/images/cover_not_available.jpg'; @endphp
+                                                <img class="h-100 d-block" src="{{ asset($item_cover) }}" alt="">
                                             </section>
                                             <section>
                                                 <div class="d-flex">
                                                     <div class="w-100">
-                                                        <a href="/collections/books/{{ $book->isbn }}/detail" class="link-primary">
-                                                            <h5>{{ $book->title }}</h5>
+                                                        <a href="/collections/items/{{ $item->title }}/detail" class="link-primary">
+                                                            <h5>{{ $item->title }}</h5>
                                                         </a>
                                                     </div>
                                                 </div>
                                                 <p>
-                                                    <b>Author(s):</b> {{ $book->author }} <br>
-                                                    <b>Published:</b> {{ $book->publisher }} ({{ $book->publication_year }}) <br>
-                                                    <b>ISBN:</b> {{ $book->isbn }}
+                                                    <b>Author:</b> {{ $item->author }} <br>
+                                                    <b>Published:</b> {{ $item->publisher }} ({{ $item->publication_year }}) <br>
+                                                    <b>Status:</b> <span class="badge text-bg-secondary">{{ $item->status }}</span>
                                                 </p>
                                             </section>
                                         </div>
                                     </td>
                                     @php
                                         $today = strtotime(date('Y-m-d'));
-                                        $duedate = strtotime($book->due_date);
+                                        $duedate = strtotime($item->due_date);
                                     @endphp
                                     <td class="text-capitalize">
-                                        {{ $book->due_date }}
+                                        {{ $item->due_date }}
                                         @if($today > $duedate)
                                             <span class="badge text-bg-danger">Overdue</span>
                                         @endif
                                     </td>
                                     <td class="text-center">
                                         @php
-                                            $data = "{ barcode: $book->barcode, requester_id: $patron->user_id }";
+                                            $data = "{ barcode: $item->barcode, requester_id: $patron->user_id }";
                                         @endphp
-                                        <button style="width: 100px;" onclick="checkoutItem({{ $data }});" class="mt-1 btn btn-success">
+                                        <button style="width: 100px;" onclick="checkoutItem({{ $data }});" class="mt-1 btn btn-primary">
                                             Check-out
                                         </button>
                                         @if($today > $duedate)
@@ -272,55 +261,48 @@
                             <th class="bg-body-secondary">Item</th>
                             <th class="bg-body-secondary">Document title</th>
                             <th class="bg-body-secondary">Date requested</th>
-                            <th class="bg-body-secondary">Status</th>
                             <th class="bg-body-secondary"></th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($pending_books as $book)
+                            @forelse ($pending_items as $item)
                                 <tr>
                                     <td>
-                                        @php
-                                        $color = [
-                                            'available'   => 'success',
-                                            'reserved'    => 'warning',
-                                            'checked out' => 'danger',
-                                        ];
-                                        @endphp
-                                        <i title="{{ strtoupper($book->status) }}" class="bi bi-circle-fill text-{{ $color[$book->status] }}"></i>
+                                        <i class="bi bi-circle-fill text-secondary"></i>
                                     </td>
                                     <td>
-                                        {{ $book->barcode }}
+                                        <a href="/collections/items/{{ $item->title }}/copy/{{ $item->barcode }}" class="link-primary">
+                                            {{ $item->barcode }}
+                                        </a>
                                     </td>
                                     <td>
                                         <div class="d-flex">
                                             <section style="height: 110px;" class="card p-1 me-2">
-                                                @php $book_cover = ($book->cover_image) ? "/storage/images/books/$book->cover_image" : '/images/book_cover_not_available.jpg'; @endphp
-                                                <img class="h-100 d-block" src="{{ asset($book_cover) }}" alt="">
+                                                @php $item_cover = ($item->cover_image) ? "/storage/images/$item->type/$item->cover_image" : '/images/cover_not_available.jpg'; @endphp
+                                                <img class="h-100 d-block" src="{{ asset($item_cover) }}" alt="">
                                             </section>
                                             <section>
                                                 <div class="d-flex">
                                                     <div class="w-100">
-                                                        <a href="/collections/books/{{ $book->isbn }}/detail" class="link-primary">
-                                                            <h5>{{ $book->title }}</h5>
+                                                        <a href="/collections/items/{{ $item->title }}/detail" class="link-primary">
+                                                            <h5>{{ $item->title }}</h5>
                                                         </a>
                                                     </div>
                                                 </div>
                                                 <p>
-                                                    <b>Author(s):</b> {{ $book->author }} <br>
-                                                    <b>Published:</b> {{ $book->publisher }} ({{ $book->publication_year }}) <br>
-                                                    <b>ISBN:</b> {{ $book->isbn }}
+                                                    <b>Author:</b> {{ $item->author }} <br>
+                                                    <b>Published:</b> {{ $item->publisher }} ({{ $item->publication_year }}) <br>
+                                                    <b>Status:</b> <span class="badge text-bg-secondary">{{ $item->status }}</span>
                                                 </p>
                                             </section>
                                         </div>
                                     </td>
-                                    <td class="text-capitalize">{{ $book->date_requested }}</td>
-                                    <td class="text-capitalize">{{ $book->request_status }}</td>
+                                    <td class="text-capitalize">{{ $item->date_requested }}</td>
                                     <td class="text-center">
                                         @php
-                                            $data = "{ barcode: $book->barcode, requester_id: $patron->user_id }";
+                                            $data = "{ barcode: $item->barcode, requester_id: $patron->user_id }";
                                         @endphp
-                                        <button onclick="reserveItem({{ $data }});" class="mt-1 btn btn-success">
+                                        <button onclick="reserveItem({{ $data }});" class="mt-1 btn btn-primary">
                                             Reserve
                                         </button>
                                     </td>
@@ -338,50 +320,47 @@
                             <th class="bg-body-secondary">#</th>
                             <th class="bg-body-secondary">Item</th>
                             <th class="bg-body-secondary">Document title</th>
-                            <th class="bg-body-secondary">Date loaned</th>
-                            <th class="bg-body-secondary">Date returned</th>
+                            <th class="bg-body-secondary">Duration</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($returned_books as $book)
+                            @forelse ($returned_items as $item)
                                 <tr>
                                     <td>
-                                        @php
-                                        $color = [
-                                            'available'   => 'success',
-                                            'reserved'    => 'warning',
-                                            'checked out' => 'danger',
-                                        ];
-                                        @endphp
-                                        <i title="{{ strtoupper($book->status) }}" class="bi bi-circle-fill text-{{ $color[$book->status] }}"></i>
+                                        <i class="bi bi-circle-fill text-secondary"></i>
                                     </td>
                                     <td>
-                                        {{ $book->barcode }}
+                                        <a href="/collections/items/{{ $item->title }}/copy/{{ $item->barcode }}" class="link-primary">
+                                            {{ $item->barcode }}
+                                        </a>
                                     </td>
                                     <td>
                                         <div class="d-flex">
                                             <section style="height: 110px;" class="card p-1 me-2">
-                                                @php $book_cover = ($book->cover_image) ? "/storage/images/books/$book->cover_image" : '/images/book_cover_not_available.jpg'; @endphp
-                                                <img class="h-100 d-block" src="{{ asset($book_cover) }}" alt="">
+                                                @php $item_cover = ($item->cover_image) ? "/storage/images/$item->type/$item->cover_image" : '/images/cover_not_available.jpg'; @endphp
+                                                <img class="h-100 d-block" src="{{ asset($item_cover) }}" alt="">
                                             </section>
                                             <section>
                                                 <div class="d-flex">
                                                     <div class="w-100">
-                                                        <a href="/collections/books/{{ $book->isbn }}/detail" class="link-primary">
-                                                            <h5>{{ $book->title }}</h5>
+                                                        <a href="/collections/items/{{ $item->title }}/detail" class="link-primary">
+                                                            <h5>{{ $item->title }}</h5>
                                                         </a>
                                                     </div>
                                                 </div>
                                                 <p>
-                                                    <b>Author(s):</b> {{ $book->author }} <br>
-                                                    <b>Published:</b> {{ $book->publisher }} ({{ $book->publication_year }}) <br>
-                                                    <b>ISBN:</b> {{ $book->isbn }}
+                                                    <b>Author:</b> {{ $item->author }} <br>
+                                                    <b>Published:</b> {{ $item->publisher }} ({{ $item->publication_year }}) <br>
+                                                    <b>Status:</b> <span class="badge text-bg-secondary">{{ $item->status }}</span>
                                                 </p>
                                             </section>
                                         </div>
                                     </td>
-                                    <td class="text-capitalize">{{ $book->date_loaned }}</td>
-                                    <td class="text-capitalize">{{ $book->date_returned }}</td>
+                                    <td style="width: 220px;">
+                                        {{ $item->date_loaned }}
+                                        <i class="bi bi-arrow-right"></i>
+                                        {{ $item->date_returned }}
+                                    </td>
                                 </tr>
                             @empty
                                 <tr><td colspan="5" class="text-center fs-5 text-secondary">No data found.</td></tr>
@@ -427,10 +406,6 @@
                                 <th class="px-3">Mobile no.</th>
                                 <td>{{ $patron->mobile_number }}</td>
                             </tr>
-                            <tr>
-                                <th class="px-3">Status</th>
-                                <td class="text-capitalize">{{ $patron->status }}</td>
-                            </tr>
                             @if($patron->campus)
                                 <tr>
                                     <th class="px-3">Campus Code</th>
@@ -467,6 +442,10 @@
                                     <td class="text-uppercase">{{ $patron->year }} {{ $patron->section }}</td>
                                 </tr>
                             @endif
+                            <tr>
+                                <th class="px-3">Status</th>
+                                <td class="text-capitalize">{{ $patron->status }}</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -513,7 +492,7 @@
                         if (item.status == 'available') {
                             return checkoutItem({
                                 barcode: item.barcode,
-                                requester_id: item.requester_id,
+                                requester_id: formData.get('user_id'),
                             });
                         }
                         if (item.status == 'checked out') {
@@ -523,7 +502,7 @@
                             });
                         }
                         if (item.status == 'reserved') {
-                            if(item.requester_id == $formData.get('user_id')) {
+                            if(item.requester_id == formData.get('user_id')) {
                                 return checkoutItem({
                                     barcode: item.barcode,
                                     requester_id: item.requester_id,

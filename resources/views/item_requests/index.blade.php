@@ -49,69 +49,67 @@
                                 <thead>
                                     <tr>
                                     <th class="bg-body-secondary">#</th>
-                                    <th class="bg-body-secondary">Item / Status</th>
+                                    <th class="bg-body-secondary">Item</th>
                                     <th class="bg-body-secondary">Document title</th>
                                     <th class="bg-body-secondary">Requested by</th>
                                     <th class="bg-body-secondary">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse ($requested_items as $item)
+                                    @foreach ($requested_items as $item)
                                         @php
                                             $today = strtotime(date('Y-m-d'));
                                             $duedate = strtotime($item->due_date);
                                         @endphp
                                         <tr>
                                             <td style="width: 60px;">
-                                                @php
-                                                $color = [
-                                                    'available'   => 'success',
-                                                    'reserved'    => 'warning',
-                                                    'checked out' => 'danger',
-                                                ];
-                                                @endphp
-                                                <i title="{{ strtoupper($item->status) }}" class="bi bi-circle-fill text-{{ $color[$item->status] }}"></i>
+                                                <i class="bi bi-circle-fill text-secondary"></i>
                                             </td>
                                             <td style="width: 150px;">
-                                                <span class="text-capitalize badge text-bg-{{ $color[$item->status] }}">
+                                                <a href="/collections/items/{{ $item->title }}/copy/{{ $item->barcode }}">
+                                                    {{ $item->barcode }}
+                                                </a>
+                                                <br>
+                                                <span class="badge text-bg-secondary">
                                                     {{ $item->request_status }}
                                                 </span>
+                                                @if($item->request_status=='for pickup')
+                                                    <br><i>until {{ $item->due_date }}</i>
+                                                @endif
                                                 @if($today > $duedate && $item->request_status=='for pickup')
                                                     <span class="badge text-bg-danger">Overdue</span>
                                                 @endif
-                                                <br>
-                                                {{ $item->barcode }} <br>
                                             </td>
                                             <td>
                                                 <div class="d-flex">
-                                                    <section style="height: 110px;" class="card p-1 me-2">
-                                                        @php $item_cover = ($item->cover_image) ? "/storage/images/books/$item->cover_image" : '/images/book_cover_not_available.jpg'; @endphp
+                                                    <section style="height: 110px; min-width: 80px;" class="card p-1 me-2">
+                                                        @php $item_cover = ($item->cover_image) ? "/storage/images/books/$item->cover_image" : '/images/cover_not_available.jpg'; @endphp
                                                         <img class="h-100 d-block" src="{{ asset($item_cover) }}" alt="">
                                                     </section>
                                                     <section>
                                                         <div class="d-flex">
                                                             <div class="w-100">
-                                                                <a href="/collections/books/{{ $item->isbn }}/detail" class="link-primary">
+                                                                <a href="/collections/items/{{ $item->title }}/detail" class="link-primary">
                                                                     <h5>{{ $item->title }}</h5>
                                                                 </a>
                                                             </div>
                                                         </div>
                                                         <p>
-                                                            <b>Author(s):</b> {{ $item->author }} <br>
+                                                            <b>Author:</b> {{ $item->author }} <br>
                                                             <b>Published:</b> {{ $item->publisher }} ({{ $item->publication_year }}) <br>
-                                                            <b>ISBN:</b> {{ $item->isbn }}
+                                                            <b>Status:</b> <span class="badge text-bg-secondary">{{ $item->status }}</span>
                                                         </p>
                                                     </section>
                                                 </div>
                                             </td>
                                             <td>
-                                                <p class="text-capitalize m-0">
+                                                <p class="text-capitalize m-0" style="width: 160px;">
                                                     <a href="/services/checkouts/{{ $item->patron->card_number }}/patron">
                                                         {{ strtolower($item->patron->first_name) }}
                                                         {{ strtolower($item->patron->last_name) }}
                                                     </a>
                                                 </p>
-                                                ({{ $item->date_requested }}) <br>
+                                                {{ $item->date_requested }} <br>
                                             </td>
                                             <td class="text-center">
                                                 @php
@@ -121,13 +119,13 @@
                                                 @if ($item->request_status=='pending')
                                                     <button onclick="reserveItem({{ $data }});"
                                                         style="width: 100px;"
-                                                        class="mt-1 btn btn-{{ $color[$item->status] }}">
+                                                        class="mt-1 btn btn-primary">
                                                         Reserve
                                                     </button>
                                                 @elseif ($item->request_status=='for pickup')
                                                     <button onclick="checkoutItem({{ $data }});"
                                                         style="width: 100px;"
-                                                        class="mt-1 btn btn-{{ $color[$item->status] }}">
+                                                        class="mt-1 btn btn-primary">
                                                         Check-out
                                                     </button>
                                                     @if($today > $duedate)
@@ -141,9 +139,7 @@
                                                 @endif
                                             </td>
                                         </tr>
-                                    @empty
-                                        <tr><td colspan="5" class="text-center fs-5 text-secondary">No data found.</td></tr>
-                                    @endforelse
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -158,43 +154,38 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse ($cancelled_items as $item)
+                                    @foreach ($cancelled_items as $item)
                                         @php
                                             $today = strtotime(date('Y-m-d'));
                                             $duedate = strtotime($item->due_date);
                                         @endphp
                                         <tr>
                                             <td style="min-width: 60px !important;">
-                                                @php
-                                                $color = [
-                                                    'available'   => 'success',
-                                                    'reserved'    => 'warning',
-                                                    'checked out' => 'danger',
-                                                ];
-                                                @endphp
-                                                <i title="{{ strtoupper($item->status) }}" class="bi bi-circle-fill text-{{ $color[$item->status] }}"></i>
+                                                <i class="bi bi-circle-fill text-secondary"></i>
                                             </td>
                                             <td class="text-start" style="min-width: 150px !important;">
-                                                {{ $item->barcode }} <br>
+                                                <a href="/collections/items/{{ $item->title }}/copy/{{ $item->barcode }}">
+                                                    {{ $item->barcode }}
+                                                </a>
                                             </td>
                                             <td style="width: 100%;">
                                                 <div class="d-flex">
                                                     <section style="height: 110px;" class="card p-1 me-2">
-                                                        @php $item_cover = ($item->cover_image) ? "/storage/images/books/$item->cover_image" : '/images/book_cover_not_available.jpg'; @endphp
+                                                        @php $item_cover = ($item->cover_image) ? "/storage/images/books/$item->cover_image" : '/images/cover_not_available.jpg'; @endphp
                                                         <img class="h-100 d-block" src="{{ asset($item_cover) }}" alt="">
                                                     </section>
                                                     <section>
                                                         <div class="d-flex">
                                                             <div class="w-100">
-                                                                <a href="/collections/books/{{ $item->isbn }}/detail" class="link-primary">
+                                                                <a href="/collections/items/{{ $item->title }}/detail" class="link-primary">
                                                                     <h5>{{ $item->title }}</h5>
                                                                 </a>
                                                             </div>
                                                         </div>
                                                         <p>
-                                                            <b>Author(s):</b> {{ $item->author }} <br>
+                                                            <b>Author:</b> {{ $item->author }} <br>
                                                             <b>Published:</b> {{ $item->publisher }} ({{ $item->publication_year }}) <br>
-                                                            <b>ISBN:</b> {{ $item->isbn }}
+                                                            <b>Status:</b> <span class="badge text-bg-secondary">{{ $item->status }}</span>
                                                         </p>
                                                     </section>
                                                 </div>
@@ -202,15 +193,13 @@
                                             <td style="min-width: 150px !important;">
                                                 <p class="text-capitalize m-0">
                                                     <a href="/services/checkouts/{{ $item->patron->card_number }}/patron">
-                                                        {{ $item->patron->first_name }} {{ $item->patron->last_name }}
+                                                        {{ strtolower($item->patron->first_name) }} {{ strtolower($item->patron->last_name) }}
                                                     </a>
                                                 </p>
-                                                ({{ $item->date_requested }}) <br>
+                                                {{ $item->date_requested }} <br>
                                             </td>
                                         </tr>
-                                    @empty
-                                        <tr><td colspan="4" class="text-center fs-5 text-secondary">No data found.</td></tr>
-                                    @endforelse
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>

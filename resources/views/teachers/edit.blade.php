@@ -186,22 +186,19 @@
                             @enderror
                         </div>
                     </div>
-                    <div class="d-flex coumn-gap-2">
-                        <div class="mb-2 w-100">
-                            @php
-                                if($errors->has('barangay')) {
-                                    $barangay = old('barangay');
-                                } else {
-                                    $barangay = (old('barangay')) ? old('barangay') : $selected->barangay;
-                                }
-                            @endphp
-                            <label for="barangay" class="form-label">Barangay</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--" name="barangay" id="barangay" value="{{ $barangay }}">
-                            @error('barangay')
-                                <div class="form-text text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="mb-2 w-100"></div>
+                    <div class="mb-2">
+                        @php
+                            if($errors->has('barangay')) {
+                                $barangay = old('barangay');
+                            } else {
+                                $barangay = (old('barangay')) ? old('barangay') : $selected->barangay;
+                            }
+                        @endphp
+                        <label for="barangay" class="form-label">Address Line</label>
+                        <input type="text" class="form-control form-control-sm" placeholder="--" name="barangay" id="barangay" value="{{ $barangay }}">
+                        @error('barangay')
+                            <div class="form-text text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="d-flex column-gap-2">
                         <div class="mb-2 w-100">

@@ -194,7 +194,6 @@
         </div>
     </div> --}}
 
-
     <div class="accordion mb-2" id="accordion-tag">
         <div class="accordion-item">
             @php

@@ -1,19 +1,19 @@
-@component('books.layout', [
-    'books' => $books,
+@component('audios.layout', [
+    'audios' => $audios,
 ])
     @slot('breadcrumb')
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0 border py-2 px-3 bg-white rounded">
                 <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
                 <li class="breadcrumb-item"><a href="/collections">Collections</a></li>
-                <li class="breadcrumb-item"><a href="/collections/book">Books</a></li>
+                <li class="breadcrumb-item"><a href="/collections/audio">Audios</a></li>
                 <li class="breadcrumb-item active" aria-current="page">{{ $selected->id }}</li>
             </ol>
         </nav>
     @endslot
     @slot('form')
         <style>
-            #book-cover-container {
+            #audio-cover-container {
                 width: 235px;
                 height: 350px;
                 display: flex;
@@ -23,17 +23,17 @@
                 position: relative;
             }
 
-            #book-cover-container img {
+            #audio-cover-container img {
                 height: 100%;
                 width: auto;
                 object-fit: cover;
                 position: absolute;
             }
         </style>
-        <form action="/collections/book/{{ $selected->id }}" method="POST" enctype="multipart/form-data">
+        <form id="audio-form" action="/collections/audio/{{ $selected->id }}" method="POST" enctype="multipart/form-data">
             @csrf
-            @method('PATCH')
-            <h4 class="text-body-secondary">Edit this book</h4>
+            @method('PUT')
+            <h4 class="text-body-secondary">Copy this audio</h4>
             <hr>
             <div class="d-flex column-gap-4">
                 <div class="w-100">
@@ -106,21 +106,6 @@
                     </div>
                     <div class="mb-2">
                         @php
-                            if ($errors->has('isbn')) {
-                                $isbn = old('isbn');
-                            } else {
-                                $isbn = old('isbn') ? old('isbn') : $selected->isbn;
-                            }
-                        @endphp
-                        <label for="isbn" class="form-label">ISBN</label>
-                        <input type="text" class="form-control form-control-sm" placeholder="--" name="isbn"
-                            id="isbn" value="{{ $isbn }}">
-                        @error('isbn')
-                            <div class="form-text text-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div class="mb-2">
-                        @php
                             if ($errors->has('title')) {
                                 $title = old('title');
                             } else {
@@ -165,6 +150,7 @@
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
                         </div>
+
                         <div class="mb-2 w-100">
                             @php
                                 if ($errors->has('publication_year')) {
@@ -176,14 +162,13 @@
                                 }
 
                                 $max_year = (int) date('Y');
-                                $min_year = 1500;
+                                $min_year = 2000;
                             @endphp
                             <label for="publication_year" class="form-label">Publication Year</label>
                             <select class="form-control form-control-sm" name="publication_year" id="publication_year">
                                 <option value="">--</option>
-                                @for ($i = $max_year; $i >= $min_year; $i--)
-                                    <option {{ $publication_year == $i ? 'selected' : '' }} value="{{ $i }}">
-                                        {{ $i }}</option>
+                                @for($i=$max_year; $i>=$min_year; $i--)
+                                    <option {{ $publication_year == $i ? 'selected' : '' }} value="{{ $i }}">{{ $i }}</option>
                                 @endfor
                             </select>
                             @error('publication_year')
@@ -191,40 +176,7 @@
                             @enderror
                         </div>
                     </div>
-                    <div class="d-flex column-gap-2">
-                        <div class="mb-2 w-100">
-                            @php
-                                if ($errors->has('number_of_pages')) {
-                                    $number_of_pages = old('number_of_pages');
-                                } else {
-                                    $number_of_pages = old('number_of_pages')
-                                        ? old('number_of_pages')
-                                        : $selected->number_of_pages;
-                                }
-                            @endphp
-                            <label for="number_of_pages" class="form-label">No. of Pages</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--"
-                                name="number_of_pages" id="number_of_pages" value="{{ $number_of_pages }}">
-                            @error('number_of_pages')
-                                <div class="form-text text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="mb-2 w-100">
-                            @php
-                                if ($errors->has('price')) {
-                                    $price = old('price');
-                                } else {
-                                    $price = old('price') ? old('price') : $selected->price;
-                                }
-                            @endphp
-                            <label for="price" class="form-label">Price</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--" name="price"
-                                id="price" value="{{ $price }}">
-                            @error('price')
-                                <div class="form-text text-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
+
                     <div class="mb-2">
                         @php
                             if ($errors->has('summary')) {
@@ -243,9 +195,9 @@
                 </div>
                 <div class="w-100 d-flex flex-column">
                     <div class="flex-grow-1 rounded d-flex align-items-center justify-content-center">
-                        <div id="book-cover-container" class="border text-center shadow">
-                            @php $book_cover = ($selected->cover_image) ? "/storage/images/$selected->type/$selected->cover_image" : '/images/cover_not_available.jpg'; @endphp
-                            <img id="book-cover" class="h-100 d-block" src="{{ asset($book_cover) }}" alt="">
+                        <div id="audio-cover-container" class="border text-center shadow">
+                            @php $audio_cover = ($selected->cover_image) ? "/storage/images/audio/$selected->cover_image" : '/images/cover_not_available.jpg'; @endphp
+                            <img id="audio-cover" class="h-100 d-block" src="{{ asset($audio_cover) }}" alt="">
                         </div>
                         <input class="d-none" type="file" name="file" id="file">
                     </div>
@@ -309,21 +261,18 @@
                     <div class="d-flex column-gap-2">
                         <div class="mb-2 w-100">
                             @php
-                                if ($errors->has('format')) {
-                                    $format = old('format');
+                                if ($errors->has('duration')) {
+                                    $duration = old('duration');
                                 } else {
-                                    $format = old('format') ? old('format') : $selected->format;
+                                    $duration = old('duration')
+                                        ? old('duration')
+                                        : $selected->duration;
                                 }
                             @endphp
-                            <label for="format" class="form-label">Format</label>
-                            <select class="form-control form-control-sm text-capitalize" name="format" id="format">
-                                <option value="">--</option>
-                                @foreach ($formats as $_format)
-                                    <option {{ $_format == $format ? 'selected' : '' }} value="{{ $_format }}">
-                                        {{ $_format }}</option>
-                                @endforeach
-                            </select>
-                            @error('format')
+                            <label for="duration" class="form-label">Duration (seconds)</label>
+                            <input type="text" class="form-control form-control-sm" placeholder="--"
+                                name="duration" id="duration" value="{{ $duration }}">
+                            @error('duration')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
                         </div>
@@ -353,7 +302,7 @@
             <hr>
             <div class="d-flex gap-2 flex-row-reverse">
                 <a href="{{ url()->previous() }}" class="w-25 btn btn-outline-dark px-3">Cancel</a>
-                <button type="submit" class="w-25 btn btn-primary px-3">Update</button>
+                <button type="submit" class="w-25 btn btn-primary px-3">Submit</button>
             </div>
         </form>
     @endslot

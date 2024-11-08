@@ -49,59 +49,54 @@
                                 <thead>
                                     <tr>
                                     <th class="bg-body-secondary">#</th>
-                                    <th class="bg-body-secondary">Item / Status</th>
+                                    <th class="bg-body-secondary text-start">Item</th>
                                     <th class="bg-body-secondary">Document title</th>
                                     <th class="bg-body-secondary">Loaned by</th>
                                     <th class="bg-body-secondary">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse ($loaned_items as $item)
+                                    @foreach ($loaned_items as $item)
                                         @php
                                             $today = strtotime(date('Y-m-d'));
                                             $duedate = strtotime($item->due_date);
                                         @endphp
                                         <tr>
                                             <td style="width: 60px;">
-                                                @if($today > $duedate)
-                                                    <i title="Overdue" class="bi bi-circle-fill text-danger"></i>
-                                                @else
-                                                    <i title="{{ strtoupper($item->status) }}" class="bi bi-circle-fill text-success"></i>
-                                                @endif
+                                                <i class="bi bi-circle-fill text-secondary"></i>
                                             </td>
-                                            <td style="width: 150px;">
+                                            <td class="text-start" style="width: 150px;">
+                                                <a href="/collections/items/{{ $item->title }}/copy/{{ $item->barcode }}">
+                                                    {{ $item->barcode }}
+                                                </a>
+                                                <br>
                                                 @if($today > $duedate)
                                                     <span class="badge text-bg-danger">Overdue</span>
                                                 @endif
-                                                <span class="text-capitalize badge text-bg-success">
-                                                    {{ $item->loan_status }}
-                                                </span>
-                                                <br>
-                                                {{ $item->barcode }} <br>
                                             </td>
                                             <td>
                                                 <div class="d-flex">
                                                     <section style="height: 110px;" class="card p-1 me-2">
-                                                        @php $item_cover = ($item->cover_image) ? "/storage/images/books/$item->cover_image" : '/images/book_cover_not_available.jpg'; @endphp
+                                                        @php $item_cover = ($item->cover_image) ? "/storage/images/books/$item->cover_image" : '/images/cover_not_available.jpg'; @endphp
                                                         <img class="h-100 d-block" src="{{ asset($item_cover) }}" alt="">
                                                     </section>
                                                     <section>
                                                         <div class="d-flex">
                                                             <div class="w-100">
-                                                                <a href="/collections/books/{{ $item->isbn }}/detail" class="link-primary">
+                                                                <a href="/collections/items/{{ $item->title }}/detail" class="link-primary">
                                                                     <h5>{{ $item->title }}</h5>
                                                                 </a>
                                                             </div>
                                                         </div>
                                                         <p>
-                                                            <b>Author(s):</b> {{ $item->author }} <br>
+                                                            <b>Author:</b> {{ $item->author }} <br>
                                                             <b>Published:</b> {{ $item->publisher }} ({{ $item->publication_year }}) <br>
-                                                            <b>ISBN:</b> {{ $item->isbn }}
+                                                            <b>Status:</b> <span class="badge text-bg-secondary">{{ $item->status }}</span>
                                                         </p>
                                                     </section>
                                                 </div>
                                             </td>
-                                            <td>
+                                            <td style="width: 220px;">
                                                 <p class="text-capitalize m-0">
                                                     <a href="/services/checkouts/{{ $item->patron->card_number }}/patron">
                                                         {{ strtolower($item->patron->first_name) }}
@@ -109,10 +104,8 @@
                                                     </a>
                                                 </p>
                                                 {{ $item->date_loaned }}
-                                                <b>
-                                                    <i class="bi bi-arrow-right"></i>
-                                                    {{ $item->due_date }}
-                                                </b>
+                                                <i class="bi bi-arrow-right"></i>
+                                                {{ $item->due_date }}
                                                 <br>
                                             </td>
                                             <td class="text-center">
@@ -123,20 +116,18 @@
                                                 @if($today > $duedate)
                                                     <button onclick="renewItem({{ $data }});"
                                                         style="width: 100px;"
-                                                        class="mt-1 btn btn-danger">
+                                                        class="mt-1 btn btn-info">
                                                         Renew
                                                     </button>
                                                 @endif
                                                 <button onclick="returnItem({{ $data }});"
                                                     style="width: 100px;"
-                                                    class="mt-1 btn btn-success">
+                                                    class="mt-1 btn btn-primary">
                                                     Return
                                                 </button>
                                             </td>
                                         </tr>
-                                    @empty
-                                        <tr><td colspan="5" class="text-center fs-5 text-secondary">No data found.</td></tr>
-                                    @endforelse
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -151,40 +142,34 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse ($returned_items as $item)
-                                        @php
-                                            $today = strtotime(date('Y-m-d'));
-                                            $duedate = strtotime($item->due_date);
-                                        @endphp
+                                    @foreach ($returned_items as $item)
                                         <tr>
                                             <td style="width: 60px;">
-                                                @if($today > $duedate)
-                                                    <i title="Overdue" class="bi bi-circle-fill text-danger"></i>
-                                                @else
-                                                    <i title="{{ strtoupper($item->status) }}" class="bi bi-circle-fill text-success"></i>
-                                                @endif
+                                                <i class="bi bi-circle-fill text-secondary"></i>
                                             </td>
                                             <td style="width: 150px;">
-                                                {{ $item->barcode }} <br>
+                                                <a href="/collections/items/{{ $item->title }}/copy/{{ $item->barcode }}">
+                                                    {{ $item->barcode }}
+                                                </a>
                                             </td>
                                             <td class="w-100">
                                                 <div class="d-flex">
                                                     <section style="height: 110px;" class="card p-1 me-2">
-                                                        @php $item_cover = ($item->cover_image) ? "/storage/images/books/$item->cover_image" : '/images/book_cover_not_available.jpg'; @endphp
+                                                        @php $item_cover = ($item->cover_image) ? "/storage/images/books/$item->cover_image" : '/images/cover_not_available.jpg'; @endphp
                                                         <img class="h-100 d-block" src="{{ asset($item_cover) }}" alt="">
                                                     </section>
                                                     <section>
                                                         <div class="d-flex">
                                                             <div class="w-100">
-                                                                <a href="/collections/books/{{ $item->isbn }}/detail" class="link-primary">
+                                                                <a href="/collections/items/{{ $item->title }}/detail" class="link-primary">
                                                                     <h5>{{ $item->title }}</h5>
                                                                 </a>
                                                             </div>
                                                         </div>
                                                         <p>
-                                                            <b>Author(s):</b> {{ $item->author }} <br>
+                                                            <b>Author:</b> {{ $item->author }} <br>
                                                             <b>Published:</b> {{ $item->publisher }} ({{ $item->publication_year }}) <br>
-                                                            <b>ISBN:</b> {{ $item->isbn }}
+                                                            <b>Status:</b> <span class="badge text-bg-secondary">{{ $item->status }}</span>
                                                         </p>
                                                     </section>
                                                 </div>
@@ -200,9 +185,7 @@
                                                 <br>
                                             </td>
                                         </tr>
-                                    @empty
-                                        <tr><td colspan="4" class="text-center fs-5 text-secondary">No data found.</td></tr>
-                                    @endforelse
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>

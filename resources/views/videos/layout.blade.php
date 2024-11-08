@@ -15,8 +15,8 @@
 
         <div class="container d-flex flex-column pb-5 row-gap-4">
             <section class="w-100">
-                <a href="/collections/media_discs#media_discs-form" class="btn btn-outline-success">
-                    New Media Disc
+                <a href="/collections/video#video-form" class="btn btn-outline-success">
+                    New Video
                     <i class="bi bi-plus"></i>
                 </a>
             </section>
@@ -31,48 +31,45 @@
                     </div>
                 @endif
 
-                <table id="media_discs-table" class="table table-striped table-hover">
+                <table id="videos-table" class="table table-striped table-hover">
                     <thead>
                         <tr>
                             <th>Action</th>
-                            <th>Type</th>
-                            {{-- <th>Cover</th> --}}
                             <th>Title</th>
                             <th>Year</th>
                             <th>Author</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($media_discs as $media_disc)
+                        @foreach ($videos as $video)
                             <tr>
                                 <td style="min-width: 140px;">
-                                    <form id="delete-media_disc-{{ $media_disc->id }}"
-                                        action="/collections/media_discs/{{ $media_disc->id }}" method="POST" class="d-none">
+                                    <form id="delete-video-{{ $video->id }}"
+                                        action="/collections/video/{{ $video->id }}" method="POST" class="d-none">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit">DELETE</button>
                                     </form>
-                                    <a title="Copy" href="/collections/media_discs/{{ $media_disc->id }}/copy#media_discs-form" class="btn btn-light btn-sm">
+                                    <a title="Copy" href="/collections/video/{{ $video->id }}/copy#video-form" class="btn btn-light btn-sm">
                                         <i class="bi bi-copy"></i>
                                     </a>
-                                    <a title="Edit" href="/collections/media_discs/{{ $media_disc->id }}/edit#media_discs-form" class="btn btn-light btn-sm">
+                                    <a title="Edit" href="/collections/video/{{ $video->id }}/edit#video-form" class="btn btn-light btn-sm">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <button title="Delete" onclick="deleteBook({{ $media_disc->id }});" class="btn btn-light btn-sm">
+                                    <button title="Delete" onclick="deleteVideo({{ $video->id }});" class="btn btn-light btn-sm">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </td>
-                                <td class="text-uppercase">{{ $media_disc->type }}</td>
-                                <td>{{ $media_disc->title }}</td>
-                                <td class="text-end">{{ $media_disc->year_released }}</td>
-                                <td>{{ $media_disc->author }}</td>
+                                <td>{{ $video->title }}</td>
+                                <td class="text-end">{{ $video->publication_year }}</td>
+                                <td>{{ $video->author }}</td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
             </section>
             <section class="d-block">
-                <div id="media_discs-form" class="card p-3 w-full shadow">
+                <div id="video-form" class="card p-3 w-full shadow">
                     <div class="card-body">
                         {{ $form ?? '' }}
                     </div>
@@ -83,11 +80,11 @@
     <x-footer />
     <x-slot:script>
         <script>
-            new DataTable('#media_discs-table');
+            new DataTable('#videos-table');
 
-            async function deleteBook(id) {
+            async function deleteVideo(id) {
                 let result = await Swal.fire({
-                    title: "Delete this media disc?",
+                    title: "Delete this video?",
                     icon: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#0d6efd",
@@ -96,14 +93,14 @@
                 });
 
                 if (result.isConfirmed) {
-                    document.querySelector(`#delete-media_disc-${id} button`).click();
+                    document.querySelector(`#delete-video-${id} button`).click();
                 }
             }
 
             (function() {
                 const fileInput = document.getElementById('file');
-                const container = document.getElementById('media_disc-cover-container');
-                const cover_img = document.getElementById('media_disc-cover');
+                const container = document.getElementById('video-cover-container');
+                const cover_img = document.getElementById('video-cover');
 
                 container.addEventListener('click', ()=> { file.click() });
                 fileInput.addEventListener('change', (e)=> {
@@ -114,7 +111,7 @@
 
                         cover_img.src = image;
                     } else {
-                        cover_img.src = '/images/book_cover_not_available.jpg';
+                        cover_img.src = '/images/cover_not_available.jpg';
                     }
                 });
             })();

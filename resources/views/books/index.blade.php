@@ -29,7 +29,7 @@
           position: absolute;
         }
         </style>
-        <form action="/collections/books" method="POST" enctype="multipart/form-data">
+        <form action="/collections/book" method="POST" enctype="multipart/form-data">
             @csrf
             @method('POST')
             <h4 class="text-body-secondary">Create new book</h4>
@@ -54,16 +54,16 @@
                     </div>
                     <div class="d-flex column-gap-2">
                         <div class="mb-2 w-100">
-                            <label for="lcc_number" class="form-label">LCC No.</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--" name="lcc_number" id="lcc_number" value="{{ old('lcc_number') ?? '' }}">
-                            @error('lcc_number')
+                            <label for="call_number" class="form-label">Call No.</label>
+                            <input type="text" class="form-control form-control-sm" placeholder="--" name="call_number" id="call_number" value="{{ old('call_number') ?? '' }}">
+                            @error('call_number')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="mb-2 w-100">
-                            <label for="ddc_number" class="form-label">DDC No.</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--" name="ddc_number" id="ddc_number" value="{{ old('ddc_number') ?? '' }}">
-                            @error('ddc_number')
+                            <label for="date_acquired" class="form-label">Date Acquired</label>
+                            <input type="date" class="form-control form-control-sm" placeholder="--" name="date_acquired" id="date_acquired" value="{{ old('date_acquired') ?? date('Y-m-d') }}">
+                            @error('date_acquired')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
                         </div>
@@ -83,7 +83,7 @@
                         @enderror
                     </div>
                     <div class="mb-2">
-                        <label for="author" class="form-label">Author(s)</label>
+                        <label for="author" class="form-label">Author</label>
                         <input type="text" class="form-control form-control-sm" placeholder="--" name="author" id="author" value="{{ old('author') ?? '' }}">
                         @error('author')
                             <div class="form-text text-danger">{{ $message }}</div>
@@ -106,7 +106,7 @@
                             <select class="form-control form-control-sm" name="publication_year" id="publication_year">
                                 <option value="">--</option>
                                 @for($i=$max_year; $i>=$min_year; $i--)
-                                    <option value="{{ $i }}">{{ $i }}</option>
+                                    <option {{ (old('publication_year')==$i) ? 'selected' : '' }} value="{{ $i }}">{{ $i }}</option>
                                 @endfor
                             </select>
                             @error('publication_year')
@@ -141,7 +141,7 @@
                 <div class="w-100 d-flex flex-column">
                     <div class="flex-grow-1 rounded d-flex align-items-center justify-content-center">
                         <div id="book-cover-container" class="border text-center shadow">
-                            <img id="book-cover" class="h-100 d-block" src="{{ asset('images/book_cover_not_available.jpg') }}" alt="">
+                            <img id="book-cover" class="h-100 d-block" src="{{ asset('images/cover_not_available.jpg') }}" alt="">
                         </div>
                         <input class="d-none" type="file" name="file" id="file">
                     </div>
@@ -158,7 +158,7 @@
                             <select class="form-control form-control-sm text-capitalize" name="language" id="language">
                                 <option value="">--</option>
                                 @foreach($languages as $language)
-                                    <option value="{{ $language }}">{{ $language }}</option>
+                                    <option {{ (old('language')==$language) ? 'selected' : '' }} value="{{ $language }}">{{ $language }}</option>
                                 @endforeach
                             </select>
                             @error('language')
@@ -170,7 +170,7 @@
                             <select class="form-control form-control-sm text-capitalize" name="genre" id="genre">
                                 <option value="">--</option>
                                 @foreach($genres as $genre)
-                                    <option value="{{ $genre }}">{{ $genre }}</option>
+                                    <option {{ (old('genre')==$genre) ? 'selected' : '' }} value="{{ $genre }}">{{ $genre }}</option>
                                 @endforeach
                             </select>
                             @error('genre')
@@ -184,7 +184,7 @@
                             <select class="form-control form-control-sm text-capitalize" name="format" id="format">
                                 <option value="">--</option>
                                 @foreach ($formats as $format)
-                                    <option value="{{ $format }}">{{ $format }}</option>
+                                    <option {{ (old('format')==$format) ? 'selected' : '' }} value="{{ $format }}">{{ $format }}</option>
                                 @endforeach
                             </select>
                             @error('format')

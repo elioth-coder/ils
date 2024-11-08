@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Book;
+use App\Models\Item;
 use App\Models\Library;
 use App\Models\UserDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use PDO;
 
 class SearchController extends Controller
 {
@@ -84,20 +85,22 @@ class SearchController extends Controller
         }
     }
 
-    public function books(Request $request)
+    public function index(Request $request, $type='')
     {
         $library = null;
-        if(in_array(Auth::user()->role, ['librarian','assistant','clerk'])) {
-            $user = UserDetail::where('email',Auth::user()->email)->first();
+        if(Auth::user()) {
+            if(in_array(Auth::user()->role, ['librarian','assistant','clerk'])) {
+                $user = UserDetail::where('email',Auth::user()->email)->first();
 
-            $this->filters[] = ['library', $user->library];
-            $library = $user->library;
+                $this->filters[] = ['library', $user->library];
+                $library = $user->library;
+            }
         }
 
-        $q = $request->input('q');
-        $limit = $request->input('limit', 2);
+        $this->publishers =
+            Item::select('publisher')
+                ->distinct()->get();
 
-        $this->publishers = Book::select('publisher')->distinct()->get();
         $this->publishers = $this->publishers->map(function ($publisher) {
             return $publisher->publisher;
         });
@@ -173,92 +176,99 @@ class SearchController extends Controller
 
         $this->libraries = Library::all();
 
-        $isbn = $request->input('isbn', null);
+        $q = $request->input('q', '');
+        $currentPage = (int) $request->input('page', 1);
+        $limit     = (int) $request->input('limit', 5);
+        $offset    = ($currentPage - 1) * $limit;
+        $sort_by   = $request->input('sort_by', 'title');
+        $order     = $request->input('order', 'ASC');
 
-        if($isbn != null) {
-            $books = Book::select(
-                'barcode',
-                'isbn',
-                'id',
-                'title',
-                'author',
-                'publisher',
-                'publication_year',
-                'format',
-                'tags',
-                'cover_image',
-                'library',
-            )
-            ->where('isbn', $isbn)
-            ->when($hasLibraryFilter, function ($query) use ($libraries) {
-                return $query->whereIn('library', $libraries);
-            })
-            ->get();
-        } else {
-            $books = Book::select(
-                DB::raw('DISTINCT isbn'),
-                'title',
-                'author',
-                'publisher',
-                'publication_year',
-                'format',
-                'tags',
-                'cover_image',
-            )
-            ->where('title', 'LIKE', "%$q%")
-            ->when($hasYearFilter, function ($query) use ($start_year, $end_year) {
-                return $query->whereBetween('publication_year', [$start_year, $end_year]);
-            })
-            ->when($hasGenreFilter, function ($query) use ($genres) {
-                return $query->whereIn('genre', $genres);
-            })
-            ->when($hasFormatFilter, function ($query) use ($formats) {
-                return $query->whereIn('format', $formats);
-            })
-            ->when($hasLibraryFilter, function ($query) use ($libraries) {
-                return $query->whereIn('library', $libraries);
-            })
-            ->when($hasTagFilter, function ($query) use ($tags) {
-                foreach($tags as $tag) {
-                    $query->whereRaw("FIND_IN_SET(?, tags)", [$tag]);
-                }
+        $pdo = DB::connection()->getPdo();
+        $pdo->exec("SET SESSION sql_mode = (SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''))");
 
-                return $query;
-            })
-            ->when($hasPublisherFilter, function ($query) use ($publishers) {
-                return $query->whereIn('publisher', $publishers);
-            })
-            ->get();
+        $_sql_where  =
+        "WHERE `type` LIKE :type
+         AND `title` LIKE :q
+        ";
+
+        if($hasYearFilter) {
+            $_sql_where .= "AND `publication_year` BETWEEN '$start_year' AND '$end_year' ";
+        }
+        if($hasGenreFilter) {
+            $_sql_where .= "AND `genre` IN ('". implode("','", $genres) ."') ";
+        }
+        if($hasFormatFilter) {
+            $_sql_where .= "AND `format` IN ('". implode("','", $formats) ."') ";
+        }
+        if($hasLibraryFilter) {
+            $_sql_where .= "AND `library` IN ('". implode("','", $libraries) ."') ";
+        }
+        if($hasPublisherFilter) {
+            $_sql_where .= "AND `publisher` IN ('". implode("','", $publishers) ."') ";
+        }
+        if($hasTagFilter) {
+            foreach($tags as $tag) {
+                $_sql_where .= "AND FIND_IN_SET('$tag', `tags`) ";
+            }
         }
 
-        $books = $books->map(function ($book) use($hasLibraryFilter, $libraries) {
-            if($book->tags) {
-                $tags = explode(',', $book->tags);
+        $_sql_select = "SELECT * FROM `items` ";
+        $_sql_count  = "SELECT COUNT(DISTINCT title) FROM `items` ";
+
+        $_sql_group_by = "GROUP BY `title` ";
+        $_sql_order_by = "ORDER BY `$sort_by` $order ";
+        $_sql_limit = "LIMIT :limit OFFSET :offset ";
+
+        $sql = $_sql_select . $_sql_where . $_sql_group_by . $_sql_order_by . $_sql_limit;
+        $query = $pdo->prepare($sql);
+        $query->execute([
+            'type'   => "%$type%",
+            'q'      => "%$q%",
+            'limit'  => $limit,
+            'offset' => $offset,
+        ]);
+
+        $items = $query->fetchAll(PDO::FETCH_OBJ);
+        $items = collect($items);
+
+        $sql = $_sql_count . $_sql_where;
+        $query = $pdo->prepare($sql);
+        $query->execute([
+            'type' => "%$type%",
+            'q'    => "%$q%",
+        ]);
+
+        $totalItems = $query->fetchColumn();
+        $totalPages = ceil($totalItems / $limit);
+
+        $items = $items->map(function ($item) use($hasLibraryFilter, $libraries) {
+            if($item->tags) {
+                $tags = explode(',', $item->tags);
 
                 if(count($tags)) {
-                    $this->tags = array_merge($this->tags, $tags);
+                    $this->tags = array_unique(array_merge($this->tags, $tags));
                 }
             }
 
             $copies =
-                Book::where('isbn', $book->isbn)
+                Item::where('isbn', $item->isbn)
                     ->when($hasLibraryFilter, function ($query) use ($libraries) {
                         return $query->whereIn('library', $libraries);
                     })
                     ->count();
 
             $available =
-                Book::where('isbn', $book->isbn)
+                Item::where('isbn', $item->isbn)
                     ->when($hasLibraryFilter, function ($query) use ($libraries) {
                         return $query->whereIn('library', $libraries);
                     })
                     ->where('status','available')
                     ->count();
 
-            $book->copies = $copies;
-            $book->available = $available;
+            $item->copies = $copies;
+            $item->available = $available;
 
-            return $book;
+            return $item;
         });
 
         $this->addFilters('isbn', $request->input('isbn'));
@@ -269,77 +279,23 @@ class SearchController extends Controller
         $this->addFilters('format', $request->input('format'));
         $this->addFilters('tag', $request->input('tag'));
 
-        return view('search.books', [
-            'library'    => $library,
-            'books'      => $books,
-            'filters'    => $this->filters,
-            'genres'     => $this->genres,
-            'formats'    => $this->formats,
-            'statuses'   => $this->statuses,
-            'libraries'  => $this->libraries,
-            'publishers' => $this->publishers,
-            'tags'       => $this->tags,
-        ]);
-    }
-
-    public function book_copies(Request $request, $isbn)
-    {
-        $library = null;
-        if(in_array(Auth::user()->role, ['librarian','assistant','clerk'])) {
-            $user = UserDetail::where('email',Auth::user()->email)->first();
-
-            $this->filters[] = ['library', $user->library];
-            $library = $user->library;
-        }
-
-        $this->publishers = Book::select('publisher')->distinct()->get();
-        $this->publishers = $this->publishers->map(function ($publisher) {
-            return $publisher->publisher;
-        });
-
-        $hasLibraryFilter = false;
-
-        $libraries = [];
-        if($request->input('library')) {
-            $libraries = explode(',', $request->input('library'));
-
-            if(count($libraries) > 0) {
-                $hasLibraryFilter = true;
-            }
-        }
-
-        if($library) {
-            $libraries[] = $library;
-            $hasLibraryFilter = true;
-        }
-
-
-        $this->libraries = Library::all();
-        $books = Book::where('isbn', $isbn)
-            ->when($hasLibraryFilter, function ($query) use ($libraries) {
-                return $query->whereIn('library', $libraries);
-            })->get();
-
-        $books->each(function ($book) {
-            if($book->tags) {
-                $tags = explode(',', $book->tags);
-
-                if(count($tags)) {
-                    $this->tags = array_merge($this->tags, $tags);
-                }
-            }
-        });
-
-        return view('search.books', [
-            'library'    => $library,
-            'books'      => $books,
-            'filters'    => $this->filters,
-            'genres'     => $this->genres,
-            'formats'    => $this->formats,
-            'statuses'   => $this->statuses,
-            'libraries'  => $this->libraries,
-            'publishers' => $this->publishers,
-            'tags'       => $this->tags,
+        return view('search.index', [
+            'sort_by'     => $sort_by,
+            'order'       => $order,
+            'limit'       => $limit,
+            'offset'      => $offset,
+            'totalItems'  => $totalItems,
+            'totalPages'  => $totalPages,
+            'currentPage' => $currentPage,
+            'library'     => $library,
+            'items'       => $items,
+            'filters'     => $this->filters,
+            'genres'      => $this->genres,
+            'formats'     => $this->formats,
+            'statuses'    => $this->statuses,
+            'libraries'   => $this->libraries,
+            'publishers'  => $this->publishers,
+            'tags'        => $this->tags,
         ]);
     }
 }

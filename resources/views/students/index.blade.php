@@ -132,7 +132,7 @@
                         </div>
                     </div>
                     <div class="mb-2">
-                        <label for="barangay" class="form-label">Barangay</label>
+                        <label for="barangay" class="form-label">Address Line</label>
                         <input type="text" class="form-control form-control-sm" placeholder="--" name="barangay"
                             id="barangay" value="{{ old('barangay') ?? '' }}">
                         @error('barangay')

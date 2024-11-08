@@ -5,7 +5,7 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0 border py-2 px-3 bg-white rounded">
                     <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
-                    <li class="breadcrumb-item"><a href="/accoutn">Account</a></li>
+                    <li class="breadcrumb-item"><a href="/account">Account</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Password</li>
                 </ol>
             </nav>

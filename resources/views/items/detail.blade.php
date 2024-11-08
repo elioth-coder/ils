@@ -28,11 +28,11 @@
                     </div>
                     @if(in_array(Auth::user()->role, ['admin','librarian','staff','clerk']))
                         <div class="w-50 text-end">
-                            <a href="/collections/books/{{ $book->id }}/copy#books-form" class="btn btn-outline-secondary btn-sm">
+                            <a href="/collections/{{ $item->type }}/{{ $item->id }}/copy#{{ $item->type }}-form" class="btn btn-outline-secondary btn-sm">
                                 Duplicate
                                 <i class="bi bi-copy"></i>
                             </a>
-                            <a href="/collections/books/{{ $book->id }}/edit#books-form" class="btn btn-outline-primary btn-sm">
+                            <a href="/collections/{{ $item->type }}/{{ $item->id }}/edit#{{ $item->type }}-form" class="btn btn-outline-primary btn-sm">
                                 Edit
                                 <i class="bi bi-pencil"></i>
                             </a>
@@ -43,28 +43,28 @@
                 <section class="d-flex w-100">
                     <div class="px-4">
                         <section style="height: 200px;" class="card p-1 mt-2">
-                            @php $book_cover = ($book->cover_image) ? "/storage/images/books/$book->cover_image" : '/images/book_cover_not_available.jpg'; @endphp
-                            <img class="h-100 d-block" src="{{ asset($book_cover) }}" alt="">
+                            @php $item_cover = ($item->cover_image) ? "/storage/images/$item->type/$item->cover_image" : '/images/cover_not_available.jpg'; @endphp
+                            <img class="h-100 d-block" src="{{ asset($item_cover) }}" alt="">
                         </section>
                     </div>
                     <div class="w-100 px-1">
                         <section class="d-flex">
                             <div class="w-100">
-                                <h2>{{ $book->title }}</h2>
+                                <h2>{{ $item->title }}</h2>
                             </div>
                         </section>
                         <hr style="margin-top: 0; margin-bottom: 12px;">
                         <p style="margin: 0;">
-                            <b>Author(s):</b> {{ $book->author }} <br>
-                            <b>Published:</b> {{ $book->publisher }} ({{ $book->publication_year }}) <br>
-                            <b>ISBN:</b> {{ $book->isbn }} <br>
+                            <b>Author:</b> {{ $item->author }} <br>
+                            <b>Published:</b> {{ $item->publisher }} ({{ $item->publication_year }}) <br>
+                            <b>ISBN:</b> {{ $item->isbn }} <br>
                         </p>
                         <p class="multiline-ellipsis my-0 mb-2" style="text-align: justify;">
-                            <b>Abstract:</b> <i>{{ $book->summary }}</i></p>
-                        @if ($book->tags)
+                            <b>Abstract:</b> <i>{{ $item->summary }}</i></p>
+                        @if ($item->tags)
                             <p>
                                 @php
-                                    $tags = explode(',', $book->tags) ?? [];
+                                    $tags = explode(',', $item->tags) ?? [];
                                 @endphp
                                 @foreach ($tags as $tag)
                                     <a class="badge text-bg-secondary">
@@ -117,7 +117,7 @@
                                     <h2 class="accordion-header">
                                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" aria-expanded="false" data-bs-target="#libray-{{ $library->code }}-content"  aria-controls="libray-{{ $library->code }}-content">
                                             <div class="w-50">[{{ $library->code ?? '--' }}] - {{ $library->name ?? '--' }}</div>
-                                            <div class="w-50">Items: {{ count($library->books) }}</div>
+                                            <div class="w-50">Items: {{ count($library->items) }}</div>
                                         </button>
                                     </h2>
                                     <div id="libray-{{ $library->code }}-content" class="accordion-collapse collapse" data-bs-parent="#libray-{{ $library->code }}">
@@ -125,35 +125,79 @@
                                             <div class="d-flex mb-1 border m-3 p-3">
                                                 <table class="w-100">
                                                 <tbody>
-                                                    @forelse($library->books as $copy)
+                                                    @forelse($library->items as $library_item)
                                                         <tr>
                                                             <th class="text-nowrap px-2">Barcode: </th>
-                                                            <td>{{ $copy->barcode ?? '--'}}</td>
+                                                            <td>
+                                                                @if($library_item->barcode)
+                                                                <a href="/collections/items/{{ $library_item->title }}/copy/{{ $library_item->barcode }}">
+                                                                    {{ $library_item->barcode ?? '--'}}
+                                                                </a>
+                                                                @else
+                                                                    --
+                                                                @endif
+                                                            </td>
                                                             <td>
                                                                 <div class="text-end" style="min-width: 200px;">
-                                                                    @if($copy->status=='available')
-                                                                        <button onclick="requestItem({{ $copy->barcode ?? 'null' }})" title="Request item" class="btn btn-outline-success">
-                                                                            <i class="bi bi-basket"></i>
-                                                                        </button>
-                                                                    @endif
-                                                                    @if(in_array(Auth::user()->role, ['admin','librarian','clerk','staff']))
-                                                                        <button title="Delete item" class="btn btn-outline-danger">
-                                                                            <i class="bi bi-trash"></i>
-                                                                        </button>
+                                                                    @php
+                                                                    $requests = collect($library_item->requests)->filter(function($request_item) {
+                                                                        return $request_item->requester_id == Auth::user()->id;
+                                                                    });
+                                                                    $requests_count = count($requests);
+                                                                    $is_requested = ($requests_count > 0) ? true : false;
+                                                                    @endphp
+
+                                                                    @if($library_item->status=='available' && !in_array(Auth::user()->role, ['admin','librarian','clerk','staff']))
+                                                                        @if ($is_requested)
+                                                                            <span class="badge text-bg-warning">Request pending</span>
+                                                                        @else
+                                                                            <button onclick="requestItem({{ $library_item->barcode ?? 'null' }})" title="Request item" class="btn btn-outline-success">
+                                                                                <i class="bi bi-basket"></i>
+                                                                            </button>
+                                                                        @endif
                                                                     @endif
                                                                 </div>
                                                             </td>
                                                         </tr>
                                                         <tr>
                                                             <th class="text-nowrap px-2">Price: </th>
-                                                            <td class="text-capitalize">{{ $copy->price ?? '--'}}</td>
+                                                            <td class="text-capitalize">{{ $library_item->price ?? '--'}}</td>
                                                             <td></td>
                                                         </tr>
                                                         <tr>
                                                             <th class="text-nowrap px-2">Status: </th>
-                                                            <td class="text-capitalize">{{ $copy->status ?? '--'}}</td>
+                                                            <td class="text-capitalize">{{ $library_item->status ?? '--'}}</td>
                                                             <td></td>
                                                         </tr>
+                                                        @if($requests_count > 0)
+                                                            <tr>
+                                                                <th class="text-nowrap px-2">Requested by: </th>
+                                                                <td class="">{{ $requests_count }} patron</td>
+                                                                <td></td>
+                                                            </tr>
+                                                        @endif
+                                                        @if($library_item->status=='reserved')
+                                                            <tr>
+                                                                <th class="text-nowrap px-2">Reserved for: </th>
+                                                                <td class="text-capitalize">
+                                                                    <a href="/services/checkouts/{{ $library_item->reserved_for->card_number }}/patron">
+                                                                        {{ $library_item->reserved_for->name }}
+                                                                    </a>
+                                                                </td>
+                                                                <td></td>
+                                                            </tr>
+                                                        @endif
+                                                        @if($library_item->status=='checked out')
+                                                            <tr>
+                                                                <th class="text-nowrap px-2">Loaned by: </th>
+                                                                <td class="text-capitalize">
+                                                                    <a href="/services/checkouts/{{ $library_item->loaned_by->card_number }}/patron">
+                                                                        {{ $library_item->loaned_by->name }}
+                                                                    </a>
+                                                                </td>
+                                                                <td></td>
+                                                            </tr>
+                                                        @endif
                                                         <tr><td colspan="3"><hr></td></tr>
                                                     @empty
                                                         <tr><td colspan="3"><h5 class="text-center my-3 text-secondary">No data found.</h5></td></tr>
@@ -172,61 +216,63 @@
                             <tbody class="align-top">
                                 <tr>
                                     <th class="text-nowrap px-2">No. of copies</th>
-                                    <td class="text px-2">{{ $book->copies ?? '--' }}</td>
+                                    <td class="text px-2">{{ $item->copies ?? '--' }}</td>
                                 </tr>
                                 <tr>
                                     <th class="text-nowrap px-2">Title</th>
-                                    <td class="text px-2">{{ $book->title }}</td>
+                                    <td class="text px-2">{{ $item->title }}</td>
                                 </tr>
                                 <tr>
                                     <th class="text-nowrap px-2">ISBN</th>
-                                    <td class="text px-2">{{ $book->isbn }}</td>
+                                    <td class="text px-2">{{ $item->isbn }}</td>
                                 </tr>
                                 <tr>
-                                    <th class="text-nowrap px-2">Author(s)</th>
-                                    <td class="text px-2">{{ $book->author ?? '--' }}</td>
+                                    <th class="text-nowrap px-2">Author</th>
+                                    <td class="text px-2">{{ $item->author ?? '--' }}</td>
                                 </tr>
                                 <tr>
                                     <th class="text-nowrap px-2">Publisher</th>
-                                    <td class="text px-2">{{ $book->publisher ?? '--' }}</td>
+                                    <td class="text px-2">{{ $item->publisher ?? '--' }}</td>
                                 </tr>
                                 <tr>
                                     <th class="text-nowrap px-2">Year Published</th>
-                                    <td class="text px-2">{{ $book->publication_year ?? '--' }}</td>
+                                    <td class="text px-2">{{ $item->publication_year ?? '--' }}</td>
                                 </tr>
                                 <tr>
                                     <th class="text-nowrap px-2">Genre</th>
-                                    <td class="text-capitalize px-2">{{ $book->genre }}</td>
+                                    <td class="text-capitalize px-2">{{ $item->genre }}</td>
                                 </tr>
                                 <tr>
                                     <th class="text-nowrap px-2">Abstract / Summary</th>
                                     <td class="px-2" style="text-align: justify;">
                                         <div id="summary" class="multiline-ellipsis">
-                                            {{ $book->summary ?? '--' }}
+                                            {{ $item->summary ?? '--' }}
                                         </div>
-                                        <a href="javascript:showSummary()" id="show-summary">See more.</a>
-                                        <a href="javascript:hideSummary()" style="display: none;" id="hide-summary">See less.</a>
+                                        @if(strlen($item->summary > 200))
+                                            <a href="javascript:showSummary()" id="show-summary">See more.</a>
+                                            <a href="javascript:hideSummary()" style="display: none;" id="hide-summary">See less.</a>
+                                        @endif
                                     </td>
                                 </tr>
                                 <tr>
                                     <th class="text-nowrap px-2">No. of pages</th>
-                                    <td class="text px-2">{{ $book->number_of_pages ?? '--' }}</td>
+                                    <td class="text px-2">{{ $item->number_of_pages ?? '--' }}</td>
                                 </tr>
                                 <tr>
                                     <th class="text-nowrap px-2">Price</th>
-                                    <td class="text px-2">{{ $book->price ?? '--' }}</td>
+                                    <td class="text px-2">{{ $item->price ?? '--' }}</td>
                                 </tr>
                                 <tr>
                                     <th class="text-nowrap px-2">Format</th>
-                                    <td class="text-capitalize px-2">{{ $book->format }}</td>
+                                    <td class="text-capitalize px-2">{{ $item->format }}</td>
                                 </tr>
                                 <tr>
                                     <th class="text-nowrap px-2">Language</th>
-                                    <td class="text-capitalize px-2">{{ $book->language ?? '--' }}</td>
+                                    <td class="text-capitalize px-2">{{ $item->language ?? '--' }}</td>
                                 </tr>
                                 <tr>
                                     <th class="text-nowrap px-2">Tag(s)</th>
-                                    <td class="px-2">{{ $book->tags }}</td>
+                                    <td class="px-2">{{ $item->tags }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -244,21 +290,6 @@
     <x-footer />
     <x-slot:script>
         <script>
-        async function deleteBook(id) {
-            let result = await Swal.fire({
-                title: "Delete this book?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#0d6efd",
-                cancelButtonColor: "#bb2d3b",
-                confirmButtonText: "Continue"
-            });
-
-            if (result.isConfirmed) {
-                document.querySelector(`#delete-book-${id} button`).click();
-            }
-        }
-
         function requestItem(barcode) {
             if(barcode==null) {
                 Swal.fire({
@@ -278,10 +309,9 @@
                     if (result.isConfirmed) {
                         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
                         let formData = new FormData();
-                        formData.set('type', 'book');
                         formData.set('barcode', barcode);
 
-                        let response = await fetch('/collections/books/request', {
+                        let response = await fetch('/collections/items/request', {
                             method: 'POST',
                             body: formData,
                             headers: {

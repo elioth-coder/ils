@@ -194,7 +194,7 @@
                                 $barangay = (old('barangay')) ? old('barangay') : $selected->barangay;
                             }
                         @endphp
-                        <label for="barangay" class="form-label">Barangay</label>
+                        <label for="barangay" class="form-label">Address Line</label>
                         <input type="text" class="form-control form-control-sm" placeholder="--" name="barangay" id="barangay" value="{{ $barangay }}">
                         @error('barangay')
                             <div class="form-text text-danger">{{ $message }}</div>
