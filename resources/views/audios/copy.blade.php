@@ -1,5 +1,5 @@
 @component('audios.layout', [
-    'audios' => $audios,
+    'items' => $items,
 ])
     @slot('breadcrumb')
         <nav aria-label="breadcrumb">
@@ -196,25 +196,56 @@
                 <div class="w-100 d-flex flex-column">
                     <div class="flex-grow-1 rounded d-flex align-items-center justify-content-center">
                         <div id="audio-cover-container" class="border text-center shadow">
-                            @php $audio_cover = ($selected->cover_image) ? "/storage/images/audio/$selected->cover_image" : '/images/cover_not_available.jpg'; @endphp
-                            <img id="audio-cover" class="h-100 d-block" src="{{ asset($audio_cover) }}" alt="">
+                            @php $item_cover = ($selected->cover_image) ? "/storage/images/audio/$selected->cover_image" : '/images/cover_not_available.jpg'; @endphp
+                            <img id="audio-cover" class="h-100 d-block" src="{{ asset($item_cover) }}" alt="">
                         </div>
                         <input class="d-none" type="file" name="file" id="file">
                     </div>
-                    <div class="mb-2">
-                        @php
-                            if ($errors->has('tags')) {
-                                $tags = old('tags');
-                            } else {
-                                $tags = old('tags') ? old('tags') : $selected->tags;
-                            }
-                        @endphp
-                        <label for="tags" class="form-label">Tags</label>
-                        <input type="text" class="form-control form-control-sm" placeholder="--" name="tags"
-                            id="tags" value="{{ $tags }}">
-                        @error('tags')
-                            <div class="form-text text-danger">{{ $message }}</div>
-                        @enderror
+                    <div class="d-flex column-gap-2">
+                        <div class="mb-2 w-100">
+                            @php
+                                if ($errors->has('tags')) {
+                                    $tags = old('tags');
+                                } else {
+                                    $tags = old('tags') ? old('tags') : $selected->tags;
+                                }
+                            @endphp
+                            <label for="tags" class="form-label">Tags</label>
+                            <input type="text" class="form-control form-control-sm" placeholder="--" name="tags"
+                                id="tags" value="{{ $tags }}">
+                            @error('tags')
+                                <div class="form-text text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="mb-2 w-100">
+                            @php
+                                $sections = [
+                                    'circulation',
+                                    'filipiniana',
+                                    'periodical',
+                                    'reference',
+                                    'e-library',
+                                    'audio-visual',
+                                ];
+
+                                if ($errors->has('section')) {
+                                    $section = old('section');
+                                } else {
+                                    $section = old('section') ? old('section') : $selected->section;
+                                }
+                            @endphp
+
+                            <label for="section" class="form-label">Library Section</label>
+                            <select class="form-control form-control-sm text-capitalize" name="section" id="section">
+                                <option value="">--</option>
+                                @foreach($sections as $_section)
+                                    <option {{ $_section == $section ? 'selected' : '' }}  value="{{ $_section }}">{{ $_section }} Section</option>
+                                @endforeach
+                            </select>
+                            @error('section')
+                                <div class="form-text text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
                     </div>
                     <div class="d-flex column-gap-2">
                         <div class="mb-2 w-100">

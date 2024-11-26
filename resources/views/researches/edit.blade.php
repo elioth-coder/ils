@@ -230,20 +230,51 @@
                         </div>
                         <input class="d-none" type="file" name="file" id="file">
                     </div>
-                    <div class="mb-2">
-                        @php
-                            if ($errors->has('tags')) {
-                                $tags = old('tags');
-                            } else {
-                                $tags = old('tags') ? old('tags') : $selected->tags;
-                            }
-                        @endphp
-                        <label for="tags" class="form-label">Tags</label>
-                        <input type="text" class="form-control form-control-sm" placeholder="--" name="tags"
-                            id="tags" value="{{ $tags }}">
-                        @error('tags')
-                            <div class="form-text text-danger">{{ $message }}</div>
-                        @enderror
+                    <div class="d-flex column-gap-2">
+                        <div class="mb-2 w-100">
+                            @php
+                                if ($errors->has('tags')) {
+                                    $tags = old('tags');
+                                } else {
+                                    $tags = old('tags') ? old('tags') : $selected->tags;
+                                }
+                            @endphp
+                            <label for="tags" class="form-label">Tags</label>
+                            <input type="text" class="form-control form-control-sm" placeholder="--" name="tags"
+                                id="tags" value="{{ $tags }}">
+                            @error('tags')
+                                <div class="form-text text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="mb-2 w-100">
+                            @php
+                                $sections = [
+                                    'circulation',
+                                    'filipiniana',
+                                    'periodical',
+                                    'reference',
+                                    'e-library',
+                                    'audio-visual',
+                                ];
+
+                                if ($errors->has('section')) {
+                                    $section = old('section');
+                                } else {
+                                    $section = old('section') ? old('section') : $selected->section;
+                                }
+                            @endphp
+
+                            <label for="section" class="form-label">Library Section</label>
+                            <select class="form-control form-control-sm text-capitalize" name="section" id="section">
+                                <option value="">--</option>
+                                @foreach($sections as $_section)
+                                    <option {{ $_section == $section ? 'selected' : '' }}  value="{{ $_section }}">{{ $_section }} Section</option>
+                                @endforeach
+                            </select>
+                            @error('section')
+                                <div class="form-text text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
                     </div>
                     <div class="d-flex column-gap-2">
                         <div class="mb-2 w-100">

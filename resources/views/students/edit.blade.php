@@ -30,7 +30,7 @@
           position: absolute;
         }
         </style>
-        <form action="/users/students/{{ $selected->id }}" method="POST" enctype="multipart/form-data">
+        <form id="patron-form" action="/users/students/{{ $selected->id }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PATCH')
             <h4 class="text-body-secondary">Edit this student</h4>
@@ -385,7 +385,8 @@
             <hr>
             <div class="d-flex gap-2 flex-row-reverse">
                 <a href="{{ url()->previous() }}" class="w-25 btn btn-outline-dark px-3">Cancel</a>
-                <button type="submit" class="w-25 btn btn-primary px-3">Update</button>
+                <button id="submit_proxy" type="button" onclick="addEncoding();" class="w-25 btn btn-primary px-3">Submit</button>
+                <button id="submit" type="submit" class="d-none w-25 btn btn-primary px-3">Submit</button>
             </div>
         </form>
     @endslot

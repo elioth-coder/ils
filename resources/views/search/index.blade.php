@@ -25,15 +25,25 @@
                         <div class="px-4">
                             <section style="height: 150px;" class="card p-1">
                                 @php $item_cover = ($item->cover_image) ? "/storage/images/$item->type/$item->cover_image" : '/images/cover_not_available.jpg'; @endphp
-                                <img class="h-100 d-block" src="{{ asset($item_cover) }}" alt="">
+                                <object class="h-100 d-block" data="{{ asset($item_cover) }}" type="image/png">
+                                    <img class="h-100 d-block" src="/images/cover_not_available.jpg" alt="">
+                                </object>
                             </section>
                         </div>
                         <div class="w-100 px-1">
                             <section class="d-flex">
                                 <div class="w-100">
                                     <a href="/collections/items/{{ $item->title }}/detail" class="link-primary">
-                                        <h4>{{ $item->title }}</h4>
-                                    </a>
+                                        <h4 class="d-inline">{{ $item->title }}</h4></a>
+                                    @php
+                                    $text = "Title: " . $item->title
+                                        . ", Author: " . $item->author
+                                        . ", Published: " . $item->publisher . " " . $item->publication_year
+                                        . ", Genre: " . $item->genre;
+                                    @endphp
+                                    <button class="btn btn-outline-dark btn-sm" onclick="textToSpeech('{{ $text }}')">
+                                        <i class="bi bi-volume-up-fill text-decoration-none"></i>
+                                    </button>
                                 </div>
                             </section>
                             <p>
@@ -41,42 +51,43 @@
                                 <b>Published:</b> {{ $item->publisher }} ({{ $item->publication_year }}) <br>
                                 <b>Genre:</b> <span class="badge text-bg-info">{{ $item->genre }}</span> <br>
                                 *
-                                @if($item->type=='book')
+                                @if ($item->type == 'book')
                                     <i class="bi bi-book"></i>
                                 @endif
-                                @if($item->type=='research')
+                                @if ($item->type == 'research')
                                     <i class="bi bi-journals"></i>
                                 @endif
-                                @if($item->type=='audio')
+                                @if ($item->type == 'audio')
                                     <i class="bi bi-music-note-beamed"></i>
                                 @endif
-                                @if($item->type=='video')
+                                @if ($item->type == 'video')
                                     <i class="bi bi-film"></i>
                                 @endif
 
                                 <i class="text-capitalize">{{ $item->type }}</i>
                                 <br>
 
-                                <p class="my-1">
+                            <p class="my-1">
                                 @if ($item->available > 0)
                                     <i class="bi bi-circle-fill text-success me-1"></i> Available
                                 @else
                                     <i class="bi bi-circle-fill text-danger me-1"></i> Not Available
                                 @endif
-                                </p>
+                            </p>
 
-                                @if ($item->tags)
-                                    <p>
-                                        @php
-                                            $tags = explode(',', $item->tags) ?? [];
-                                        @endphp
-                                        @foreach ($tags as $tag)
-                                            <a onclick="appendFilter('{{ $tag }}', 'tag')" style="cursor:pointer;" class="badge text-bg-secondary link-light">
-                                                {{ $tag }}
-                                            </a>
-                                        @endforeach
-                                    </p>
-                                @endif
+                            @if ($item->tags)
+                                <p>
+                                    @php
+                                        $tags = explode(',', $item->tags) ?? [];
+                                    @endphp
+                                    @foreach ($tags as $tag)
+                                        <a onclick="appendFilter('{{ $tag }}', 'tag')" style="cursor:pointer;"
+                                            class="badge text-bg-secondary link-light">
+                                            {{ $tag }}
+                                        </a>
+                                    @endforeach
+                                </p>
+                            @endif
                             </p>
                         </div>
                     </section>
@@ -94,6 +105,15 @@
     <x-footer />
     <x-slot:script>
         <script>
+            function textToSpeech(text) {
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    window.speechSynthesis.speak(utterance);
+                } else {
+                    console.error('Text-to-Speech is not supported in this browser.');
+                }
+            }
+
             function applyYearFilter() {
                 $from = document.getElementById('from').value.trim();
                 $to = document.getElementById('to').value.trim();
@@ -141,11 +161,11 @@
             function appendFilter(value, parameter) {
                 let parsed = queryString.parse(location.search);
 
-                if(parsed[parameter]) {
+                if (parsed[parameter]) {
                     let values = parsed[parameter].split(',');
                     let index = values.indexOf(value);
 
-                    if(index < 0) {
+                    if (index < 0) {
                         values.push(value);
                     }
 

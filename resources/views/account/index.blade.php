@@ -18,8 +18,9 @@
                 <section class="card w-50 p-3 d-flex flex-row mb-4 position-relative">
                     <div class="p-1 pe-4">
                         @php $profile = ($patron->profile) ? "/storage/images/users/$patron->profile" : '/images/profile.jpg'; @endphp
-                        <img class="d-block rounded-circle border" style="height: 100px;" src="{{ asset($profile) }}"
-                            alt="">
+                        <object class="d-block rounded-circle border" style="height: 100px;" data="{{ asset($profile) }}" type="image/png">
+                            <img class="d-block rounded-circle border" style="height: 100px;" src="/images/profile.jpg" alt="">
+                        </object>
                     </div>
                     <div class="p-1">
                         <h2 class="text-capitalize">{{ strtolower($patron->last_name) }}, {{ strtolower($patron->first_name) }}</h2>
@@ -111,7 +112,9 @@
                                         <div class="d-flex">
                                             <section style="height: 110px;" class="card p-1 me-2">
                                                 @php $item_cover = ($item->cover_image) ? "/storage/images/$item->type/$item->cover_image" : '/images/cover_not_available.jpg'; @endphp
-                                                <img class="h-100 d-block" src="{{ asset($item_cover) }}" alt="">
+                                                <object class="h-100 d-block" style="height: 100px;" data="{{ asset($item_cover) }}" type="image/png">
+                                                    <img class="h-100 d-block" src="/images/cover_not_available.jpg" alt="">
+                                                </object>
                                             </section>
                                             <section>
                                                 <div class="d-flex">
@@ -172,7 +175,9 @@
                                         <div class="d-flex">
                                             <section style="height: 110px;" class="card p-1 me-2">
                                                 @php $item_cover = ($item->cover_image) ? "/storage/images/$item->type/$item->cover_image" : '/images/cover_not_available.jpg'; @endphp
-                                                <img class="h-100 d-block" src="{{ asset($item_cover) }}" alt="">
+                                                <object class="h-100 d-block" style="height: 100px;" data="{{ asset($item_cover) }}" type="image/png">
+                                                    <img class="h-100 d-block" src="/images/cover_not_available.jpg" alt="">
+                                                </object>
                                             </section>
                                             <section>
                                                 <div class="d-flex">
@@ -241,7 +246,9 @@
                                         <div class="d-flex">
                                             <section style="height: 110px;" class="card p-1 me-2">
                                                 @php $item_cover = ($item->cover_image) ? "/storage/images/$item->type/$item->cover_image" : '/images/cover_not_available.jpg'; @endphp
-                                                <img class="h-100 d-block" src="{{ asset($item_cover) }}" alt="">
+                                                <object class="h-100 d-block" style="height: 100px;" data="{{ asset($item_cover) }}" type="image/png">
+                                                    <img class="h-100 d-block" src="/images/cover_not_available.jpg" alt="">
+                                                </object>
                                             </section>
                                             <section>
                                                 <div class="d-flex">
@@ -300,7 +307,9 @@
                                         <div class="d-flex">
                                             <section style="height: 110px;" class="card p-1 me-2">
                                                 @php $item_cover = ($item->cover_image) ? "/storage/images/$item->type/$item->cover_image" : '/images/cover_not_available.jpg'; @endphp
-                                                <img class="h-100 d-block" src="{{ asset($item_cover) }}" alt="">
+                                                <object class="h-100 d-block" style="height: 100px;" data="{{ asset($item_cover) }}" type="image/png">
+                                                    <img class="h-100 d-block" src="/images/cover_not_available.jpg" alt="">
+                                                </object>
                                             </section>
                                             <section>
                                                 <div class="d-flex">

@@ -100,7 +100,7 @@ class VideoController extends Controller
     {
         $library = $this->getAffiliatedLibrary();
 
-        $videos = Item::latest()
+        $items = Item::latest()
             ->where('type', 'video')
             ->when($library, function ($query) use ($library) {
                 return $query->where('library', $library);
@@ -108,7 +108,7 @@ class VideoController extends Controller
             ->get();
 
         return view('videos.index', [
-            'videos'    => $videos,
+            'items'     => $items,
             'languages' => $this->languages,
             'genres'    => $this->genres,
             'statuses'  => $this->statuses,
@@ -141,7 +141,7 @@ class VideoController extends Controller
         }
 
         $attributes['type'] = 'video';
-        $video = Item::create($attributes);
+        $item = Item::create($attributes);
         if(!empty($attributes['file'])) {
             $manager = ImageManager::gd();
             $image = $manager->read($request->file('file'));
@@ -153,15 +153,15 @@ class VideoController extends Controller
         if(!empty($image)) {
             $path = "public/images/video";
             Storage::makeDirectory($path);
-            $path .= "/$video->id.png";
+            $path .= "/$item->id.png";
             Storage::put($path, (string) $image->encode());
 
-            $video->cover_image = $video->id . ".png";
-            $video->save();
+            $item->cover_image = $item->id . ".png";
+            $item->save();
         }
 
         return redirect('collections/video')->with([
-            'message' => "Successfully created the video $video->title."
+            'message' => "Successfully created the video $item->title."
         ]);
     }
 
@@ -191,7 +191,7 @@ class VideoController extends Controller
         }
 
         $attributes['type'] = 'video';
-        $video = Item::create($attributes);
+        $item = Item::create($attributes);
         if(!empty($attributes['file'])) {
             $manager = ImageManager::gd();
             $image = $manager->read($request->file('file'));
@@ -205,40 +205,47 @@ class VideoController extends Controller
         if(!empty($image)) {
             $path = "public/images/video";
             Storage::makeDirectory($path);
-            $path .= "/$video->id.png";
+            $path .= "/$item->id.png";
             Storage::put($path, (string) $image->encode());
 
-            $video->cover_image = "$video->id.png";
-            $video->save();
-        } else {
+            $item->cover_image = "$item->id.png";
+            $item->save();
+        }  else {
+            $source = Item::findOrFail($id);
+
             if($source->cover_image) {
-                $video->cover_image = $source->cover_image;
-                $video->save();
+                $path = "public/images/video";
+                Storage::makeDirectory($path);
+                $copy1 = "$path/$source->id.png";
+                $copy2 = "$path/$item->id.png";
+                Storage::copy($copy1, $copy2);
+
+                $item->cover_image = "$item->id.png";
+                $item->save();
             }
         }
 
-        $video->save();
-
+        $item->save();
 
         return redirect('collections/video')->with([
-            'message' => "Successfully copied the video $video->title."
+            'message' => "Successfully copied the video $item->title."
         ]);
     }
 
     public function destroy($id)
     {
-        $video = Item::findOrFail($id);
-        $path = "public/images/video/$video->cover_image";
+        $item = Item::findOrFail($id);
+        $path = "public/images/video/$item->cover_image";
 
         if (Storage::exists($path)) {
             Storage::delete($path);
         }
 
-        $video->delete();
+        $item->delete();
 
         return redirect("collections/video")
             ->with([
-                'message' => 'Successfully deleted the video ' . $video->title . '.',
+                'message' => 'Successfully deleted the video ' . $item->title . '.',
             ]);
     }
 
@@ -247,7 +254,7 @@ class VideoController extends Controller
         $library = $this->getAffiliatedLibrary();
 
         $selected  = Item::findOrFail($id);
-        $videos = Item::latest()
+        $items = Item::latest()
             ->where('type', 'video')
             ->when($library, function ($query) use ($library) {
                 return $query->where('library', $library);
@@ -255,7 +262,7 @@ class VideoController extends Controller
             ->get();
 
         return view('videos.copy', [
-            'videos' => $videos,
+            'items' => $items,
             'selected'    => $selected,
             'languages'   => $this->languages,
             'genres'      => $this->genres,
@@ -268,7 +275,7 @@ class VideoController extends Controller
         $library = $this->getAffiliatedLibrary();
 
         $selected  = Item::findOrFail($id);
-        $videos = Item::latest()
+        $items = Item::latest()
             ->where('type', 'video')
             ->when($library, function ($query) use ($library) {
                 return $query->where('library', $library);
@@ -276,7 +283,7 @@ class VideoController extends Controller
             ->get();
 
         return view('videos.edit', [
-            'videos'     => $videos,
+            'items'     => $items,
             'selected'   => $selected,
             'genres'     => $this->genres,
             'languages'  => $this->languages,
@@ -286,7 +293,7 @@ class VideoController extends Controller
 
     public function update(Request $request, $id)
     {
-        $video = Item::findOrFail($id);
+        $item = Item::findOrFail($id);
         $rules = [
             'accession_number' => ['nullable', 'string', 'unique:items,accession_number', 'max:255'],
             'barcode'          => ['nullable', 'string', 'unique:items,barcode', 'max:255'],
@@ -305,10 +312,10 @@ class VideoController extends Controller
             'file'             => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ];
 
-        if($request->post('accession_number') == $video->accession_number) {
+        if($request->post('accession_number') == $item->accession_number) {
             unset($rules['accession_number']);
         }
-        if($request->post('barcode') == $video->barcode) {
+        if($request->post('barcode') == $item->barcode) {
             unset($rules['barcode']);
         }
 
@@ -319,7 +326,7 @@ class VideoController extends Controller
             $attributes['library'] = $user->library;
         }
 
-        $video->update($attributes);
+        $item->update($attributes);
         if(!empty($attributes['file'])) {
             $manager = ImageManager::gd();
             $image = $manager->read($request->file('file'));
@@ -331,15 +338,15 @@ class VideoController extends Controller
         if(!empty($image)) {
             $path = "public/images/video";
             Storage::makeDirectory($path);
-            $path .= "/$video->id.png";
+            $path .= "/$item->id.png";
             Storage::put($path, (string) $image->encode());
 
-            $video->cover_image = $video->id . ".png";
-            $video->save();
+            $item->cover_image = $item->id . ".png";
+            $item->save();
         }
 
         return redirect('collections/video')->with([
-            'message' => "Successfully updated the video $video->title."
+            'message' => "Successfully updated the video $item->title."
         ]);
     }
 }

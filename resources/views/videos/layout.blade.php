@@ -41,28 +41,28 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($videos as $video)
+                        @foreach ($items as $item)
                             <tr>
                                 <td style="min-width: 140px;">
-                                    <form id="delete-video-{{ $video->id }}"
-                                        action="/collections/video/{{ $video->id }}" method="POST" class="d-none">
+                                    <form id="delete-video-{{ $item->id }}"
+                                        action="/collections/video/{{ $item->id }}" method="POST" class="d-none">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit">DELETE</button>
                                     </form>
-                                    <a title="Copy" href="/collections/video/{{ $video->id }}/copy#video-form" class="btn btn-light btn-sm">
+                                    <a title="Copy" href="/collections/video/{{ $item->id }}/copy#video-form" class="btn btn-light btn-sm">
                                         <i class="bi bi-copy"></i>
                                     </a>
-                                    <a title="Edit" href="/collections/video/{{ $video->id }}/edit#video-form" class="btn btn-light btn-sm">
+                                    <a title="Edit" href="/collections/video/{{ $item->id }}/edit#video-form" class="btn btn-light btn-sm">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <button title="Delete" onclick="deleteVideo({{ $video->id }});" class="btn btn-light btn-sm">
+                                    <button title="Delete" onclick="deleteVideo({{ $item->id }});" class="btn btn-light btn-sm">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </td>
-                                <td>{{ $video->title }}</td>
-                                <td class="text-end">{{ $video->publication_year }}</td>
-                                <td>{{ $video->author }}</td>
+                                <td>{{ $item->title }}</td>
+                                <td class="text-end">{{ $item->publication_year }}</td>
+                                <td>{{ $item->author }}</td>
                             </tr>
                         @endforeach
                     </tbody>

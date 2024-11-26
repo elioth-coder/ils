@@ -32,6 +32,31 @@ class CurrentLoanController extends Controller
     public function index()
     {
         $pdo = DB::connection()->getPdo();
+        $sql =
+        "SELECT
+            items.*,
+            loaned_items.status AS loan_status,
+            loaned_items.date_loaned,
+            loaned_items.date_returned,
+            loaned_items.due_date,
+            loaned_items.loaner_id
+         FROM items
+         INNER JOIN loaned_items
+         ON items.barcode = loaned_items.barcode
+         WHERE loaned_items.status = 'checked out'
+         AND DATE(loaned_items.due_date) <= DATE(NOW())
+        ";
+        $query = $pdo->prepare($sql);
+        $query->execute();
+        $overdue_items = $query->fetchAll(PDO::FETCH_CLASS, 'stdClass');
+
+        $overdue_items = collect($overdue_items)->map(function($item) {
+            $patron = $this->getPatron($item);
+            $item->patron = $patron;
+
+            return $item;
+        });
+
         $_sql =
         "SELECT
             items.*,
@@ -46,7 +71,7 @@ class CurrentLoanController extends Controller
          WHERE loaned_items.status
         ";
 
-        $predicate = "IN ('checked out')";
+        $predicate = "IN ('checked out') AND DATE(loaned_items.due_date) > DATE(NOW())";
         $sql = $_sql . $predicate;
         $query = $pdo->prepare($sql);
         $query->execute();
@@ -74,6 +99,7 @@ class CurrentLoanController extends Controller
 
         return view('current_loans.index', [
             'loaned_items'   => $loaned_items ?? [],
+            'overdue_items'  => $overdue_items ?? [],
             'returned_items' => $returned_items ?? [],
         ]);
     }

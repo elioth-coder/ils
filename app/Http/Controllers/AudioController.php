@@ -100,7 +100,7 @@ class AudioController extends Controller
     {
         $library = $this->getAffiliatedLibrary();
 
-        $audios = Item::latest()
+        $items = Item::latest()
             ->where('type', 'audio')
             ->when($library, function ($query) use ($library) {
                 return $query->where('library', $library);
@@ -108,7 +108,7 @@ class AudioController extends Controller
             ->get();
 
         return view('audios.index', [
-            'audios'    => $audios,
+            'items'    => $items,
             'languages' => $this->languages,
             'genres'    => $this->genres,
             'statuses'  => $this->statuses,
@@ -141,7 +141,7 @@ class AudioController extends Controller
         }
 
         $attributes['type'] = 'audio';
-        $audio = Item::create($attributes);
+        $item = Item::create($attributes);
         if(!empty($attributes['file'])) {
             $manager = ImageManager::gd();
             $image = $manager->read($request->file('file'));
@@ -153,15 +153,15 @@ class AudioController extends Controller
         if(!empty($image)) {
             $path = "public/images/audio";
             Storage::makeDirectory($path);
-            $path .= "/$audio->id.png";
+            $path .= "/$item->id.png";
             Storage::put($path, (string) $image->encode());
 
-            $audio->cover_image = $audio->id . ".png";
-            $audio->save();
+            $item->cover_image = $item->id . ".png";
+            $item->save();
         }
 
         return redirect('collections/audio')->with([
-            'message' => "Successfully created the audio $audio->title."
+            'message' => "Successfully created the audio $item->title."
         ]);
     }
 
@@ -191,7 +191,7 @@ class AudioController extends Controller
         }
 
         $attributes['type'] = 'audio';
-        $audio = Item::create($attributes);
+        $item = Item::create($attributes);
         if(!empty($attributes['file'])) {
             $manager = ImageManager::gd();
             $image = $manager->read($request->file('file'));
@@ -205,40 +205,48 @@ class AudioController extends Controller
         if(!empty($image)) {
             $path = "public/images/audio";
             Storage::makeDirectory($path);
-            $path .= "/$audio->id.png";
+            $path .= "/$item->id.png";
             Storage::put($path, (string) $image->encode());
 
-            $audio->cover_image = "$audio->id.png";
-            $audio->save();
+            $item->cover_image = "$item->id.png";
+            $item->save();
         } else {
+            $source = Item::findOrFail($id);
+
             if($source->cover_image) {
-                $audio->cover_image = $source->cover_image;
-                $audio->save();
+                $path = "public/images/audio";
+                Storage::makeDirectory($path);
+                $copy1 = "$path/$source->id.png";
+                $copy2 = "$path/$item->id.png";
+                Storage::copy($copy1, $copy2);
+
+                $item->cover_image = "$item->id.png";
+                $item->save();
             }
         }
 
-        $audio->save();
+        $item->save();
 
 
         return redirect('collections/audio')->with([
-            'message' => "Successfully copied the audio $audio->title."
+            'message' => "Successfully copied the audio $item->title."
         ]);
     }
 
     public function destroy($id)
     {
-        $audio = Item::findOrFail($id);
-        $path = "public/images/audio/$audio->cover_image";
+        $item = Item::findOrFail($id);
+        $path = "public/images/audio/$item->cover_image";
 
         if (Storage::exists($path)) {
             Storage::delete($path);
         }
 
-        $audio->delete();
+        $item->delete();
 
         return redirect("collections/audio")
             ->with([
-                'message' => 'Successfully deleted the audio ' . $audio->title . '.',
+                'message' => 'Successfully deleted the audio ' . $item->title . '.',
             ]);
     }
 
@@ -247,7 +255,7 @@ class AudioController extends Controller
         $library = $this->getAffiliatedLibrary();
 
         $selected  = Item::findOrFail($id);
-        $audios = Item::latest()
+        $items = Item::latest()
             ->where('type', 'audio')
             ->when($library, function ($query) use ($library) {
                 return $query->where('library', $library);
@@ -255,7 +263,7 @@ class AudioController extends Controller
             ->get();
 
         return view('audios.copy', [
-            'audios' => $audios,
+            'items' => $items,
             'selected'    => $selected,
             'languages'   => $this->languages,
             'genres'      => $this->genres,
@@ -268,7 +276,7 @@ class AudioController extends Controller
         $library = $this->getAffiliatedLibrary();
 
         $selected  = Item::findOrFail($id);
-        $audios = Item::latest()
+        $items = Item::latest()
             ->where('type', 'audio')
             ->when($library, function ($query) use ($library) {
                 return $query->where('library', $library);
@@ -276,7 +284,7 @@ class AudioController extends Controller
             ->get();
 
         return view('audios.edit', [
-            'audios'     => $audios,
+            'items'     => $items,
             'selected'   => $selected,
             'genres'     => $this->genres,
             'languages'  => $this->languages,
@@ -286,7 +294,7 @@ class AudioController extends Controller
 
     public function update(Request $request, $id)
     {
-        $audio = Item::findOrFail($id);
+        $item = Item::findOrFail($id);
         $rules = [
             'accession_number' => ['nullable', 'string', 'unique:items,accession_number', 'max:255'],
             'barcode'          => ['nullable', 'string', 'unique:items,barcode', 'max:255'],
@@ -305,10 +313,10 @@ class AudioController extends Controller
             'file'             => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ];
 
-        if($request->post('accession_number') == $audio->accession_number) {
+        if($request->post('accession_number') == $item->accession_number) {
             unset($rules['accession_number']);
         }
-        if($request->post('barcode') == $audio->barcode) {
+        if($request->post('barcode') == $item->barcode) {
             unset($rules['barcode']);
         }
 
@@ -319,7 +327,7 @@ class AudioController extends Controller
             $attributes['library'] = $user->library;
         }
 
-        $audio->update($attributes);
+        $item->update($attributes);
         if(!empty($attributes['file'])) {
             $manager = ImageManager::gd();
             $image = $manager->read($request->file('file'));
@@ -331,15 +339,15 @@ class AudioController extends Controller
         if(!empty($image)) {
             $path = "public/images/audio";
             Storage::makeDirectory($path);
-            $path .= "/$audio->id.png";
+            $path .= "/$item->id.png";
             Storage::put($path, (string) $image->encode());
 
-            $audio->cover_image = $audio->id . ".png";
-            $audio->save();
+            $item->cover_image = $item->id . ".png";
+            $item->save();
         }
 
         return redirect('collections/audio')->with([
-            'message' => "Successfully updated the audio $audio->title."
+            'message' => "Successfully updated the audio $item->title."
         ]);
     }
 }

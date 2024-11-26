@@ -79,6 +79,16 @@ class ReportController extends Controller
         $user    = UserDetail::where('email', Auth::user()->email)->first();
         $library = $user->library;
 
+        $hasDateFilter = false;
+        if($request->input('date_acquired_start') || $request->input('date_acquired_end')) {
+            $date_acquired_start = (int) strtotime($request->input('date_acquired_start'));
+            $date_acquired_end   = (int) strtotime($request->input('date_acquired_end'));
+
+            if($date_acquired_start <= $date_acquired_end) {
+                $hasDateFilter = true;
+            }
+        }
+
         $publishers =
             Item::select('publisher')
                 ->distinct()
@@ -107,6 +117,8 @@ class ReportController extends Controller
         $sql .= ($request->input('genre')==null)     ? "" : "AND `genre`=:genre ";
         $sql .= ($request->input('status')==null)    ? "" : "AND `status`=:status ";
         $sql .= (!$hasYearFilter)                    ? "" : "AND (`publication_year` BETWEEN :from AND :to) ";
+        $sql .= (!$hasDateFilter)                    ? "" : "AND (`date_acquired` BETWEEN :date_acquired_start AND :date_acquired_end) ";
+        $sql .= "ORDER BY `date_acquired` DESC ";
 
         $query = $pdo->prepare($sql);
         $parameters = [];
@@ -119,13 +131,12 @@ class ReportController extends Controller
             $parameters['from'] = $from;
             $parameters['to']   = $to;
         }
+        if($hasDateFilter) {
+            $parameters['date_acquired_start'] = $request->input('date_acquired_start') ?? '0000-00-00';
+            $parameters['date_acquired_end']   = $request->input('date_acquired_end') ?? date('Y-m-d');
+        }
 
         $parameters['library'] = $library;
-
-        // dd([
-        //     'sql' => $sql,
-        //     'parameters' => $parameters,
-        // ]);
 
         $query->execute($parameters);
         $items = $query->fetchAll(PDO::FETCH_CLASS, 'stdClass');
@@ -207,6 +218,74 @@ class ReportController extends Controller
         return view('reports.item_count', [
             'items'      => $items,
             'publishers' => $publishers,
+        ]);
+    }
+
+    public function attendance_list(Request $request)
+    {
+        $user    = UserDetail::where('email', Auth::user()->email)->first();
+        $library = $user->library;
+
+        $hasDateFilter = false;
+        if($request->input('from') || $request->input('to')) {
+            $from = (int) strtotime($request->input('from'));
+            $to   = (int) strtotime($request->input('to'));
+
+            if($from <= $to) {
+                $hasDateFilter = true;
+            }
+        }
+
+        $pdo  = DB::connection()->getPdo();
+        $sql  =
+            "SELECT `attendances`.`created_at` AS `log_time`, `user_details`.*
+            FROM `attendances`
+            INNER JOIN `user_details`
+            ON `attendances`.`card_number` = `user_details`.`card_number`
+            WHERE `library`=:library ";
+        $sql .= ($request->input('college')==null) ? "" : "AND `college`=:college ";
+        $sql .= ($request->input('program')==null) ? "" : "AND `program`=:program ";
+        $sql .= ($request->input('year')==null)    ? "" : "AND `year`=:year ";
+        $sql .= ($request->input('role')==null)    ? "" : "AND `user_details`.`role`=:role ";
+        $sql .= (!$hasDateFilter)                  ? "" : "AND (`attendances`.`created_at` BETWEEN :from AND :to) ";
+        $sql .= "ORDER BY `log_time` DESC ";
+
+        $query = $pdo->prepare($sql);
+        $parameters = [];
+        if($request->input('college')) $parameters['college'] = $request->input('college');
+        if($request->input('program')) $parameters['program'] = $request->input('program');
+        if($request->input('year'))    $parameters['year']    = $request->input('year');
+        if($request->input('role'))    $parameters['role']    = $request->input('role');
+        if($hasDateFilter) {
+            $parameters['from'] = $request->input('from') ?? '0000-00-00';
+            $parameters['to']   = $request->input('to') ?? date('Y-m-d');
+        }
+
+        $parameters['library'] = $library;
+
+        $query->execute($parameters);
+        $patrons = $query->fetchAll(PDO::FETCH_CLASS, 'stdClass');
+
+        $colleges = College::all();
+        $colleges = $colleges->map(function($college) {
+            return [
+                'key'   => $college->code,
+                'value' => $college->name,
+            ];
+        });
+
+        $programs = Program::all();
+        $programs = $programs->map(function($program) {
+            return [
+                'key'   => $program->code,
+                'value' => $program->name,
+            ];
+        });
+
+        return view('reports.attendance_list', [
+            'patrons'  => $patrons,
+            'colleges' => $colleges,
+            'programs' => $programs,
         ]);
     }
 

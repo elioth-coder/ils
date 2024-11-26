@@ -13,11 +13,16 @@ use App\Http\Controllers\StaffController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\CurrentLoanController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ItemRequestController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PatronController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ReportItemController;
 use App\Http\Controllers\VideoController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
@@ -47,10 +52,6 @@ Route::middleware('guest')->group(function () {
     });
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard.index');
-})->middleware('auth');
-
 Route::prefix('search')->group(function () {
     Route::controller(SearchController::class)->group(function () {
         Route::get('/', 'index');
@@ -58,22 +59,42 @@ Route::prefix('search')->group(function () {
     });
 });
 
-Route::middleware('auth')->group(function () {
+Route::prefix('services/attendance')->group(function () {
+    Route::controller(AttendanceController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::post('/find_barcode', 'find_barcode');
+        Route::post('/record', 'record');
+    });
+});
 
+Route::middleware('auth')->group(function () {
     Route::prefix('reports')->group(function () {
         Route::controller(ReportController::class)->group(function () {
             Route::get('/', 'index');
             Route::get('/item_list', 'item_list');
             Route::get('/item_count', 'item_count');
             Route::get('/patron_list', 'patron_list');
+            Route::get('/attendance_list', 'attendance_list');
         });
     });
 
-    Route::get('/account', [AccountController::class, 'index']);
-    Route::get('/account/edit', [AccountController::class, 'edit']);
-    Route::patch('/account/update', [AccountController::class, 'update']);
-    Route::get('/account/change_password', [AccountController::class, 'change_password']);
-    Route::post('/account/update_password', [AccountController::class, 'update_password']);
+    Route::prefix('dashboard')->group(function () {
+        Route::controller(DashboardController::class)->group(function () {
+            Route::get('/', 'index');
+        });
+    });
+
+    Route::prefix('account')->group(function () {
+        Route::controller(AccountController::class)->group(function () {
+            Route::get('/', 'index');
+            Route::get('/edit', 'edit');
+            Route::patch('/update', 'update');
+            Route::get('/change_password', 'change_password');
+            Route::post('/update_password', 'update_password');
+            Route::get('/change_pin', 'change_pin');
+            Route::post('/update_pin', 'update_pin');
+        });
+    });
 
     Route::prefix('services/checkouts')->group(function () {
         Route::controller(CheckoutController::class)->group(function () {
@@ -84,42 +105,54 @@ Route::middleware('auth')->group(function () {
             Route::post('/cancel_item', 'cancel_item');
             Route::post('/return_item', 'return_item');
             Route::post('/renew_item', 'renew_item');
+            Route::post('/notify_overdue', 'notify_overdue');
+            Route::post('/notify_pickup', 'notify_pickup');
             Route::get('/{card_number}/patron', 'patron');
         });
     });
-
     Route::prefix('services/item_requests')->group(function () {
         Route::controller(ItemRequestController::class)->group(function () {
             Route::get('/', 'index');
         });
     });
-
     Route::prefix('services/current_loans')->group(function () {
         Route::controller(CurrentLoanController::class)->group(function () {
             Route::get('/', 'index');
         });
     });
-
+    Route::prefix('services/report_item')->group(function () {
+        Route::controller(ReportItemController::class)->group(function () {
+            Route::get('/', 'index');
+            Route::get('/{id}', 'create');
+            Route::post('/{id}', 'store');
+        });
+    });
     Route::prefix('services/patrons')->group(function () {
         Route::controller(PatronController::class)->group(function () {
+            Route::get('/', 'services');
+        });
+    });
+
+    Route::prefix('users')->group(function () {
+        Route::controller(PatronController::class)->group(function () {
             Route::get('/', 'index');
+            Route::get('/visited', 'visited');
         });
     });
 
     Route::get('/settings', function () {
         return view('dashboard.settings');
     });
-
-    Route::get('/collections', function () {
-        return view('dashboard.collections');
-    });
-
-    Route::get('/users', function () {
-        return view('dashboard.users');
-    });
-
     Route::get('/services', function () {
         return view('dashboard.services');
+    });
+
+    Route::prefix('collections')->group(function () {
+        Route::controller(CollectionController::class)->group(function () {
+            Route::get('/', 'index');
+            Route::get('/new', 'new');
+            Route::get('/new/{type}', 'new_with_type');
+        });
     });
 
     Route::prefix('users/teachers')->group(function () {
@@ -130,6 +163,12 @@ Route::middleware('auth')->group(function () {
             Route::get('/{id}/edit', 'edit');
             Route::patch('/{id}', 'update');
             Route::delete('/{id}', 'destroy');
+        });
+    });
+
+    Route::prefix('notifications')->group(function () {
+        Route::controller(NotificationController::class)->group(function () {
+            Route::get('/library_services', 'library_services');
         });
     });
 

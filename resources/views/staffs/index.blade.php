@@ -29,7 +29,7 @@
           position: absolute;
         }
         </style>
-        <form action="/users/staffs" method="POST" enctype="multipart/form-data">
+        <form id="patron-form" action="/users/staffs" method="POST" enctype="multipart/form-data">
             @csrf
             @method('POST')
             <h4 class="text-body-secondary">Create new staff</h4>
@@ -188,7 +188,8 @@
             </div>
             <hr>
             <div class="d-flex flex-row-reverse">
-                <button type="submit" class="w-25 btn btn-primary px-3">Submit</button>
+                <button id="submit_proxy" type="button" onclick="addEncoding();" class="w-25 btn btn-primary px-3">Submit</button>
+                <button id="submit" type="submit" class="d-none w-25 btn btn-primary px-3">Submit</button>
             </div>
         </form>
     @endslot

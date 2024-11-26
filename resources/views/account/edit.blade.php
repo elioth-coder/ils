@@ -205,7 +205,7 @@
                                         $barangay = (old('barangay')) ? old('barangay') : $user->barangay;
                                     }
                                 @endphp
-                                <label for="barangay" class="form-label">Barangay</label>
+                                <label for="barangay" class="form-label">Address Line</label>
                                 <input type="text" class="form-control form-control-sm" placeholder="--" name="barangay" id="barangay" value="{{ $barangay }}">
                                 @error('barangay')
                                     <div class="form-text text-danger">{{ $message }}</div>
@@ -262,7 +262,7 @@
                                     <label for="library" class="form-label">
                                         Library
                                     </label>
-                                    <select disabled class="form-control form-control-sm" name="library" id="library">
+                                    <select {{ ($user->role != 'admin') ? 'disabled' : '' }} class="form-control form-control-sm" name="library" id="library">
                                         <option value="">--</option>
                                         @foreach($libraries as $_library)
                                             <option {{ ($library==$_library->code) ? 'selected' : '' }} value="{{ $_library->code }}">{{ $_library->name }}</option>

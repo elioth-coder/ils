@@ -6,12 +6,8 @@ use Illuminate\Http\Request;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use App\Models\Item;
-use App\Models\Library;
 use App\Models\UserDetail;
-use App\Models\RequestedItem;
-use Exception;
 
 class ResearchController extends Controller
 {
@@ -205,6 +201,19 @@ class ResearchController extends Controller
 
             $item->cover_image = "$item->id.png";
             $item->save();
+        } else {
+            $source = Item::findOrFail($id);
+
+            if($source->cover_image) {
+                $path = "public/images/research";
+                Storage::makeDirectory($path);
+                $copy1 = "$path/$source->id.png";
+                $copy2 = "$path/$item->id.png";
+                Storage::copy($copy1, $copy2);
+
+                $item->cover_image = "$item->id.png";
+                $item->save();
+            }
         }
 
         return redirect('collections/research')->with([
@@ -316,19 +325,6 @@ class ResearchController extends Controller
         }
 
         $item->update($attributes);
-
-        Item::where('title', $item->title)->update([
-            'title'            => $attributes['title'],
-            'author'           => $attributes['author'],
-            'publisher'        => $attributes['publisher'],
-            'publication_year' => $attributes['publication_year'],
-            'genre'            => $attributes['genre'],
-            'summary'          => $attributes['summary'],
-            'number_of_pages'  => $attributes['number_of_pages'],
-            'format'           => $attributes['format'],
-            'language'         => $attributes['language'],
-            'tags'             => $attributes['tags'],
-        ]);
 
         if(!empty($attributes['file'])) {
             $manager = ImageManager::gd();

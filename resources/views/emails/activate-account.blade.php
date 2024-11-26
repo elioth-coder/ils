@@ -15,7 +15,7 @@
     <div class="container">
 
         <div class="message">
-            <p>{{ $data['name'] }},</p>
+            <p>{{ strtoupper($data['name']) }},</p>
             <p>
                 You (or someone pretending to be you) have asked to register an account at
                 <a href="{{ $data['app_url'] }}">{{ $data['app_domain'] }}</a>. If this wasn't you, please ignore this

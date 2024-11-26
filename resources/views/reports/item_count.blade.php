@@ -124,6 +124,19 @@
                                     'humor',
                                     'religious',
                                     'short stories',
+                                    "developmental",
+                                    "descriptive",
+                                    "analytical",
+                                    "exploratory",
+                                    "explanatory",
+                                    "experimental",
+                                    "correlational",
+                                    "comparative",
+                                    "action",
+                                    "case study",
+                                    "phenomenological",
+                                    "ethnographic",
+                                    "historical",
                                 ];
 
                                 $_genre = request('genre') ?? '';
@@ -174,7 +187,7 @@
                 </div>
             </form>
 
-            <h2 class="text-center my-3">Count of Inventory Items</h2>
+            <h2 class="text-center my-3">List of Item Count</h2>
             <table class="table table-bordered">
                 <thead>
                 <tr>

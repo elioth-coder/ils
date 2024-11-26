@@ -45,13 +45,26 @@ class ItemRequestController extends Controller
          WHERE requested_items.status
         ";
 
-        $predicate = "NOT IN ('cancelled','checked out')";
+        $predicate = "IN ('pending')";
         $sql = $_sql . $predicate;
         $query = $pdo->prepare($sql);
         $query->execute();
-        $requested_items = $query->fetchAll(PDO::FETCH_CLASS, 'stdClass');
+        $pending_items = $query->fetchAll(PDO::FETCH_CLASS, 'stdClass');
 
-        $requested_items = collect($requested_items)->map(function($item) {
+        $pending_items = collect($pending_items)->map(function($item) {
+            $patron = $this->getPatron($item);
+            $item->patron = $patron;
+
+            return $item;
+        });
+
+        $predicate = "IN ('for pickup')";
+        $sql = $_sql . $predicate;
+        $query = $pdo->prepare($sql);
+        $query->execute();
+        $for_pickup_items = $query->fetchAll(PDO::FETCH_CLASS, 'stdClass');
+
+        $for_pickup_items = collect($for_pickup_items)->map(function($item) {
             $patron = $this->getPatron($item);
             $item->patron = $patron;
 
@@ -72,7 +85,8 @@ class ItemRequestController extends Controller
         });
 
         return view('item_requests.index', [
-            'requested_items' => $requested_items ?? [],
+            'pending_items' => $pending_items ?? [],
+            'for_pickup_items' => $for_pickup_items ?? [],
             'cancelled_items' => $cancelled_items ?? [],
         ]);
     }

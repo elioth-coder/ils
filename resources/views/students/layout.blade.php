@@ -116,6 +116,49 @@
                     }
                 });
             })();
+
+            async function addEncoding() {
+                $submitProxy = document.querySelector('#submit_proxy');
+                $submitProxy.innerHTML = 'Processing...';
+                $submitProxy.setAttribute('disabled', true);
+
+                let $form = document.querySelector("#patron-form");
+                let formData = new FormData($form);
+                let data = new FormData();
+
+                data.set('card_number', formData.get('card_number'));
+                data.set('file', formData.get('file'));
+
+                if(!data.get('file').name) {
+                    $submitProxy.innerHTML = 'Submit';
+                    $submitProxy.removeAttribute('disabled');
+                    document.querySelector('#submit').click();
+                    return 0;
+                }
+
+                let response = await fetch('http://localhost:3000/add_encoding', {
+                    method: 'POST',
+                    body: data,
+                });
+
+                let _response = await response.json();
+
+                if(_response.status == 'success') {
+                    $submitProxy.innerHTML = 'Submit';
+                    $submitProxy.removeAttribute('disabled');
+                    document.querySelector('#submit').click();
+                } else {
+                    $submitProxy.innerHTML = 'Submit';
+                    $submitProxy.removeAttribute('disabled');
+
+                    Swal.fire({
+                        title: _response.message,
+                        icon: 'error',
+                        timer: 2000,
+                        showConfirmButton: false,
+                    });
+                }
+            }
         </script>
     </x-slot:script>
 </x-layout>

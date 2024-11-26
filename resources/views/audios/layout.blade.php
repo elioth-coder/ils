@@ -41,28 +41,28 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($audios as $audio)
+                        @foreach ($items as $item)
                             <tr>
                                 <td style="min-width: 140px;">
-                                    <form id="delete-audio-{{ $audio->id }}"
-                                        action="/collections/audio/{{ $audio->id }}" method="POST" class="d-none">
+                                    <form id="delete-audio-{{ $item->id }}"
+                                        action="/collections/audio/{{ $item->id }}" method="POST" class="d-none">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit">DELETE</button>
                                     </form>
-                                    <a title="Copy" href="/collections/audio/{{ $audio->id }}/copy#audio-form" class="btn btn-light btn-sm">
+                                    <a title="Copy" href="/collections/audio/{{ $item->id }}/copy#audio-form" class="btn btn-light btn-sm">
                                         <i class="bi bi-copy"></i>
                                     </a>
-                                    <a title="Edit" href="/collections/audio/{{ $audio->id }}/edit#audio-form" class="btn btn-light btn-sm">
+                                    <a title="Edit" href="/collections/audio/{{ $item->id }}/edit#audio-form" class="btn btn-light btn-sm">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <button title="Delete" onclick="deleteAudio({{ $audio->id }});" class="btn btn-light btn-sm">
+                                    <button title="Delete" onclick="deleteAudio({{ $item->id }});" class="btn btn-light btn-sm">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </td>
-                                <td>{{ $audio->title }}</td>
-                                <td class="text-end">{{ $audio->publication_year }}</td>
-                                <td>{{ $audio->author }}</td>
+                                <td>{{ $item->title }}</td>
+                                <td class="text-end">{{ $item->publication_year }}</td>
+                                <td>{{ $item->author }}</td>
                             </tr>
                         @endforeach
                     </tbody>

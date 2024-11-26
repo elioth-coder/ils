@@ -68,7 +68,12 @@ class StaffController extends Controller
         if(!empty($attributes['file'])) {
             $manager = ImageManager::gd();
             $image = $manager->read($request->file('file'));
-            $image->scale(height: 225);
+
+            if($image->height() >= $image->width()) {
+                $image->scale(width: 225);
+            } else {
+                $image->scale(height: 225);
+            }
 
             $image->crop(225, 225, position: 'center');
         }
@@ -169,7 +174,12 @@ class StaffController extends Controller
         if(!empty($attributes['file'])) {
             $manager = ImageManager::gd();
             $image = $manager->read($request->file('file'));
-            $image->scale(height: 225);
+
+            if($image->height() >= $image->width()) {
+                $image->scale(width: 225);
+            } else {
+                $image->scale(height: 225);
+            }
 
             $image->crop(225, 225, position: 'center');
         }

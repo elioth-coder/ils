@@ -44,7 +44,9 @@
                     <div class="px-4">
                         <section style="height: 200px;" class="card p-1 mt-2">
                             @php $item_cover = ($item->cover_image) ? "/storage/images/$item->type/$item->cover_image" : '/images/cover_not_available.jpg'; @endphp
-                            <img class="h-100 d-block" src="{{ asset($item_cover) }}" alt="">
+                            <object class="h-100 d-block" data="{{ asset($item_cover) }}" type="image/png">
+                                <img class="h-100 d-block" src="/images/cover_not_available.jpg" alt="">
+                            </object>
                         </section>
                     </div>
                     <div class="w-100 px-1">
@@ -143,11 +145,13 @@
                                         <i title="Returned" class="bi bi-circle-fill text-success"></i>
                                     @endif
                                 </td>
-                                <td class="w-100">
+                                <td class="w-50">
                                     <div class="d-flex">
                                         <section style="height: 90px;" class="me-3">
                                             @php $profile = ($patron->profile) ? "/storage/images/users/$patron->profile" : '/images/profile.jpg'; @endphp
-                                            <img class="h-100 d-block rounded-circle shadow" src="{{ asset($profile) }}" alt="">
+                                            <object class="h-100 d-block rounded-circle" data="{{ asset($profile) }}" type="image/png">
+                                                <img class="h-100 d-block rounded-circle" src="/images/profile.jpg" alt="">
+                                            </object>
                                         </section>
                                         <section>
                                             <div class="d-flex">
@@ -168,8 +172,12 @@
                                     </div>
                                 </td>
                                 <td>
-                                    {{ $patron->email }} <br>
-                                    {{ $patron->mobile_number }}
+                                    @if(in_array(Auth::user()->role, ['teacher','student']))
+                                        --
+                                    @else
+                                        {{ $patron->email }} <br>
+                                        {{ $patron->mobile_number }}
+                                    @endif
                                 </td>
                                 <td class="text-capitalize">
                                     @if($patron->status=='checked out')
@@ -213,11 +221,13 @@
                                         <i title="For Pickup" class="bi bi-circle-fill text-success"></i>
                                     @endif
                                 </td>
-                                <td class="w-100">
+                                <td class="w-50">
                                     <div class="d-flex">
                                         <section style="height: 90px;" class="me-3">
                                             @php $profile = ($patron->profile) ? "/storage/images/users/$patron->profile" : '/images/profile.jpg'; @endphp
-                                            <img class="h-100 d-block rounded-circle shadow" src="{{ asset($profile) }}" alt="">
+                                            <object class="h-100 d-block rounded-circle" data="{{ asset($profile) }}" type="image/png">
+                                                <img class="h-100 d-block rounded-circle" src="/images/profile.jpg" alt="">
+                                            </object>
                                         </section>
                                         <section>
                                             <div class="d-flex">
@@ -238,8 +248,12 @@
                                     </div>
                                 </td>
                                 <td>
-                                    {{ $patron->email }} <br>
-                                    {{ $patron->mobile_number }}
+                                    @if(in_array(Auth::user()->role, ['teacher','student']))
+                                        --
+                                    @else
+                                        {{ $patron->email }} <br>
+                                        {{ $patron->mobile_number }}
+                                    @endif
                                 </td>
                                 <td class="text-capitalize">
                                     @if($patron->status=='pending')

@@ -4,12 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Token;
-use App\Models\Teacher;
-use App\Models\Student;
-use App\Models\College;
-use App\Models\Campus;
 use App\Models\Library;
-use App\Models\RequestedItem;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
@@ -147,6 +142,7 @@ class AccountController extends Controller
             'municipality'    => ['nullable', 'string', 'max:255'],
             'barangay'        => ['nullable', 'string', 'max:255'],
             'mobile_number'   => ['nullable', 'string', 'max:255'],
+            'library'         => ['nullable', 'string', 'max:255'],
             'file'            => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ];
         $attributes = $request->validate($rules);
@@ -157,7 +153,12 @@ class AccountController extends Controller
         if(!empty($attributes['file'])) {
             $manager = ImageManager::gd();
             $image = $manager->read($request->file('file'));
-            $image->scale(height: 225);
+
+            if($image->height() >= $image->width()) {
+                $image->scale(width: 225);
+            } else {
+                $image->scale(height: 225);
+            }
 
             $image->crop(225, 225, position: 'center');
         }
@@ -183,6 +184,40 @@ class AccountController extends Controller
                 'content' => "Successfully updated your profile"
             ]
         ]);
+    }
+
+    public function change_pin()
+    {
+        return view('account.change_pin');
+    }
+
+    public function update_pin(Request $request)
+    {
+        $pinAttributes = $request->validate([
+            'current_pin' => ['required'],
+            'pin'         => ['required', 'confirmed', 'min:4'],
+        ]);
+        $current_pin = $pinAttributes['current_pin'];
+
+        if($current_pin == Auth::user()->pin) {
+            $user = User::where('email', Auth::user()->email)->first();
+
+            $user->update([
+                'pin' => $pinAttributes['pin'],
+            ]);
+
+            return redirect('/account/change_pin')->with([
+                'message' => [
+                    'type'    => 'success',
+                    'content' => 'Successfully changed the PIN',
+                ],
+            ]);
+
+        } else {
+            throw ValidationException::withMessages([
+                'current_password' => 'The current password field is incorrect',
+            ]);
+        }
     }
 
     public function change_password()
@@ -261,7 +296,7 @@ class AccountController extends Controller
             'name'            => $name,
             'app_domain'      => env('APP_DOMAIN'),
             'app_url'         => env('APP_URL'),
-            'activation_link' => env('APP_URL') . '/accounts/activate/' . $generated_token,
+            'activation_link' => env('APP_URL') . '/account/activate/' . $generated_token,
         ]));
 
         return redirect('/account/email_confirmation')->with([

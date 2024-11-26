@@ -5,7 +5,7 @@
                 <x-navbar-brand />
             </div>
         </nav>
-        <section class="bg-light w-100" x-data="{ open: false }">
+        <section class="bg-light w-100 border-light-subtle border-bottom" x-data="{ open: false }">
             <div class="w-100">
                 <section class="container d-flex align-items-center justify-content-end py-2">
                     <button x-on:click="open = !open" class="btn btn-success btn-sm">
@@ -56,8 +56,12 @@
                     <div class="w-100">
                         <h4>Useful Links</h4>
                         <ul>
-                            <li><a href="/login">Library Loan Request</a></li>
-                            <li><a href="/how_to#register">How to Register</a></li>
+                            <li>
+                                <a href="/services/attendance">
+                                    Library Attendance
+                                </a>
+                            </li>
+                            <li><a href="/register">Library Registration</a></li>
                         </ul>
                     </div>
                     <div class="w-100">
@@ -84,7 +88,12 @@
                             </li>
                         </ul>
                     </div>
-                    <div class="w-100"></div>
+                    <div class="w-100">
+                        <a href="/services/attendance" class="btn btn-lg btn-success">
+                            <i class="bi bi-card-checklist"></i>
+                            Library Attendance
+                        </a>
+                    </div>
                 </section>
             </div>
         </section>

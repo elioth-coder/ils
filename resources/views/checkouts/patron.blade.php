@@ -20,22 +20,14 @@
                 <section class="card w-50 p-3 d-flex flex-row mb-4 position-relative">
                     <div class="p-1 pe-4">
                         @php $profile = ($patron->profile) ? "/storage/images/users/$patron->profile" : '/images/profile.jpg'; @endphp
-                        <img class="d-block rounded-circle" style="height: 100px;" src="{{ asset($profile) }}"
-                            alt="">
+                        <object class="d-block rounded-circle" style="height: 100px;" data="{{ asset($profile) }}" type="image/png">
+                            <img class="d-block rounded-circle" style="height: 100px;" src="/images/profile.jpg" alt="">
+                        </object>
                     </div>
                     <div class="p-1">
                         <h2 class="text-capitalize">{{ strtolower($patron->last_name) }}, {{ strtolower($patron->first_name) }}</h2>
                         <b>Birthday : </b> {{ $patron->birthday }} ({{ $patron->age }} years old) <br>
                         <b>Card No. : </b> {{ $patron->card_number }}
-                        <p class="m-0 mt-2">
-                            <a href="/users/{{ $patron->role }}s/{{ $patron->id }}/edit#{{ $patron->role }}s-form"
-                                class="btn btn-outline-primary btn-sm">
-                                <i class="bi bi-pencil-fill"></i> Edit
-                            </a>
-                            <a href="#" class="disabled btn btn-outline-danger btn-sm ms-1">
-                                <i class="bi bi-trash-fill"></i> Delete
-                            </a>
-                        </p>
                     </div>
 
                     <a href="{{ url()->previous() }}" class="btn-sm btn btn-danger position-absolute top-0 end-0 m-2">
@@ -130,7 +122,9 @@
                                             <div class="d-flex">
                                                 <section style="height: 110px;" class="card p-1 me-2">
                                                     @php $item_cover = ($item->cover_image) ? "/storage/images/$item->type/$item->cover_image" : '/images/cover_not_available.jpg'; @endphp
-                                                    <img class="h-100 d-block" src="{{ asset($item_cover) }}" alt="">
+                                                    <object class="h-100 d-block" data="{{ asset($item_cover) }}" type="image/png">
+                                                        <img class="h-100 d-block" src="/images/cover_not_available.jpg" />
+                                                    </object>
                                                 </section>
                                                 <section>
                                                     <div class="d-flex">
@@ -205,7 +199,9 @@
                                         <div class="d-flex">
                                             <section style="height: 110px;" class="card p-1 me-2">
                                                 @php $item_cover = ($item->cover_image) ? "/storage/images/$item->type/$item->cover_image" : '/images/cover_not_available.jpg'; @endphp
-                                                <img class="h-100 d-block" src="{{ asset($item_cover) }}" alt="">
+                                                <object class="h-100 d-block" data="{{ asset($item_cover) }}" type="image/png">
+                                                    <img class="h-100 d-block" src="/images/cover_not_available.jpg" />
+                                                </object>
                                             </section>
                                             <section>
                                                 <div class="d-flex">
@@ -279,7 +275,9 @@
                                         <div class="d-flex">
                                             <section style="height: 110px;" class="card p-1 me-2">
                                                 @php $item_cover = ($item->cover_image) ? "/storage/images/$item->type/$item->cover_image" : '/images/cover_not_available.jpg'; @endphp
-                                                <img class="h-100 d-block" src="{{ asset($item_cover) }}" alt="">
+                                                <object class="h-100 d-block" data="{{ asset($item_cover) }}" type="image/png">
+                                                    <img class="h-100 d-block" src="/images/cover_not_available.jpg" />
+                                                </object>
                                             </section>
                                             <section>
                                                 <div class="d-flex">
@@ -338,7 +336,9 @@
                                         <div class="d-flex">
                                             <section style="height: 110px;" class="card p-1 me-2">
                                                 @php $item_cover = ($item->cover_image) ? "/storage/images/$item->type/$item->cover_image" : '/images/cover_not_available.jpg'; @endphp
-                                                <img class="h-100 d-block" src="{{ asset($item_cover) }}" alt="">
+                                                <object class="h-100 d-block" data="{{ asset($item_cover) }}" type="image/png">
+                                                    <img class="h-100 d-block" src="/images/cover_not_available.jpg" alt="">
+                                                </object>
                                             </section>
                                             <section>
                                                 <div class="d-flex">

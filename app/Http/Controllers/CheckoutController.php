@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\NotifyForPickupMail;
+use App\Mail\NotifyOverdueMail;
 use App\Models\Item;
+use App\Models\Library;
 use App\Models\LoanedItem;
 use App\Models\RequestedItem;
 use App\Models\User;
@@ -10,7 +13,9 @@ use App\Models\UserDetail;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use PDO;
 
 class CheckoutController extends Controller
@@ -163,6 +168,23 @@ class CheckoutController extends Controller
                 'status'   => 'reserved',
             ]);
 
+            $user    = User::where('id', $attributes['requester_id'])->first();
+            $item    = Item::where('barcode', $attributes['barcode'])->first();
+            $library = Library::where('code', $item->library)->first();
+            $requested_item =
+                RequestedItem::where('barcode', $attributes['barcode'])
+                    ->where('status', 'for pickup')->first();
+
+            Mail::to($user->email)->send(new NotifyForPickupMail([
+                'name'     => $user->name,
+                'title'    => $item->title,
+                'deadline' => $requested_item->due_date,
+                'sender'   => Auth::user()->name,
+                'role'     => Auth::user()->role,
+                'library'  => $library->name,
+                'email'    => Auth::user()->email,
+            ]));
+
             return response()->json([
                 'status'  => 'success',
                 'message' => 'Successfully reserved item for pickup',
@@ -235,6 +257,80 @@ class CheckoutController extends Controller
             return response()->json([
                 'status'  => 'success',
                 'message' => 'Successfully returned the item',
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    public function notify_overdue(Request $request)
+    {
+        try {
+            $attributes = $request->validate([
+                'barcode'   => ['required', 'string', 'exists:items,barcode'],
+                'loaner_id' => ['required', 'string', 'exists:users,id'],
+            ]);
+
+            $user    = User::where('id', $attributes['loaner_id'])->first();
+            $item    = Item::where('barcode', $attributes['barcode'])->first();
+            $library = Library::where('code', $item->library)->first();
+            $loaned_item =
+                LoanedItem::where('barcode', $attributes['barcode'])
+                    ->whereNull('date_returned')->first();
+
+            Mail::to($user->email)->send(new NotifyOverdueMail([
+                'name'     => $user->name,
+                'title'    => $item->title,
+                'due_date' => $loaned_item->due_date,
+                'sender'   => Auth::user()->name,
+                'role'     => Auth::user()->role,
+                'library'  => $library->name,
+                'email'    => Auth::user()->email,
+            ]));
+
+            return response()->json([
+                'status'  => 'success',
+                'message' => "Successfully notified <b class='text-capitalize'>". $user->name . "</b> to return the item",
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    public function notify_pickup(Request $request)
+    {
+        try {
+            $attributes = $request->validate([
+                'barcode'      => ['required', 'string', 'exists:items,barcode'],
+                'requester_id' => ['required', 'string', 'exists:users,id'],
+            ]);
+
+            $user    = User::where('id', $attributes['requester_id'])->first();
+            $item    = Item::where('barcode', $attributes['barcode'])->first();
+            $library = Library::where('code', $item->library)->first();
+            $requested_item =
+                RequestedItem::where('barcode', $attributes['barcode'])
+                    ->where('status', 'for pickup')->first();
+
+            Mail::to($user->email)->send(new NotifyForPickupMail([
+                'name'     => $user->name,
+                'title'    => $item->title,
+                'deadline' => $requested_item->due_date,
+                'sender'   => Auth::user()->name,
+                'role'     => Auth::user()->role,
+                'library'  => $library->name,
+                'email'    => Auth::user()->email,
+            ]));
+
+            return response()->json([
+                'status'  => 'success',
+                'message' => "Successfully notified <b class='text-capitalize'>". $user->name . "</b> to pickup the item",
             ]);
         } catch (Exception $e) {
             return response()->json([

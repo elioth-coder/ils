@@ -142,10 +142,8 @@ class BookController extends Controller
             'file'             => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ]);
 
-        if(Auth::user()->role != 'admin') {
-            $staff = UserDetail::where('email', Auth::user()->email)->first();
-            $attributes['library'] = $staff->library;
-        }
+        $staff = UserDetail::where('email', Auth::user()->email)->first();
+        $attributes['library'] = $staff->library;
 
         $attributes['type'] = 'book';
         $item = Item::create($attributes);
@@ -160,10 +158,10 @@ class BookController extends Controller
         if(!empty($image)) {
             $path = "public/images/book";
             Storage::makeDirectory($path);
-            $path .= "/$item->isbn.png";
+            $path .= "/$item->id.png";
             Storage::put($path, (string) $image->encode());
 
-            $item->cover_image = $item->isbn . ".png";
+            $item->cover_image = $item->id . ".png";
             $item->save();
         }
 
@@ -196,10 +194,8 @@ class BookController extends Controller
             'file'             => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ]);
 
-        if(Auth::user()->role != 'admin') {
-            $staff = UserDetail::where('email', Auth::user()->email)->first();
-            $attributes['library'] = $staff->library;
-        }
+        $staff = UserDetail::where('email', Auth::user()->email)->first();
+        $attributes['library'] = $staff->library;
 
         $attributes['type'] = 'book';
         $item = Item::create($attributes);
@@ -214,11 +210,24 @@ class BookController extends Controller
         if(!empty($image)) {
             $path = "public/images/book";
             Storage::makeDirectory($path);
-            $path .= "/$item->isbn.png";
+            $path .= "/$item->id.png";
             Storage::put($path, (string) $image->encode());
 
-            $item->cover_image = "$item->isbn.png";
+            $item->cover_image = "$item->id.png";
             $item->save();
+        } else {
+            $source = Item::findOrFail($id);
+
+            if($source->cover_image) {
+                $path = "public/images/book";
+                Storage::makeDirectory($path);
+                $copy1 = "$path/$source->id.png";
+                $copy2 = "$path/$item->id.png";
+                Storage::copy($copy1, $copy2);
+
+                $item->cover_image = "$item->id.png";
+                $item->save();
+            }
         }
 
         return redirect('collections/book')->with([
@@ -256,8 +265,8 @@ class BookController extends Controller
             ->get();
 
         return view('books.copy', [
-            'books' => $items,
-            'selected' => $selected,
+            'books'     => $items,
+            'selected'  => $selected,
             'languages' => $this->languages,
             'genres'    => $this->genres,
             'formats'   => $this->formats,
@@ -324,13 +333,8 @@ class BookController extends Controller
 
         $attributes = $request->validate($rules);
 
-        $previousIsbn  = $item->isbn;
-        $previousCover = $item->cover_image;
-
-        if(Auth::user()->role != 'admin') {
-            $staff = UserDetail::where('email', Auth::user()->email)->first();
-            $attributes['library'] = $staff->library;
-        }
+        $staff = UserDetail::where('email', Auth::user()->email)->first();
+        $attributes['library'] = $staff->library;
 
         $item->update($attributes);
 
@@ -358,25 +362,11 @@ class BookController extends Controller
         if(!empty($image)) {
             $path = "public/images/book";
             Storage::makeDirectory($path);
-            $path .= "/$item->isbn.png";
+            $path .= "/$item->id.png";
             Storage::put($path, (string) $image->encode());
 
-            $item->cover_image = $item->isbn . ".png";
+            $item->cover_image = $item->id . ".png";
             $item->save();
-        } else {
-            if($previousIsbn != $item->isbn) {
-                $path = "public/images/book";
-                Storage::makeDirectory($path);
-                $newPath = $path . "/$item->isbn.png";
-                $oldPath = $path . "/$previousCover";
-
-                if (Storage::exists($oldPath)) {
-                    Storage::move($oldPath, $newPath);
-                }
-
-                $item->cover_image = $item->isbn . ".png";
-                $item->save();
-            }
         }
 
         return redirect('collections/book')->with([

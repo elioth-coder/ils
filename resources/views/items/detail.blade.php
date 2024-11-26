@@ -44,7 +44,9 @@
                     <div class="px-4">
                         <section style="height: 200px;" class="card p-1 mt-2">
                             @php $item_cover = ($item->cover_image) ? "/storage/images/$item->type/$item->cover_image" : '/images/cover_not_available.jpg'; @endphp
-                            <img class="h-100 d-block" src="{{ asset($item_cover) }}" alt="">
+                            <object class="h-100 d-block" data="{{ asset($item_cover) }}" type="image/png">
+                                <img class="h-100 d-block" src="/images/cover_not_available.jpg" alt="">
+                            </object>
                         </section>
                     </div>
                     <div class="w-100 px-1">

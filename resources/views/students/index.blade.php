@@ -29,7 +29,7 @@
                 position: absolute;
             }
         </style>
-        <form action="/users/students" method="POST" enctype="multipart/form-data">
+        <form id="patron-form" action="/users/students" method="POST" enctype="multipart/form-data">
             @csrf
             @method('POST')
             <h4 class="text-body-secondary">Create new student</h4>
@@ -39,7 +39,7 @@
                     <div class="d-flex column-gap-2">
                         <div class="mb-2 w-100">
                             <label for="card_number" class="form-label">Card No. / ID No.</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--" name="card_number"
+                            <input required type="text" class="form-control form-control-sm" placeholder="--" name="card_number"
                                 id="card_number" value="{{ old('card_number') ?? '' }}">
                             @error('card_number')
                                 <div class="form-text text-danger">{{ $message }}</div>
@@ -66,7 +66,7 @@
                         <label for="first_name" class="form-label">
                             First Name
                         </label>
-                        <input type="text" class="form-control form-control-sm" placeholder="--" name="first_name"
+                        <input required type="text" class="form-control form-control-sm" placeholder="--" name="first_name"
                             id="first_name" value="{{ old('first_name') ?? '' }}">
                         @error('first_name')
                             <div class="form-text text-danger">{{ $message }}</div>
@@ -83,7 +83,7 @@
                         </div>
                         <div class="mb-2 w-100">
                             <label for="last_name" class="form-label">Last Name</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--" name="last_name"
+                            <input required type="text" class="form-control form-control-sm" placeholder="--" name="last_name"
                                 id="last_name" value="{{ old('last_name') ?? '' }}">
                             @error('last_name')
                                 <div class="form-text text-danger">{{ $message }}</div>
@@ -93,7 +93,7 @@
                     <div class="d-flex column-gap-2">
                         <div class="mb-2 w-100">
                             <label for="gender" class="form-label">Gender</label>
-                            <select class="form-control form-control-sm text-capitalize" name="gender" id="gender">
+                            <select required class="form-control form-control-sm text-capitalize" name="gender" id="gender">
                                 <option value="">--</option>
                                 @foreach ($genders as $gender)
                                     <option {{ $gender == old('gender') ? 'selected' : '' }} value="{{ $gender }}">
@@ -106,7 +106,7 @@
                         </div>
                         <div class="mb-2 w-100">
                             <label for="birthday" class="form-label">Birthday</label>
-                            <input type="date" class="form-control form-control-sm" placeholder="--" name="birthday"
+                            <input required type="date" class="form-control form-control-sm" placeholder="--" name="birthday"
                                 id="birthday" value="{{ old('birthday') ?? '' }}">
                             @error('birthday')
                                 <div class="form-text text-danger">{{ $message }}</div>
@@ -150,7 +150,7 @@
                         </div>
                         <div class="mb-2 w-100">
                             <label for="email" class="form-label">Email</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--" name="email"
+                            <input required type="email" class="form-control form-control-sm" placeholder="--" name="email"
                                 id="email" value="{{ old('email') ?? '' }}">
                             @error('email')
                                 <div class="form-text text-danger">{{ $message }}</div>
@@ -160,7 +160,7 @@
                     <div class="d-flex column-gap-2">
                         <div class="mb-2 w-100">
                             <label for="college" class="form-label">College</label>
-                            <select class="form-control form-control-sm" name="college" id="college">
+                            <select required class="form-control form-control-sm" name="college" id="college">
                                 <option value="">--</option>
                                 @foreach ($colleges as $college)
                                     <option {{ $college->code == old('college') ? 'selected' : '' }}
@@ -173,7 +173,7 @@
                         </div>
                         <div class="mb-2 w-100">
                             <label for="campus" class="form-label">Campus</label>
-                            <select class="form-control form-control-sm" name="campus" id="campus">
+                            <select required class="form-control form-control-sm" name="campus" id="campus">
                                 <option value="">--</option>
                                 @foreach ($campuses as $campus)
                                     <option {{ $campus->code == old('campus') ? 'selected' : '' }} value="{{ $campus->code }}">
@@ -197,7 +197,7 @@
                     <div class="d-flex column-gap-2">
                         <div class="mb-2 w-100">
                             <label for="year" class="form-label">Year</label>
-                            <select class="form-control form-control-sm text-capitalize" name="year" id="year">
+                            <select required class="form-control form-control-sm text-capitalize" name="year" id="year">
                                 <option value="">--</option>
                                 @foreach ($year_levels as $year_level)
                                     <option {{ $year_level['value'] == old('year') ? 'selected' : '' }}
@@ -210,7 +210,7 @@
                         </div>
                         <div class="mb-2 w-100">
                             <label for="section" class="form-label">Section</label>
-                            <select class="form-control form-control-sm text-capitalize" name="section" id="section">
+                            <select required class="form-control form-control-sm text-capitalize" name="section" id="section">
                                 <option value="">--</option>
                                 @foreach ($sections as $section)
                                     <option {{ $section == old('section') ? 'selected' : '' }} value="{{ $section }}">
@@ -225,7 +225,7 @@
                     <div class="d-flex column-gap-2">
                         <div class="mb-2 w-100">
                             <label for="program" class="form-label">Program</label>
-                            <select class="form-control form-control-sm text-capitalize" name="program" id="program">
+                            <select required class="form-control form-control-sm text-capitalize" name="program" id="program">
                                 <option value="">--</option>
                                 @foreach ($programs as $program)
                                     <option {{ $program->code == old('program') ? 'selected' : '' }}
@@ -238,7 +238,7 @@
                         </div>
                         <div class="mb-2 w-100">
                             <label for="status" class="form-label">Status</label>
-                            <select class="form-control form-control-sm text-capitalize" name="status" id="status">
+                            <select required class="form-control form-control-sm text-capitalize" name="status" id="status">
                                 <option value="">--</option>
                                 @foreach ($statuses as $status)
                                     <option {{ $status == old('status') ? 'selected' : '' }} value="{{ $status }}">
@@ -254,7 +254,7 @@
                         <label for="library" class="form-label">
                             Library
                         </label>
-                        <select class="form-control form-control-sm" name="library" id="library">
+                        <select required class="form-control form-control-sm" name="library" id="library">
                             <option value="">--</option>
                             @foreach($libraries as $library)
                                 <option {{ (old('library')==$library->code) ? 'selected' : '' }} value="{{ $library->code }}">{{ $library->name }}</option>
@@ -268,7 +268,8 @@
             </div>
             <hr>
             <div class="d-flex flex-row-reverse">
-                <button type="submit" class="w-25 btn btn-primary px-3">Submit</button>
+                <button id="submit_proxy" type="button" onclick="addEncoding();" class="w-25 btn btn-primary px-3">Submit</button>
+                <button id="submit" type="submit" class="d-none w-25 btn btn-primary px-3">Submit</button>
             </div>
         </form>
     @endslot

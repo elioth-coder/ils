@@ -188,7 +188,12 @@ class SearchController extends Controller
 
         $_sql_where  =
         "WHERE `type` LIKE :type
-         AND `title` LIKE :q
+         AND (
+            `title` LIKE :q
+            OR `author` LIKE :q0
+            OR `publisher` LIKE :q1
+            OR `publication_year` LIKE :q2
+         )
         ";
 
         if($hasYearFilter) {
@@ -220,10 +225,15 @@ class SearchController extends Controller
         $_sql_limit = "LIMIT :limit OFFSET :offset ";
 
         $sql = $_sql_select . $_sql_where . $_sql_group_by . $_sql_order_by . $_sql_limit;
+
+        // dd($sql);
         $query = $pdo->prepare($sql);
         $query->execute([
             'type'   => "%$type%",
             'q'      => "%$q%",
+            'q0'     => "%$q%",
+            'q1'     => "%$q%",
+            'q2'     => "%$q%",
             'limit'  => $limit,
             'offset' => $offset,
         ]);
@@ -235,7 +245,10 @@ class SearchController extends Controller
         $query = $pdo->prepare($sql);
         $query->execute([
             'type' => "%$type%",
-            'q'    => "%$q%",
+            'q'      => "%$q%",
+            'q0'     => "%$q%",
+            'q1'     => "%$q%",
+            'q2'     => "%$q%",
         ]);
 
         $totalItems = $query->fetchColumn();

@@ -98,6 +98,7 @@ class ItemController extends Controller
 
                 $item->loaned_by = User::where('id', $loaned_item->loaner_id)->first();
             }
+
             if($item->status=='reserved') {
                 $requested_item =
                     RequestedItem::where('status', 'for pickup')
