@@ -12,7 +12,6 @@ use PDO;
 
 class SearchController extends Controller
 {
-
     public $genres = [
         'fiction',
         'non-fiction',

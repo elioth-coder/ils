@@ -17,25 +17,16 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\CurrentLoanController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\GuestController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ItemRequestController;
+use App\Http\Controllers\LibrarySectionController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PatronController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ReportItemController;
 use App\Http\Controllers\VideoController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\DB;
-
-Route::get('/test', function () {
-    $pdo = DB::connection()->getPdo();
-    $query = $pdo->prepare('SELECT * FROM books');
-    $query->execute();
-
-    $results = $query->fetchAll(PDO::FETCH_CLASS, 'stdClass');
-
-    dd($results);
-});
 
 Route::delete('/logout', [SessionController::class, 'destroy'])->middleware('auth');
 
@@ -45,11 +36,11 @@ Route::middleware('guest')->group(function () {
     Route::get('/account/email_confirmation', [AccountController::class, 'email_confirmation']);
     Route::get('/account/activate/{token_value}', [AccountController::class, 'activate']);
 
+    Route::get('/', [GuestController::class, 'index']);
+    Route::get('/resources', [GuestController::class, 'resources']);
+    Route::get('/rules', [GuestController::class, 'rules']);
     Route::get('/login', [SessionController::class, 'create']);
     Route::post('/login', [SessionController::class, 'store'])->name('login');
-    Route::get('/', function () {
-        return view('welcome');
-    });
 });
 
 Route::prefix('search')->group(function () {
@@ -68,6 +59,13 @@ Route::prefix('services/attendance')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
+    Route::prefix('sections')->group(function () {
+        Route::controller(LibrarySectionController::class)->group(function () {
+            Route::get('/', 'index');
+            Route::get('/{section}', 'section');
+        });
+    });
+
     Route::prefix('reports')->group(function () {
         Route::controller(ReportController::class)->group(function () {
             Route::get('/', 'index');

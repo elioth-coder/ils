@@ -1,33 +1,5 @@
 <x-layout>
-    <header>
-        <nav class="navbar bg-primary">
-            <div class="container">
-                <x-navbar-brand />
-            </div>
-        </nav>
-        <section class="bg-light w-100 border-light-subtle border-bottom" x-data="{ open: false }">
-            <div class="w-100">
-                <section class="container d-flex align-items-center justify-content-end py-2">
-                    <button x-on:click="open = !open" class="btn btn-success btn-sm">
-                        <i class="bi bi-person"></i>
-                        My Account
-                        <i x-show="!open" class="bi bi-caret-right-fill"></i>
-                        <i x-show="open" class="bi bi-caret-down-fill"></i>
-                    </button>
-                </section>
-            </div>
-            <div class="w-100 bg-white" x-show="open" x-collapse.duration.500ms>
-                <section class="container text-end py-2">
-                    <a href="/login" class="fw-semibold text-decoration-none text-black-50 me-2">
-                        <i class="bi bi-box-arrow-in-right me-2"></i>Login
-                    </a>
-                    <a href="/register" class="fw-semibold text-decoration-none text-black-50">
-                        <i class="bi bi-person-plus me-2"></i>Signup
-                    </a>
-                </section>
-            </div>
-        </section>
-    </header>
+    <x-header-guest />
     <main class="d-flex flex-column min-vh-100 min-vw-100 bg-primary-subtle">
         <section class="d-flex bg-info-subtle w-100 position-relative">
             <img src="{{ asset('images/landscape-cover.png') }}" style="height: 420px;" class="bg-info w-100 d-block" />

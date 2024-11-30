@@ -120,6 +120,7 @@ class ResearchController extends Controller
             'format'           => ['nullable', 'in:hardcover,paperback,ebook'],
             'summary'          => ['nullable', 'string'],
             'tags'             => ['nullable', 'string', 'max:255'],
+            'section'          => ['required', 'string'],
             'status'           => ['required','string', 'max:255'],
             'file'             => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ]);
@@ -174,6 +175,7 @@ class ResearchController extends Controller
             'format'           => ['nullable', 'in:hardcover,paperback,ebook'],
             'summary'          => ['nullable', 'string'],
             'tags'             => ['nullable', 'string', 'max:255'],
+            'section'          => ['required', 'string'],
             'status'           => ['required','string', 'max:255'],
             'file'             => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ]);
@@ -303,6 +305,7 @@ class ResearchController extends Controller
             'format'           => ['nullable', 'in:hardcover,paperback,ebook'],
             'summary'          => ['nullable', 'string'],
             'tags'             => ['nullable', 'string', 'max:255'],
+            'section'          => ['required', 'string'],
             'status'           => ['required','string', 'max:255'],
             'file'             => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ];

@@ -12,6 +12,7 @@
     <style>
     html, body {
         overflow: unset;
+        overflow-x: hidden;
     }
     </style>
 </head>

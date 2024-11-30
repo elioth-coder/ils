@@ -155,6 +155,7 @@
                                     'reference',
                                     'e-library',
                                     'audio-visual',
+                                    'thesis',
                                 ];
                             @endphp
                             <label for="section" class="form-label">Library Section</label>

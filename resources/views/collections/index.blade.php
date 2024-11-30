@@ -10,14 +10,14 @@
             </nav>
         </section>
         <div class="container d-flex flex-column pb-5 flex-wrap">
-            <h1 class="text-center"><i class="bi bi-layers-fill me-3"></i>Collections</h1>
+            <h1 class="text-center"><i class="bi bi-layers-fill me-3"></i>Library Collections</h1>
             <hr>
             <style>
                 a.card:hover {
                     background-color: #eee;
                 }
             </style>
-            <div class="d-flex column-gap-3 mb-4">
+            <div class="d-block mb-4">
                 @php
                     $links = [
                         [
@@ -54,7 +54,7 @@
                 @endphp
 
                 @foreach($links as $link)
-                    <a href="{{ $link['href'] }}" class="card text-decoration-none p-3" style="height: 150px; width: 200px;">
+                    <a href="{{ $link['href'] }}" class="card text-decoration-none p-3 d-block float-start me-3 mb-3" style="height: 150px; width: 200px;">
                         <h3>{{ $link['title'] }}</h3>
                         <h1>
                             {{ $link['count'] }}

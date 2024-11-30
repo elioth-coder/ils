@@ -53,133 +53,178 @@
                     </a>
                 </div>
             @endif
+            <div class="w-full d-flex flex-column">
+                <h4 class="my-3">Library Sections</h4>
+
+                @php
+                    $library_sections_data = [
+                        [
+                            'icon' => 'arrow-clockwise',
+                            'href' => '/sections/circulation',
+                            'title' => 'Circulation',
+                            'count' => $library_section_count['circulation'],
+                            'color' => 'primary',
+                        ],
+                        [
+                            'icon' => 'flag',
+                            'href' => '/sections/filipiniana',
+                            'title' => 'Filipiniana',
+                            'count' => $library_section_count['filipiniana'],
+                            'color' => 'primary-subtle',
+                        ],
+                        [
+                            'icon' => 'newspaper',
+                            'href' => '/sections/periodical',
+                            'title' => 'Periodical',
+                            'count' => $library_section_count['periodical'],
+                            'color' => 'success',
+                        ],
+                        [
+                            'icon' => 'bookmark',
+                            'href' => '/sections/reference',
+                            'title' => 'Reference',
+                            'count' => $library_section_count['reference'],
+                            'color' => 'success-subtle',
+                        ],
+                        [
+                            'icon' => 'pc-display',
+                            'href' => '/sections/e-library',
+                            'title' => 'E-Library',
+                            'count' => $library_section_count['e-library'],
+                            'color' => 'warning',
+                        ],
+                        [
+                            'icon' => 'film',
+                            'href' => '/sections/audio-visual',
+                            'title' => 'Audio Visual',
+                            'count' => $library_section_count['audio-visual'],
+                            'color' => 'warning-subtle',
+                        ],
+                        [
+                            'icon' => 'journal',
+                            'href' => '/sections/thesis',
+                            'title' => 'Thesis',
+                            'count' => $library_section_count['thesis'],
+                            'color' => 'danger-subtle',
+                        ],
+                    ];
+                @endphp
+
+                @foreach($library_sections_data as $item)
+                    @if($loop->index == 0 || $loop->index == 4)
+                        <div class="d-flex gap-3 mb-4">
+                    @endif
+                        <a href="{{ $item['href'] }}"
+                            class="card text-decoration-none p-3 w-25 bg-{{ $item['color'] }}">
+                            <h4>{{ $item['title'] }}</h4>
+                            <h1>
+                                <i class="bi bi-{{ $item['icon'] }}" style="font-size: 60px;"></i>
+                                {{ $item['count'] }}
+                            </h1>
+                        </a>
+                    @if($loop->last)
+                        <div class="p-3 w-25"></div>
+                    @endif
+                    @if($loop->index==3 || $loop->last)
+                        </div>
+                    @endif
+                @endforeach
+
+            </div>
             <div class="d-flex column-gap-3">
                 <div class="" style="width: 60%;">
-                    <h4 class="my-3">Data this month</h4>
-                    <div class="d-flex column-gap-3 row-gap-3 flex-wrap">
-                        <a href="/services/current_loans" class="card text-decoration-none p-3 text-center" style="max-width: 150px; min-width: 150px;">
-                            <h1 class="m-0 bg-warning-subtle border p-2">
-                                <i class="bi bi-arrow-up-right-square" style="font-size: 60px;"></i><br>
-                            </h1>
-                            <h2 class="m-0">{{ $on_loan_count }}</h2>
-                            <span style="font-size: 12px;">On loan items this month</span>
-                        </a>
-                        <a href="/services/item_requests" class="card text-decoration-none p-3 text-center" style="max-width: 150px; min-width: 150px;">
-                            <h1 class="m-0 bg-danger-subtle border p-2">
-                                <i class="bi bi-ban" style="font-size: 60px;"></i><br>
-                            </h1>
-                            <h2 class="m-0">{{ $on_reserve_count }}</h2>
-                            <span style="font-size: 12px;">On reserve items this month</span>
-                        </a>
-
-                        <a href="/collections/new" class="card text-decoration-none p-3 text-center" style="max-width: 150px; min-width: 150px;">
-                            <h1 class="m-0 bg-info border p-2">
-                                <i class="bi bi-layers" style="font-size: 60px;"></i><br>
-                            </h1>
-                            <h2 class="m-0">{{ count($new_collections) }}</h2>
-                            <span style="font-size: 12px;">New collections this month</span>
-                        </a>
-                        <a href="/users/visited" class="card text-decoration-none p-3 text-center" style="max-width: 150px; min-width: 150px;">
-                            <h1 class="m-0 bg-warning border p-2">
-                                <i class="bi bi-people" style="font-size: 60px;"></i><br>
-                            </h1>
-                            <h2 class="m-0">{{ $visitor_count }}</h2>
-                            <span style="font-size: 12px;">Visitors this month</span>
-                        </a>
-                        <a href="/services/item_requests" class="card text-decoration-none p-3 text-center" style="max-width: 150px; min-width: 150px;">
-                            <h1 class="m-0 bg-success-subtle border p-2">
-                                <i class="bi bi-basket" style="font-size: 60px;"></i><br>
-                            </h1>
-                            <h2 class="m-0">{{ count($new_requests) }}</h2>
-                            <span style="font-size: 12px;">Requests this month</span>
-                        </a>
-                        <a href="/services/current_loans" class="card text-decoration-none p-3 text-center" style="max-width: 150px; min-width: 150px;">
-                            <h1 class="m-0 bg-success border p-2">
-                                <i class="bi bi-arrow-left-right" style="font-size: 60px;"></i><br>
-                            </h1>
-                            <h2 class="m-0">{{ count($new_checkouts) }}</h2>
-                            <span style="font-size: 12px;">Checkouts this month</span>
-                        </a>
-                        <a href="/collections/new/audio" class="card text-decoration-none p-3 text-center" style="max-width: 150px; min-width: 150px;">
-                            <h1 class="m-0 bg-secondary border p-2">
-                                <i class="bi bi-music-note-beamed" style="font-size: 60px;"></i><br>
-                            </h1>
-                            <h2 class="m-0">{{ count($new_audios) }}</h2>
-                            <span style="font-size: 12px;">New audios this month</span>
-                        </a>
-                        <a href="/collections/new/video" class="card text-decoration-none p-3 text-center" style="max-width: 150px; min-width: 150px;">
-                            <h1 class="m-0 bg-danger border p-2">
-                                <i class="bi bi-film" style="font-size: 60px;"></i><br>
-                            </h1>
-                            <h2 class="m-0">{{ count($new_videos) }}</h2>
-                            <span style="font-size: 12px;">New videos this month</span>
-                        </a>
-                        <a href="/collections/new/book" class="card text-decoration-none p-3 text-center" style="max-width: 150px; min-width: 150px;">
-                            <h1 class="m-0 bg-primary border p-2">
-                                <i class="bi bi-book" style="font-size: 60px;"></i><br>
-                            </h1>
-                            <h2 class="m-0">{{ count($new_books) }}</h2>
-                            <span style="font-size: 12px;">New books this month</span>
-                        </a>
-                        <a href="/collections/new/research" class="card text-decoration-none p-3 text-center" style="max-width: 150px; min-width: 150px;">
-                            <h1 class="m-0 bg-light border p-2">
-                                <i class="bi bi-journal" style="font-size: 60px;"></i><br>
-                            </h1>
-                            <h2 class="m-0">{{ count($new_researches) }}</h2>
-                            <span style="font-size: 12px;">New research this month</span>
-                        </a>
+                    <div class="w-full">
+                        @php
+                            $data_this_month = [
+                                // [
+                                //     'href'  => '/services/current_loans',
+                                //     'icon'  => 'arrow-up-right-square',
+                                //     'color' => 'warning-subtle',
+                                //     'count' => $on_loan_count,
+                                //     'label' => 'On loan items this month',
+                                // ],
+                                [
+                                    'href'  => '/services/item_requests',
+                                    'icon'  => 'ban',
+                                    'color' => 'danger-subtle',
+                                    'count' => $on_reserve_count,
+                                    'label' => 'On reserve items this month',
+                                ],
+                                [
+                                    'href'  => '/collections/new',
+                                    'icon'  => 'layers',
+                                    'color' => 'info',
+                                    'count' => count($new_collections),
+                                    'label' => 'New collections this month',
+                                ],
+                                // [
+                                //     'href'  => '/users/visited',
+                                //     'icon'  => 'people',
+                                //     'color' => 'warning',
+                                //     'count' => $visitor_count,
+                                //     'label' => 'Visitors this month',
+                                // ],
+                                [
+                                    'href'  => '/services/item_requests',
+                                    'icon'  => 'people',
+                                    'color' => 'success-subtle',
+                                    'count' => count($new_requests),
+                                    'label' => 'Requests this month',
+                                ],
+                                [
+                                    'href'  => '/services/current_loans',
+                                    'icon'  => 'arrow-left-right',
+                                    'color' => 'success',
+                                    'count' => count($new_checkouts),
+                                    'label' => 'Checkouts this month',
+                                ],
+                                [
+                                    'href'  => '/collections/new/audio',
+                                    'icon'  => 'music-note-beamed',
+                                    'color' => 'secondary',
+                                    'count' => count($new_audios),
+                                    'label' => 'New audios this month',
+                                ],
+                                [
+                                    'href'  => '/collections/new/video',
+                                    'icon'  => 'film',
+                                    'color' => 'danger',
+                                    'count' => count($new_videos),
+                                    'label' => 'New vides this month',
+                                ],
+                                [
+                                    'href'  => '/collections/new/book',
+                                    'icon'  => 'book',
+                                    'color' => 'primary',
+                                    'count' => count($new_books),
+                                    'label' => 'New books this month',
+                                ],
+                                [
+                                    'href'  => '/collections/new/researches',
+                                    'icon'  => 'journal',
+                                    'color' => 'light',
+                                    'count' => count($new_researches),
+                                    'label' => 'New research this month',
+                                ],
+                            ]
+                        @endphp
+                        <h4 class="my-3">Data this month</h4>
+                        <div class="d-flex column-gap-3 row-gap-3 flex-wrap">
+                            @foreach($data_this_month as $item)
+                                <a href="{{ $item['href'] }}" class="card text-decoration-none p-3 text-center" style="max-width: 150px; min-width: 150px;">
+                                    <h1 class="m-0 bg-{{ $item['color'] }} border p-2">
+                                        <i class="bi bi-{{ $item['icon'] }}" style="font-size: 60px;"></i><br>
+                                    </h1>
+                                    <h2 class="m-0">{{ $item['count'] }}</h2>
+                                    <span style="font-size: 12px;">{{ $item['label'] }}</span>
+                                </a>
+                            @endforeach
+                        </div>
                     </div>
                 </div>
                 <div class="" style="width: 40%;">
                     <div class="py-3">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th colspan="2" class="text-center">
-                                        <h4>Top Collections</h4>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($top_collections as $item)
-                                    <tr>
-                                        <td class="text-center">
-                                            <section style="height: 110px;" class="card p-1 mx-auto position-relative">
-                                                @php $item_cover = ($item->cover_image) ? "/storage/images/$item->type/$item->cover_image" : '/images/cover_not_available.jpg'; @endphp
-                                                <object class="h-100 d-block" data="{{ asset($item_cover) }}"
-                                                    type="image/png">
-                                                    <img class="h-100 d-block" src="/images/cover_not_available.jpg"
-                                                        alt="">
-                                                </object>
-                                                <h5 style="width: 30px;"
-                                                    class="mb-1 me-1 d-block position-absolute top-0 z-10 bg-white">
-                                                    #{{ $loop->index + 1 }}
-                                                </h5>
-                                            </section>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex">
-                                                <section>
-                                                    <div class="d-flex">
-                                                        <div class="w-100">
-                                                            <a href="/collections/items/{{ $item->title }}/detail"
-                                                                class="link-primary">
-                                                                <h6>{{ $item->title }}</h6>
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                    <p>
-                                                        Author: {{ $item->author }} <br>
-                                                        <i>Checked out {{ $item->count }}
-                                                            {{ $item->count > 1 ? 'times' : 'time' }}</i>
-                                                    </p>
-                                                </section>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                        <x-dashboard.top-collections :items="$top_collections" />
                     </div>
                 </div>
             </div>

@@ -63,7 +63,7 @@
                                         'title' => 'Current Loans',
                                     ],
                                     [
-                                        'icon' => 'flag',
+                                        'icon' => 'exclamation-circle',
                                         'url' => '/services/report_item',
                                         'title' => 'Report item',
                                     ],
@@ -76,34 +76,39 @@
 
                                 $sections = [
                                     [
-                                        'icon' => 'square',
+                                        'icon' => 'arrow-clockwise',
                                         'url' => '/sections/circulation',
-                                        'title' => 'Circulation',
+                                        'title' => 'Circulation Section',
                                     ],
                                     [
-                                        'icon' => 'square',
+                                        'icon' => 'flag',
                                         'url' => '/sections/filipiniana',
-                                        'title' => 'Filipiniana',
+                                        'title' => 'Filipiniana Section',
                                     ],
                                     [
-                                        'icon' => 'square',
+                                        'icon' => 'newspaper',
                                         'url' => '/sections/periodical',
-                                        'title' => 'Periodical',
+                                        'title' => 'Periodical Section',
                                     ],
                                     [
-                                        'icon' => 'square',
+                                        'icon' => 'bookmark',
                                         'url' => '/sections/reference',
-                                        'title' => 'Reference',
+                                        'title' => 'Reference Section',
                                     ],
                                     [
-                                        'icon' => 'square',
-                                        'url' => '/sections/e_library',
-                                        'title' => 'E-Library',
+                                        'icon' => 'pc-display',
+                                        'url' => '/sections/e-library',
+                                        'title' => 'E-Library Section',
                                     ],
                                     [
-                                        'icon' => 'square',
-                                        'url' => '/sections/audio_visual',
-                                        'title' => 'Audio Visual',
+                                        'icon' => 'film',
+                                        'url' => '/sections/audio-visual',
+                                        'title' => 'Audio Visual Section',
+                                    ],
+                                    [
+                                        'icon' => 'journal',
+                                        'url' => '/sections/thesis',
+                                        'title' => 'Thesis Section',
                                     ],
 
                                 ];
@@ -177,39 +182,15 @@
                                     'url' => '/settings/programs',
                                     'title' => 'Programs',
                                 ];
+
                             @endphp
-                            <a href="/" class="btn btn-link text-decoration-none text-black-50">
+                            <a href="/" class="btn {{ str_starts_with(request()->path(), 'dashboard') ? 'btn-warning' : '' }} text-decoration-none">
                                 <i class="bi bi-bell-fill me-1"></i>
                                 Dashboard
                             </a>
                             @if (in_array(Auth::user()->role, ['admin', 'librarian', 'staff', 'clerk']))
-                                <div class="dropdown">
-                                    <button class="btn btn-link dropdown-toggle text-decoration-none text-black-50"
-                                        type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="bi bi-bar-chart-line-fill me-1"></i>
-                                        Reports
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-end">
-                                        @foreach ($reports as $report)
-                                            <li>
-                                                <a class="dropdown-item" href="{{ $report['url'] }}">
-                                                    <i class="bi bi-{{ $report['icon'] }} me-1"></i> {{ $report['title'] }}
-                                                </a>
-                                            </li>
-                                        @endforeach
-                                        <li>
-                                            <hr class="dropdown-divider">
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item" href="/reports">
-                                                <i class="bi bi-bar-chart-line me-1"></i> Reports
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-
                                 <div x-data="notification" class="dropdown">
-                                    <button class="btn btn-link dropdown-toggle text-decoration-none text-black-50"
+                                    <button class="btn  {{ str_starts_with(request()->path(), 'services') ? 'btn-warning' : '' }} dropdown-toggle text-decoration-none"
                                         type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class="bi bi-grid-fill me-1"></i>
                                         Services
@@ -248,9 +229,9 @@
                                 </div>
 
                                 <div class="dropdown">
-                                    <button class="btn btn-link dropdown-toggle text-decoration-none text-black-50"
+                                    <button class="btn {{ str_starts_with(request()->path(), 'sections') ? 'btn-warning' : '' }} dropdown-toggle text-decoration-none"
                                         type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="bi bi-square me-1"></i>
+                                        <i class="bi bi-grid-1x2-fill me-1"></i>
                                         Sections
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end">
@@ -266,42 +247,13 @@
                                         </li>
                                         <li>
                                             <a class="dropdown-item" href="/sections">
-                                                <i class="bi bi-square me-1"></i> Library Sections
+                                                <i class="bi bi-grid-1x2 me-1"></i> Library Sections
                                             </a>
                                         </li>
                                     </ul>
                                 </div>
                                 <div class="dropdown">
-                                    <button class="btn btn-link dropdown-toggle text-decoration-none text-black-50"
-                                        type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="bi bi-people-fill me-1"></i>
-                                        Patrons
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-end">
-                                        @foreach ($users as $user)
-                                            <li>
-                                                <a class="dropdown-item" href="{{ $user['url'] }}">
-                                                    <i class="bi bi-{{ $user['icon'] }} me-1"></i> {{ $user['title'] }}
-                                                </a>
-                                            </li>
-                                        @endforeach
-                                        <li>
-                                            <hr class="dropdown-divider">
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item" href="/users/visited">
-                                                <i class="bi bi-people me-1"></i> Patrons (Visited)
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item" href="/users">
-                                                <i class="bi bi-people me-1"></i> Patrons
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="dropdown">
-                                    <button class="btn btn-link dropdown-toggle text-decoration-none text-black-50"
+                                    <button class="btn {{ str_starts_with(request()->path(), 'collections') ? 'btn-warning' : '' }} dropdown-toggle text-decoration-none"
                                         type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class="bi bi-layers-fill me-1"></i>
                                         Collections
@@ -330,8 +282,63 @@
                                         </li>
                                     </ul>
                                 </div>
+
                                 <div class="dropdown">
-                                    <button class="btn btn-link dropdown-toggle text-decoration-none text-black-50"
+                                    <button class="btn {{ str_starts_with(request()->path(), 'reports') ? 'btn-warning' : '' }} dropdown-toggle text-decoration-none"
+                                        type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-bar-chart-line-fill me-1"></i>
+                                        Reports
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        @foreach ($reports as $report)
+                                            <li>
+                                                <a class="dropdown-item" href="{{ $report['url'] }}">
+                                                    <i class="bi bi-{{ $report['icon'] }} me-1"></i> {{ $report['title'] }}
+                                                </a>
+                                            </li>
+                                        @endforeach
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="/reports">
+                                                <i class="bi bi-bar-chart-line me-1"></i> Reports
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div class="dropdown">
+                                    <button class="btn  {{ str_starts_with(request()->path(), 'users') ? 'btn-warning' : '' }} dropdown-toggle text-decoration-none"
+                                        type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-people-fill me-1"></i>
+                                        Patrons
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        @foreach ($users as $user)
+                                            <li>
+                                                <a class="dropdown-item" href="{{ $user['url'] }}">
+                                                    <i class="bi bi-{{ $user['icon'] }} me-1"></i> {{ $user['title'] }}
+                                                </a>
+                                            </li>
+                                        @endforeach
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="/users/visited">
+                                                <i class="bi bi-people me-1"></i> Patrons (Visited)
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="/users">
+                                                <i class="bi bi-people me-1"></i> Patrons
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="dropdown">
+                                    <button class="btn  {{ str_starts_with(request()->path(), 'settings') ? 'btn-warning' : '' }} dropdown-toggle text-decoration-none"
                                         type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class="bi bi-gear-fill me-1"></i>
                                         Settings
@@ -369,7 +376,7 @@
                 </div>
                 <div class="w-100 bg-white" x-show="open" x-collapse.duration.500ms>
                     <section class="container text-end py-2">
-                        <a href="/account" class="btn btn-link text-decoration-none text-black-50">
+                        <a href="/account" class="btn btn-link text-decoration-none">
                             <i class="bi bi-person-fill me-1"></i> My Account
                         </a>
                         <a href="/account/edit" class="text-decoration-none link-secondary me-3">
@@ -406,10 +413,10 @@
                 </div>
                 <div class="w-100 bg-white" x-show="open" x-collapse.duration.500ms>
                     <section class="container text-end py-2">
-                        <a href="/login" class="fw-semibold text-decoration-none text-black-50 me-2">
+                        <a href="/login" class="fw-semibold text-decoration-none me-2">
                             <i class="bi bi-box-arrow-in-right me-2"></i>Login
                         </a>
-                        <a href="/register" class="fw-semibold text-decoration-none text-black-50">
+                        <a href="/register" class="fw-semibold text-decoration-none">
                             <i class="bi bi-person-plus me-2"></i>Signup
                         </a>
                     </section>

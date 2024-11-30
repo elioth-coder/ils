@@ -275,6 +275,7 @@
                                     'reference',
                                     'e-library',
                                     'audio-visual',
+                                    'thesis',
                                 ];
 
                                 if ($errors->has('section')) {
