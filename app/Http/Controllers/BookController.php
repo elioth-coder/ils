@@ -74,18 +74,10 @@ class BookController extends Controller
         'available',
         'checked out',
         'reserved',
-        'on hold',
         'lost',
         'damaged',
-        'in repair',
-        'in processing',
-        'missing',
-        'on order',
         'reference only',
-        'withdrawn',
-        'transferred',
-        'archived',
-        'overdue'
+        'no barcode',
     ];
 
     private function getAffiliatedLibrary() {

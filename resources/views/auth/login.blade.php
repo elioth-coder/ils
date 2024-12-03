@@ -32,7 +32,7 @@
                 @enderror
                 <div style="width: 400px;" class="card mx-auto p-3">
                     <div class="card-body">
-                        <form action="/login" method="POST">
+                        <form action="/login" method="POST" autocomplete="off">
                             @csrf
                             @method('POST')
 
@@ -44,7 +44,12 @@
                             </div>
                             <div class="mb-3">
                                 <label for="password" class="form-label">Password</label>
-                                <input type="password" class="form-control" name="password" id="password" value="{{ old('password') ?? '' }}">
+                                <div class="input-group mb-3" x-data="{ show: false }">
+                                    <input x-bind:type="(show) ? 'text' : 'password'" name="password" id="password" class="form-control">
+                                    <button x-on:click="show = !show" class="btn btn-outline-secondary" type="button">
+                                        <i class="bi" x-bind:class="(show) ? 'bi-eye-fill' : 'bi-eye-slash-fill'"></i>
+                                    </button>
+                                </div>
                             </div>
                             <div class="mb-3 form-check">
                                 <input type="checkbox" class="form-check-input" id="exampleCheck1">

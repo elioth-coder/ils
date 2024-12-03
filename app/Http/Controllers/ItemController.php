@@ -14,6 +14,31 @@ use Illuminate\Support\Facades\DB;
 
 class ItemController extends Controller
 {
+    public function set_status(Request $request)
+    {
+        try {
+            $attributes = $request->validate([
+                'barcode' => ['required', 'string', 'exists:items,barcode'],
+                'status'  => ['required'],
+            ]);
+
+            $item = Item::where('barcode', $attributes['barcode'])->first();
+            $item->update([
+                'status' => $attributes['status'],
+            ]);
+
+            return response()->json([
+                'status'  => 'success',
+                'message' => "Successfully set status of item to " . $attributes['status'],
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+
     public function request(Request $request)
     {
         try {

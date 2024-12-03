@@ -250,7 +250,7 @@
                                 }
                             @endphp
                             <label for="college" class="form-label">College</label>
-                            <select class="form-control form-control-sm" name="college" id="college">
+                            <select required class="form-control form-control-sm" name="college" id="college">
                                 <option value="">--</option>
                                 @foreach ($colleges as $_college)
                                     <option {{ $_college->code==$college ? "selected" : "" }} value="{{ $_college->code }}">{{ $_college->code }}</option>

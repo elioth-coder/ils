@@ -21,7 +21,7 @@
             <div class="w-100 ps-4">
                 <section class="d-flex w-100 py-4">
                     <div class="w-50">
-                        <a href="{{ url()->previous() }}" class="btn btn-outline-success btn-sm">
+                        <a href="/search/{{ $item->type }}" class="btn btn-outline-success btn-sm">
                             <i class="bi bi-arrow-left"></i>
                             Back
                         </a>
@@ -161,11 +161,15 @@
                                                                 </div>
                                                             </td>
                                                         </tr>
-                                                        <tr>
-                                                            <th class="text-nowrap px-2">Price: </th>
-                                                            <td class="text-capitalize">{{ $library_item->price ?? '--'}}</td>
-                                                            <td></td>
-                                                        </tr>
+
+                                                        @if(!in_array(Auth::user()->role, ['student','teacher']))
+                                                            <tr>
+                                                                <th class="text-nowrap px-2">Price: </th>
+                                                                <td class="text-capitalize">{{ $library_item->price ?? '--'}}</td>
+                                                                <td></td>
+                                                            </tr>
+                                                        @endif
+
                                                         <tr>
                                                             <th class="text-nowrap px-2">Status: </th>
                                                             <td class="text-capitalize">{{ $library_item->status ?? '--'}}</td>

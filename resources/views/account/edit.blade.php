@@ -57,7 +57,7 @@
                                             $card_number = (old('card_number')) ? old('card_number') : $user->card_number;
                                         }
                                     @endphp
-                                    <label for="card_number" class="form-label">Employee No.</label>
+                                    <label for="card_number" class="form-label">Card No.</label>
                                     <input disabled type="text" class="form-control form-control-sm" placeholder="--" name="card_number" id="card_number" value="{{ $card_number }}">
                                     @error('card_number')
                                         <div class="form-text text-danger">{{ $message }}</div>

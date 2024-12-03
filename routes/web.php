@@ -25,6 +25,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PatronController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ReportItemController;
+use App\Http\Controllers\ToolController;
 use App\Http\Controllers\VideoController;
 use Illuminate\Support\Facades\Route;
 
@@ -153,6 +154,13 @@ Route::middleware('auth')->group(function () {
         });
     });
 
+    Route::prefix('tools')->group(function () {
+        Route::controller(ToolController::class)->group(function () {
+            Route::get('/barcode_maker', 'barcode_maker');
+            Route::get('/barcode_maker/print', 'barcode_print');
+        });
+    });
+
     Route::prefix('users/teachers')->group(function () {
         Route::controller(TeacherController::class)->group(function () {
             Route::get('/', 'index');
@@ -195,6 +203,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('collections/items')->group(function () {
         Route::controller(ItemController::class)->group(function () {
             Route::post('/request', 'request');
+            Route::post('/set_status', 'set_status');
             Route::post('/cancel_request', 'cancel_request');
             Route::get('/{title}/detail', 'detail');
             Route::get('/{title}/copy/{barcode}', 'barcode');

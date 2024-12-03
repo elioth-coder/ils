@@ -136,6 +136,7 @@ class AccountController extends Controller
             'first_name'      => ['required', 'string', 'max:255'],
             'middle_name'     => ['nullable', 'string', 'max:255'],
             'last_name'       => ['required', 'string', 'max:255'],
+            'birthday'        => ['required', 'date'],
             'suffix'          => ['nullable', 'string', 'max:255'],
             'gender'          => ['required', 'in:male,female'],
             'province'        => ['nullable', 'string', 'max:255'],
@@ -202,6 +203,7 @@ class AccountController extends Controller
         if($current_pin == Auth::user()->pin) {
             $user = User::where('email', Auth::user()->email)->first();
 
+
             $user->update([
                 'pin' => $pinAttributes['pin'],
             ]);
@@ -215,7 +217,7 @@ class AccountController extends Controller
 
         } else {
             throw ValidationException::withMessages([
-                'current_password' => 'The current password field is incorrect',
+                'current_pin' => 'The current PIN field is incorrect',
             ]);
         }
     }

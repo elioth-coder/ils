@@ -74,44 +74,44 @@
                                     ],
                                 ];
 
-                                $sections = [
-                                    [
-                                        'icon' => 'arrow-clockwise',
-                                        'url' => '/sections/circulation',
-                                        'title' => 'Circulation Section',
-                                    ],
-                                    [
-                                        'icon' => 'flag',
-                                        'url' => '/sections/filipiniana',
-                                        'title' => 'Filipiniana Section',
-                                    ],
-                                    [
-                                        'icon' => 'newspaper',
-                                        'url' => '/sections/periodical',
-                                        'title' => 'Periodical Section',
-                                    ],
-                                    [
-                                        'icon' => 'bookmark',
-                                        'url' => '/sections/reference',
-                                        'title' => 'Reference Section',
-                                    ],
-                                    [
-                                        'icon' => 'pc-display',
-                                        'url' => '/sections/e-library',
-                                        'title' => 'E-Library Section',
-                                    ],
-                                    [
-                                        'icon' => 'film',
-                                        'url' => '/sections/audio-visual',
-                                        'title' => 'Audio Visual Section',
-                                    ],
-                                    [
-                                        'icon' => 'journal',
-                                        'url' => '/sections/thesis',
-                                        'title' => 'Thesis Section',
-                                    ],
+                                // $sections = [
+                                //     [
+                                //         'icon' => 'arrow-clockwise',
+                                //         'url' => '/sections/circulation',
+                                //         'title' => 'Circulation Section',
+                                //     ],
+                                //     [
+                                //         'icon' => 'flag',
+                                //         'url' => '/sections/filipiniana',
+                                //         'title' => 'Filipiniana Section',
+                                //     ],
+                                //     [
+                                //         'icon' => 'newspaper',
+                                //         'url' => '/sections/periodical',
+                                //         'title' => 'Periodical Section',
+                                //     ],
+                                //     [
+                                //         'icon' => 'bookmark',
+                                //         'url' => '/sections/reference',
+                                //         'title' => 'Reference Section',
+                                //     ],
+                                //     [
+                                //         'icon' => 'pc-display',
+                                //         'url' => '/sections/e-library',
+                                //         'title' => 'E-Library Section',
+                                //     ],
+                                //     [
+                                //         'icon' => 'film',
+                                //         'url' => '/sections/audio-visual',
+                                //         'title' => 'Audio Visual Section',
+                                //     ],
+                                //     [
+                                //         'icon' => 'journal',
+                                //         'url' => '/sections/thesis',
+                                //         'title' => 'Thesis Section',
+                                //     ],
 
-                                ];
+                                // ];
 
                                 $users = [
                                     [
@@ -132,6 +132,7 @@
                                         'url' => '/users/staffs',
                                         'title' => 'Library Staffs',
                                     ];
+
                                 }
 
                                 $collections = [
@@ -155,6 +156,20 @@
                                         'url' => '/collections/video',
                                         'title' => 'Video',
                                     ],
+                                ];
+
+                                $tools = [
+                                    [
+                                        'icon' => 'upc-scan',
+                                        'url' => '/tools/barcode_maker',
+                                        'title' => 'Barcode Maker',
+                                    ],
+                                    [
+                                        'icon' => 'database-check',
+                                        'url' => '/tools/database_backup',
+                                        'title' => 'DB Backup Restore',
+                                    ],
+
                                 ];
 
                                 $settings = [];
@@ -228,7 +243,7 @@
                                     </ul>
                                 </div>
 
-                                <div class="dropdown">
+                                {{-- <div class="dropdown">
                                     <button class="btn {{ str_starts_with(request()->path(), 'sections') ? 'btn-warning' : '' }} dropdown-toggle text-decoration-none"
                                         type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class="bi bi-grid-1x2-fill me-1"></i>
@@ -251,7 +266,8 @@
                                             </a>
                                         </li>
                                     </ul>
-                                </div>
+                                </div> --}}
+
                                 <div class="dropdown">
                                     <button class="btn {{ str_starts_with(request()->path(), 'collections') ? 'btn-warning' : '' }} dropdown-toggle text-decoration-none"
                                         type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -337,6 +353,33 @@
                                         </li>
                                     </ul>
                                 </div>
+
+                                <div class="dropdown">
+                                    <button class="btn {{ str_starts_with(request()->path(), 'tools') ? 'btn-warning' : '' }} dropdown-toggle text-decoration-none"
+                                        type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-tools me-1"></i>
+                                        Tools
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        @foreach ($tools as $tool)
+                                            <li>
+                                                <a class="dropdown-item" href="{{ $tool['url'] }}">
+                                                    <i class="bi bi-{{ $tool['icon'] }} me-1"></i>
+                                                    {{ $tool['title'] }}
+                                                </a>
+                                            </li>
+                                        @endforeach
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="/tools">
+                                                <i class="bi bi-layers me-1"></i> Tools
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+
                                 <div class="dropdown">
                                     <button class="btn  {{ str_starts_with(request()->path(), 'settings') ? 'btn-warning' : '' }} dropdown-toggle text-decoration-none"
                                         type="button" data-bs-toggle="dropdown" aria-expanded="false">

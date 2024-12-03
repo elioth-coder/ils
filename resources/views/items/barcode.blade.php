@@ -21,7 +21,7 @@
             <div class="w-100 ps-4">
                 <section class="d-flex w-100 py-4">
                     <div class="w-50">
-                        <a href="{{ url()->previous() }}" class="btn btn-outline-success btn-sm">
+                        <a href="/collections/items/{{ $item->title }}/detail" class="btn btn-outline-success btn-sm">
                             <i class="bi bi-arrow-left"></i>
                             Back
                         </a>
@@ -319,10 +319,6 @@
                                 <tr>
                                     <th class="text-nowrap px-2">No. of pages</th>
                                     <td class="text px-2">{{ $item->number_of_pages ?? '--' }}</td>
-                                </tr>
-                                <tr>
-                                    <th class="text-nowrap px-2">Price</th>
-                                    <td class="text px-2">{{ $item->price ?? '--' }}</td>
                                 </tr>
                                 <tr>
                                     <th class="text-nowrap px-2">Format</th>

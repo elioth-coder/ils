@@ -157,7 +157,7 @@
                     <div class="d-flex column-gap-2">
                         <div class="mb-2 w-100">
                             <label for="college" class="form-label">College</label>
-                            <select class="form-control form-control-sm" name="college" id="college">
+                            <select required class="form-control form-control-sm" name="college" id="college">
                                 <option value="">--</option>
                                 @foreach ($colleges as $college)
                                     <option {{ $college->code==old('college') ? "selected" : "" }} value="{{ $college->code }}">{{ $college->code }}</option>
