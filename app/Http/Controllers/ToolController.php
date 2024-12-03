@@ -21,7 +21,7 @@ class ToolController extends Controller
         $query->execute();
         $items = $query->fetchAll(PDO::FETCH_CLASS, 'stdClass');
 
-        return view('collections.barcode_maker', [
+        return view('tools.barcode_maker', [
             'items' => $items
         ]);
     }
@@ -38,7 +38,7 @@ class ToolController extends Controller
         $query->execute();
         $items = $query->fetchAll(PDO::FETCH_CLASS, 'stdClass');
 
-        return view('collections.barcode_print', [
+        return view('tools.barcode_print', [
             'items' => $items
         ]);
     }

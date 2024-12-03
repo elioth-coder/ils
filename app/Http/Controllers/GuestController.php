@@ -11,6 +11,11 @@ class GuestController extends Controller
         return view('guest.index');
     }
 
+    public function about()
+    {
+        return view('guest.about');
+    }
+
     public function rules()
     {
         return view('guest.rules');

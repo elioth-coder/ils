@@ -166,8 +166,8 @@
                                     ],
                                     [
                                         'icon' => 'database-check',
-                                        'url' => '/tools/database_backup',
-                                        'title' => 'DB Backup Restore',
+                                        'url' => '/tools/backup_db',
+                                        'title' => 'DB Backup/Restore',
                                     ],
 
                                 ];
