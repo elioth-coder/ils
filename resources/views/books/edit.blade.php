@@ -66,8 +66,8 @@
                                 }
                             @endphp
                             <label for="barcode" class="form-label">Barcode No.</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--" name="barcode"
-                                id="barcode" value="{{ $barcode }}">
+                            @php $generated = substr((floor(microtime(true) * 1000) . ''), 0, 12); @endphp
+                            <input type="text" class="form-control form-control-sm" maxlength="12" placeholder="--" name="barcode" id="barcode" value="{{ $barcode ?? $generated }}">
                             @error('barcode')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror

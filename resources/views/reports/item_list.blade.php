@@ -239,6 +239,13 @@
                     @endforelse
                 </tbody>
             </table>
+
+            <div class="w-full text-end">
+                <a href="/reports/item_list/print?{{ request()->getQueryString() }}" class="btn btn-warning">
+                    <i class="bi bi-print"></i>
+                    Print Report
+                </a>
+            </div>
         </div>
     </main>
     <x-footer />

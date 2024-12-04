@@ -21,6 +21,13 @@
                 background-color: rgba(0, 0, 0, 0.25);
                 z-index: 10;
             }
+
+            th {
+                position: sticky;
+                top: 0;
+                background-color: #f8f8f8;
+                z-index: 1;
+            }
         </style>
     </x-slot:head>
     <main class="d-flex align-items-center justify-content-center w-100 bg-primary position-relative"
@@ -34,21 +41,58 @@
                 </button>
             </div>
         </div>
-
-        <div class="container d-flex flex-column py-5 text-center">
-            <img src="/images/papaya-campus-logo.png" class="mx-auto" style="width: 220px;" alt="">
-            <h1>NEUST LIBRARY <br>Attendance Monitoring</h1>
-            <br>
-            <div class="w-50 mx-auto">
-                <input id="barcode_reader" placeholder="Scan your library card" type="text"
-                    class="text-center form-control form-control-lg" autofocus="on" autocomplete="off" />
+        <div class="w-full text-center bg-warning rounded-5 rounded-start-0 text-white fw-bold p-4">
+            <a href="/">Home</a>
+        </div>
+        <div class="d-flex py-5 w-100">
+            <div class="w-50 p-5 text-center">
+                <img src="/images/papaya-campus-logo.png" class="mx-auto" style="width: 220px;" alt="">
+                <h1>NEUST LIBRARY <br>Attendance Monitoring</h1>
+                <br>
+                <div class="w-50 mx-auto">
+                    <input id="barcode_reader" placeholder="Scan your library card" type="text"
+                        class="text-center form-control form-control-lg" autofocus="on" autocomplete="off" />
+                </div>
+                <h5 class="my-3">or use</h5>
+                <div class="w-50 mx-auto">
+                    <button onclick="startFaceRecognition()" class="btn btn-warning btn-lg">
+                        <i class="bi bi-person-bounding-box me-1"></i>
+                        Face Recognition
+                    </button>
+                </div>
             </div>
-            <h5 class="my-3">or use</h5>
-            <div class="w-50 mx-auto">
-                <button onclick="startFaceRecognition()" class="btn btn-warning btn-lg">
-                    <i class="bi bi-person-bounding-box me-1"></i>
-                    Face Recognition
-                </button>
+            <div class="w-50 p-5">
+                <h2 class="text-center mt-5 mb-4 text-warning text-decoration-underline">Attendance Log</h2>
+                <div class="bg-white mx-5 px-2 border rounded" style="overflow-y: scroll; max-height: 380px;">
+                    <table class="table" id="attendance-log-table">
+                        <thead class="text-uppercase">
+                        <tr>
+                            <th>#</th>
+                            <th>Full Name</th>
+                            <th>Program</th>
+                            <th>In</th>
+                            <th>Out</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($attendances as $attendance)
+                                <tr>
+                                    <td class="text-end">{{ $loop->index + 1 }}.</td>
+                                    <td class="text-capitalize">{{ $attendance->name }}</td>
+                                    <td>{{ $attendance->program }}</td>
+                                    <td><b>{{ date('h:i A', strtotime($attendance->in)) }}</b></td>
+                                    @if($attendance->out)
+                                        <td class="text-success">
+                                            <b>{{ date('h:i A', strtotime($attendance->out)) }}</b>
+                                        </td>
+                                    @else
+                                        <td class="text-danger"><b>--:-- --</b></td>
+                                    @endif
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </main>

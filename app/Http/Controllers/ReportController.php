@@ -43,11 +43,6 @@ class ReportController extends Controller
 
         $parameters['library'] = $library;
 
-        // dd([
-        //     'sql' => $sql,
-        //     'parameters' => $parameters,
-        // ]);
-
         $query->execute($parameters);
         $patrons = $query->fetchAll(PDO::FETCH_CLASS, 'stdClass');
 
@@ -206,11 +201,6 @@ class ReportController extends Controller
         }
 
         $parameters['library'] = $library;
-
-        // dd([
-        //     'sql' => $sql,
-        //     'parameters' => $parameters,
-        // ]);
 
         $query->execute($parameters);
         $items = $query->fetchAll(PDO::FETCH_CLASS, 'stdClass');

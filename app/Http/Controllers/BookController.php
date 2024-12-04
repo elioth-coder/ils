@@ -114,7 +114,7 @@ class BookController extends Controller
     {
         $attributes = $request->validate([
             'accession_number' => ['nullable', 'string', 'unique:items,accession_number', 'max:255'],
-            'barcode'          => ['nullable', 'string', 'unique:items,barcode', 'max:255'],
+            'barcode'          => ['nullable', 'string', 'unique:items,barcode', 'max:12'],
             'call_number'      => ['nullable', 'string', 'max:255'],
             'date_acquired'    => ['nullable', 'date'],
             'title'            => ['required', 'string', 'max:255'],
@@ -167,7 +167,7 @@ class BookController extends Controller
     {
         $attributes = $request->validate([
             'accession_number' => ['nullable', 'string', 'unique:items,accession_number', 'max:255'],
-            'barcode'          => ['nullable', 'string', 'unique:items,barcode', 'max:255'],
+            'barcode'          => ['nullable', 'string', 'unique:items,barcode', 'max:12'],
             'call_number'      => ['nullable', 'string', 'max:255'],
             'date_acquired'    => ['nullable', 'date'],
             'title'            => ['required', 'string', 'max:255'],
@@ -295,7 +295,7 @@ class BookController extends Controller
         $item = Item::findOrFail($id);
         $rules = [
             'accession_number' => ['nullable', 'string', 'unique:items,accession_number', 'max:255'],
-            'barcode'          => ['nullable', 'string', 'unique:items,barcode', 'max:255'],
+            'barcode'          => ['nullable', 'string', 'unique:items,barcode', 'max:12'],
             'call_number'      => ['nullable', 'string', 'max:255'],
             'date_acquired'    => ['nullable', 'date'],
             'title'            => ['required', 'string', 'max:255'],

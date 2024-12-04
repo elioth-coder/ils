@@ -8,32 +8,32 @@
             <div class="row">
                 <div class="col-3 min-vh-100 mb-5">
                     <div class="list-group">
-                        <a href="#mission" class="list-group-item list-group-item-action">
-                            <i class="me-1 bi bi-bookmark"></i>
+                        <a href="#library_hours" class="list-group-item list-group-item-action">
+                            <i class="me-1 bi bi-star"></i>
                             Library Hours
                         </a>
-                        <a href="#goals" class="list-group-item list-group-item-action">
-                            <i class="me-1 bi bi-flag"></i>
+                        <a href="#admission" class="list-group-item list-group-item-action">
+                            <i class="me-1 bi bi-star"></i>
                             Admission and Library Registration
                         </a>
-                        <a href="#objectives" class="list-group-item list-group-item-action">
-                            <i class="me-1 bi bi-list-check"></i>
+                        <a href="#loan_records" class="list-group-item list-group-item-action">
+                            <i class="me-1 bi bi-star"></i>
                             Loans Records
                         </a>
-                        <a href="#library_sections" class="list-group-item list-group-item-action">
-                            <i class="me-1 bi bi-grid-1x2"></i>
+                        <a href="#borrowing" class="list-group-item list-group-item-action">
+                            <i class="me-1 bi bi-star"></i>
                             Borrowing Procedure
                         </a>
-                        <a href="#library_sections" class="list-group-item list-group-item-action">
-                            <i class="me-1 bi bi-grid-1x2"></i>
+                        <a href="#loan_period" class="list-group-item list-group-item-action">
+                            <i class="me-1 bi bi-star"></i>
                             Loan Period
                         </a>
-                        <a href="#library_sections" class="list-group-item list-group-item-action">
-                            <i class="me-1 bi bi-grid-1x2"></i>
+                        <a href="#lost_books" class="list-group-item list-group-item-action">
+                            <i class="me-1 bi bi-star"></i>
                             Lost Books & Damaged Materials
                         </a>
-                        <a href="#library_sections" class="list-group-item list-group-item-action">
-                            <i class="me-1 bi bi-grid-1x2"></i>
+                        <a href="#etiquette" class="list-group-item list-group-item-action">
+                            <i class="me-1 bi bi-star"></i>
                             Etiquette in NEUST Library
                         </a>
                     </div>
@@ -50,7 +50,7 @@
 
                         <ol class="vstack gap-2">
                             <li>
-                                <span style="font-weight: bold;">Library Hours</span>
+                                <span id="library_hours" style="font-weight: bold;">Library Hours</span>
                                 <ol class="vstack gap-2 mt-2" type="a">
                                     <li class="ml-4">
                                         Observed library hours from Monday to Friday is 7:30 a.m. to 6:30 p.m.
@@ -65,7 +65,7 @@
                             </li>
 
                             <li>
-                                <span style="font-weight: bold;">Admission and Library Registration</span>
+                                <span id="admission" style="font-weight: bold;">Admission and Library Registration</span>
                                 <ol class="vstack gap-2 mt-2" type="a">
                                     <li class="ml-4">
                                         Students are required to apply for a borrowers card. Present 1x1 I.D. picture
@@ -88,7 +88,7 @@
                             </li>
 
                             <li>
-                                <span style="font-weight: bold;">Loans Records</span>
+                                <span id="loan_records" style="font-weight: bold;">Loans Records</span>
                                 <ol class="vstack gap-2 mt-2" type="a">
                                     <li class="ml-4">
                                         Borrowers are responsible for all loans recorded through the use of borrowers
@@ -99,7 +99,7 @@
                             </li>
 
                             <li>
-                                <span style="font-weight: bold;">Borrowing procedure</span>
+                                <span id="borrowing" style="font-weight: bold;">Borrowing procedure</span>
                                 <ol class="vstack gap-2 mt-2" type="a">
                                     <li class="ml-4">
                                         No library materials shall be removed from the library un their issue has been
@@ -110,7 +110,7 @@
                             </li>
 
                             <li>
-                                <span style="font-weight: bold;">Loan Period</span>
+                                <span id="loan_period" style="font-weight: bold;">Loan Period</span>
                                 <ol class="vstack gap-2 mt-2" type="a">
                                     <li class="ml-4">
                                         NEUST students may borrow a maximum of 3 books at a time. This applies to the
@@ -134,7 +134,7 @@
                             </li>
 
                             <li>
-                                <span style="font-weight: bold;">Lost Books & Damaged Materials</span>
+                                <span id="lost_books" style="font-weight: bold;">Lost Books & Damaged Materials</span>
                                 <ol class="vstack gap-2 mt-2" type="a">
                                     <li class="ml-4">
                                         A book lost while on loan must be reported immediately to the concerned section
@@ -154,7 +154,7 @@
                             </li>
 
                             <li>
-                                <span style="font-weight: bold;">Etiquette in NEUST Library
+                                <span id="etiquette" style="font-weight: bold;">Etiquette in NEUST Library
                                 </span>
                                 <ol class="vstack gap-2 mt-2" type="a">
                                     <li class="ml-4">

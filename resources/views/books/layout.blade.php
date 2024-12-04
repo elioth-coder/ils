@@ -35,11 +35,10 @@
                     <thead>
                         <tr>
                             <th>Action</th>
-                            <th>ISBN</th>
+                            <th>Barcode</th>
                             <th>Title</th>
                             <th>Year</th>
                             <th>Author</th>
-                            <th>Library</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -62,11 +61,10 @@
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </td>
-                                <td class="text-end">{{ $book->isbn }}</td>
+                                <td class="text-end">{{ $book->barcode }}</td>
                                 <td>{{ $book->title }}</td>
                                 <td class="text-end">{{ $book->publication_year }}</td>
                                 <td>{{ $book->author }}</td>
-                                <td>{{ $book->library }}</td>
                             </tr>
                         @endforeach
                     </tbody>

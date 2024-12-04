@@ -66,7 +66,7 @@
                                 }
                             @endphp
                             <label for="barcode" class="form-label">Barcode No.</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--" name="barcode"
+                            <input type="text" maxlength="12" class="form-control form-control-sm" placeholder="--" name="barcode"
                                 id="barcode" value="{{ $barcode }}">
                             @error('barcode')
                                 <div class="form-text text-danger">{{ $message }}</div>

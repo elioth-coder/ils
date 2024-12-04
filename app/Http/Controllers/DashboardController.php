@@ -46,7 +46,7 @@ class DashboardController extends Controller
     private function getPatronCount($role = '')
     {
         $sql =
-        "SELECT COUNT(*) as `count` FROM `user_details` WHERE status='active' AND role IN('student','teacher') ";
+        "SELECT COUNT(*) as `count` FROM `user_details` WHERE status='active' ";
 
         if($role) {
             $sql .= "AND role='$role'";

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 26, 2024 at 06:00 AM
+-- Generation Time: Dec 04, 2024 at 07:26 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.1.12
 
@@ -32,6 +32,9 @@ CREATE TABLE `attendances` (
   `card_number` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
   `role` varchar(255) NOT NULL,
+  `program` varchar(255) NOT NULL,
+  `in` datetime NOT NULL,
+  `out` datetime DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -40,15 +43,17 @@ CREATE TABLE `attendances` (
 -- Dumping data for table `attendances`
 --
 
-INSERT INTO `attendances` (`id`, `card_number`, `name`, `role`, `created_at`, `updated_at`) VALUES
-(1, 'NEUST-F-932', 'christian peña', 'teacher', '2024-11-14 01:42:19', '2024-11-14 01:42:19'),
-(2, 'NEUST-F-932', 'christian peña', 'teacher', '2024-11-15 06:32:13', '2024-11-15 06:32:13'),
-(3, 'NEUST-F-932', 'christian peña', 'teacher', '2024-11-22 01:58:47', '2024-11-22 01:58:47'),
-(4, 'NEUST-F-932', 'christian peña', 'teacher', '2024-11-22 14:41:46', '2024-11-22 14:41:46'),
-(5, 'NEUST-P-100', 'Elioth Coder', 'student', '2024-11-22 14:43:11', '2024-11-22 14:43:11'),
-(6, 'NEUST-F-923', 'edward mansibang', 'teacher', '2024-11-23 04:50:37', '2024-11-23 04:50:37'),
-(7, 'NEUST-F-932', 'christian peña', 'teacher', '2024-11-23 05:11:18', '2024-11-23 05:11:18'),
-(8, 'NEUST-F-923', 'edward mansibang', 'teacher', '2024-11-23 05:11:36', '2024-11-23 05:11:36');
+INSERT INTO `attendances` (`id`, `card_number`, `name`, `role`, `program`, `in`, `out`, `created_at`, `updated_at`) VALUES
+(9, 'NEUST-F-932', 'christian peña', 'teacher', 'FACULTY', '2024-12-03 09:50:27', '2024-12-03 00:00:00', '2024-12-04 01:50:27', '2024-12-04 01:51:00'),
+(10, 'NEUST-F-932', 'christian peña', 'teacher', 'FACULTY', '2024-12-04 09:52:25', '2024-12-04 09:52:44', '2024-12-04 01:52:25', '2024-12-04 01:52:44'),
+(11, 'NEUST-P-100', 'Elioth Coder', 'student', 'BSIT', '2024-12-04 10:42:41', '2024-12-04 10:57:42', '2024-12-04 02:42:41', '2024-12-04 02:57:42'),
+(12, 'NEUST-F-001', 'elioth barker', 'admin', 'FACULTY', '2024-12-04 10:45:03', '2024-12-04 10:52:38', '2024-12-04 02:45:03', '2024-12-04 02:52:38'),
+(13, 'NEUST-F-00001', 'maria nina reyes', 'student', 'BSED', '2024-12-04 10:48:00', '2024-12-04 10:51:33', '2024-12-04 02:48:00', '2024-12-04 02:51:33'),
+(14, 'NEUST-F-923', 'edward mansibang', 'teacher', 'FACULTY', '2024-12-04 10:48:14', NULL, '2024-12-04 02:48:14', '2024-12-04 02:48:14'),
+(15, 'NEUST-F-932', 'christian peña', 'teacher', 'FACULTY', '2024-12-04 10:48:46', '2024-12-04 10:50:54', '2024-12-04 02:48:46', '2024-12-04 02:50:54'),
+(16, 'NEUST-F-932', 'christian peña', 'teacher', 'FACULTY', '2024-12-04 10:51:56', NULL, '2024-12-04 02:51:56', '2024-12-04 02:51:56'),
+(17, 'NEUST-F-001', 'elioth barker', 'admin', 'FACULTY', '2024-12-04 10:52:51', NULL, '2024-12-04 02:52:51', '2024-12-04 02:52:51'),
+(18, 'NEUST-P-100', 'Elioth Coder', 'student', 'BSIT', '2024-12-04 10:57:59', NULL, '2024-12-04 02:57:59', '2024-12-04 02:57:59');
 
 -- --------------------------------------------------------
 
@@ -160,6 +165,13 @@ CREATE TABLE `failed_jobs` (
   `failed_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `failed_jobs`
+--
+
+INSERT INTO `failed_jobs` (`id`, `uuid`, `connection`, `queue`, `payload`, `exception`, `failed_at`) VALUES
+(1, '6e3bf35b-5a60-46ea-a2fd-b322516f27a7', 'database', 'default', '{\"uuid\":\"6e3bf35b-5a60-46ea-a2fd-b322516f27a7\",\"displayName\":\"App\\\\Jobs\\\\BackupDatabaseJob\",\"job\":\"Illuminate\\\\Queue\\\\CallQueuedHandler@call\",\"maxTries\":null,\"maxExceptions\":null,\"failOnTimeout\":false,\"backoff\":null,\"timeout\":null,\"retryUntil\":null,\"data\":{\"commandName\":\"App\\\\Jobs\\\\BackupDatabaseJob\",\"command\":\"O:26:\\\"App\\\\Jobs\\\\BackupDatabaseJob\\\":0:{}\"}}', 'Exception: Backup file does not exist: C:\\Users\\xtian\\OneDrive\\Desktop\\ils\\storage\\backups\\BACKUP_2024_12_03_153443.sql in C:\\Users\\xtian\\OneDrive\\Desktop\\ils\\app\\Jobs\\BackupDatabaseJob.php:53\nStack trace:\n#0 C:\\Users\\xtian\\OneDrive\\Desktop\\ils\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(36): App\\Jobs\\BackupDatabaseJob->handle()\n#1 C:\\Users\\xtian\\OneDrive\\Desktop\\ils\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Util.php(41): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()\n#2 C:\\Users\\xtian\\OneDrive\\Desktop\\ils\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure(Object(Closure))\n#3 C:\\Users\\xtian\\OneDrive\\Desktop\\ils\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod(Object(Illuminate\\Foundation\\Application), Array, Object(Closure))\n#4 C:\\Users\\xtian\\OneDrive\\Desktop\\ils\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Container.php(690): Illuminate\\Container\\BoundMethod::call(Object(Illuminate\\Foundation\\Application), Array, Array, NULL)\n#5 C:\\Users\\xtian\\OneDrive\\Desktop\\ils\\vendor\\laravel\\framework\\src\\Illuminate\\Bus\\Dispatcher.php(128): Illuminate\\Container\\Container->call(Array)\n#6 C:\\Users\\xtian\\OneDrive\\Desktop\\ils\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(144): Illuminate\\Bus\\Dispatcher->Illuminate\\Bus\\{closure}(Object(App\\Jobs\\BackupDatabaseJob))\n#7 C:\\Users\\xtian\\OneDrive\\Desktop\\ils\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(119): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Jobs\\BackupDatabaseJob))\n#8 C:\\Users\\xtian\\OneDrive\\Desktop\\ils\\vendor\\laravel\\framework\\src\\Illuminate\\Bus\\Dispatcher.php(132): Illuminate\\Pipeline\\Pipeline->then(Object(Closure))\n#9 C:\\Users\\xtian\\OneDrive\\Desktop\\ils\\vendor\\laravel\\framework\\src\\Illuminate\\Queue\\CallQueuedHandler.php(124): Illuminate\\Bus\\Dispatcher->dispatchNow(Object(App\\Jobs\\BackupDatabaseJob), false)\n#10 C:\\Users\\xtian\\OneDrive\\Desktop\\ils\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(144): Illuminate\\Queue\\CallQueuedHandler->Illuminate\\Queue\\{closure}(Object(App\\Jobs\\BackupDatabaseJob))\n#11 C:\\Users\\xtian\\OneDrive\\Desktop\\ils\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(119): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Jobs\\BackupDatabaseJob))\n#12 C:\\Users\\xtian\\OneDrive\\Desktop\\ils\\vendor\\laravel\\framework\\src\\Illuminate\\Queue\\CallQueuedHandler.php(123): Illuminate\\Pipeline\\Pipeline->then(Object(Closure))\n#13 C:\\Users\\xtian\\OneDrive\\Desktop\\ils\\vendor\\laravel\\framework\\src\\Illuminate\\Queue\\CallQueuedHandler.php(71): Illuminate\\Queue\\CallQueuedHandler->dispatchThroughMiddleware(Object(Illuminate\\Queue\\Jobs\\DatabaseJob), Object(App\\Jobs\\BackupDatabaseJob))\n#14 C:\\Users\\xtian\\OneDrive\\Desktop\\ils\\vendor\\laravel\\framework\\src\\Illuminate\\Queue\\Jobs\\Job.php(102): Illuminate\\Queue\\CallQueuedHandler->call(Object(Illuminate\\Queue\\Jobs\\DatabaseJob), Array)\n#15 C:\\Users\\xtian\\OneDrive\\Desktop\\ils\\vendor\\laravel\\framework\\src\\Illuminate\\Queue\\Worker.php(439): Illuminate\\Queue\\Jobs\\Job->fire()\n#16 C:\\Users\\xtian\\OneDrive\\Desktop\\ils\\vendor\\laravel\\framework\\src\\Illuminate\\Queue\\Worker.php(389): Illuminate\\Queue\\Worker->process(\'database\', Object(Illuminate\\Queue\\Jobs\\DatabaseJob), Object(Illuminate\\Queue\\WorkerOptions))\n#17 C:\\Users\\xtian\\OneDrive\\Desktop\\ils\\vendor\\laravel\\framework\\src\\Illuminate\\Queue\\Worker.php(176): Illuminate\\Queue\\Worker->runJob(Object(Illuminate\\Queue\\Jobs\\DatabaseJob), \'database\', Object(Illuminate\\Queue\\WorkerOptions))\n#18 C:\\Users\\xtian\\OneDrive\\Desktop\\ils\\vendor\\laravel\\framework\\src\\Illuminate\\Queue\\Console\\WorkCommand.php(139): Illuminate\\Queue\\Worker->daemon(\'database\', \'default\', Object(Illuminate\\Queue\\WorkerOptions))\n#19 C:\\Users\\xtian\\OneDrive\\Desktop\\ils\\vendor\\laravel\\framework\\src\\Illuminate\\Queue\\Console\\WorkCommand.php(122): Illuminate\\Queue\\Console\\WorkCommand->runWorker(\'database\', \'default\')\n#20 C:\\Users\\xtian\\OneDrive\\Desktop\\ils\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(36): Illuminate\\Queue\\Console\\WorkCommand->handle()\n#21 C:\\Users\\xtian\\OneDrive\\Desktop\\ils\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Util.php(41): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()\n#22 C:\\Users\\xtian\\OneDrive\\Desktop\\ils\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure(Object(Closure))\n#23 C:\\Users\\xtian\\OneDrive\\Desktop\\ils\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod(Object(Illuminate\\Foundation\\Application), Array, Object(Closure))\n#24 C:\\Users\\xtian\\OneDrive\\Desktop\\ils\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Container.php(690): Illuminate\\Container\\BoundMethod::call(Object(Illuminate\\Foundation\\Application), Array, Array, NULL)\n#25 C:\\Users\\xtian\\OneDrive\\Desktop\\ils\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Command.php(213): Illuminate\\Container\\Container->call(Array)\n#26 C:\\Users\\xtian\\OneDrive\\Desktop\\ils\\vendor\\symfony\\console\\Command\\Command.php(279): Illuminate\\Console\\Command->execute(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Illuminate\\Console\\OutputStyle))\n#27 C:\\Users\\xtian\\OneDrive\\Desktop\\ils\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Command.php(182): Symfony\\Component\\Console\\Command\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Illuminate\\Console\\OutputStyle))\n#28 C:\\Users\\xtian\\OneDrive\\Desktop\\ils\\vendor\\symfony\\console\\Application.php(1047): Illuminate\\Console\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))\n#29 C:\\Users\\xtian\\OneDrive\\Desktop\\ils\\vendor\\symfony\\console\\Application.php(316): Symfony\\Component\\Console\\Application->doRunCommand(Object(Illuminate\\Queue\\Console\\WorkCommand), Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))\n#30 C:\\Users\\xtian\\OneDrive\\Desktop\\ils\\vendor\\symfony\\console\\Application.php(167): Symfony\\Component\\Console\\Application->doRun(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))\n#31 C:\\Users\\xtian\\OneDrive\\Desktop\\ils\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(197): Symfony\\Component\\Console\\Application->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))\n#32 C:\\Users\\xtian\\OneDrive\\Desktop\\ils\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(1203): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))\n#33 C:\\Users\\xtian\\OneDrive\\Desktop\\ils\\artisan(13): Illuminate\\Foundation\\Application->handleCommand(Object(Symfony\\Component\\Console\\Input\\ArgvInput))\n#34 {main}', '2024-12-03 07:34:44');
+
 -- --------------------------------------------------------
 
 --
@@ -203,47 +215,49 @@ CREATE TABLE `items` (
 --
 
 INSERT INTO `items` (`id`, `accession_number`, `barcode`, `call_number`, `title`, `author`, `advisor`, `isbn`, `doi`, `publisher`, `publication_year`, `language`, `genre`, `number_of_pages`, `format`, `cover_image`, `summary`, `price`, `location`, `tags`, `type`, `date_acquired`, `library`, `section`, `degree`, `duration`, `status`, `created_at`, `updated_at`) VALUES
-(5, NULL, '1478665428748', NULL, 'Harry Potter and the Prisoners of Azkaban (Book 3)', 'J.K. Rowling', NULL, '9781338878943', NULL, 'Scholastic Inc.', 2005, 'english', 'fiction', NULL, 'paperback', '5.png', NULL, '520.00', NULL, 'harry,potter,prisoner,azkaban', 'book', NULL, 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'damaged', '2024-09-30 23:11:07', '2024-11-22 18:09:59'),
-(6, NULL, '9780358380239', NULL, 'The Lord of the Rings: The Fellowship of The Ring (Book 1)', 'J.R.R. Tolkien', NULL, '9780358380238', NULL, 'Bloomsbury', 1995, 'english', 'fiction', NULL, 'hardcover', '6.png', NULL, NULL, NULL, NULL, 'book', '2024-11-22', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-09-30 23:45:11', '2024-11-22 15:00:33'),
-(7, NULL, '7894536971584', NULL, 'The Girl on the Train', 'Paula Hawkins', NULL, '9781594634024', NULL, 'New York Times', 2015, 'english', 'thriller', 336, 'paperback', '7.png', 'Rachel catches the same commuter train every morning. She knows it will wait at the same signal each time, overlooking a row of back gardens. She’s even started to feel like she knows the people who live in one of the houses. “Jess and Jason,” she calls them. Their life—as she sees it—is perfect. If only Rachel could be that happy. And then she sees something shocking. It’s only a minute until the train moves on, but it’s enough. Now everything’s changed. Now Rachel has a chance to become a part of the lives she’s only watched from afar. Now they’ll see; she’s much more than just the girl on the train', '780.00', NULL, 'girl,train,mystery', 'book', '2024-11-01', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-10-06 00:11:21', '2024-11-22 15:03:41'),
-(8, NULL, '1886486789417', NULL, 'Harry Potter and the Chamber of Secrets (Book 2)', 'J.K. Rowling', NULL, '9781338878936', NULL, 'Scholastic Inc.', 2000, 'english', 'fiction', 514, 'paperback', '8.png', 'While spending the summer with the Dursleys, the twelve-year-old Harry Potter is visited by Dobby, a house-elf. Dobby says Harry is in danger and must promise not to return to Hogwarts. When Harry refuses, Dobby uses magic to destroy a pudding made by Aunt Petunia. Believing that Harry created the mess, Uncle Vernon locks him in his room. The Ministry of Magic sends a notice accusing Harry of performing underage magic and threatening to expel him from Hogwarts.\r\n\r\nThe Weasley brothers Ron, Fred, and George arrive in their father\'s flying car and take Harry to their home. When Harry and the Weasleys go to Diagon Alley for school supplies, they meet Gilderoy Lockhart, a celebrity author who is the new Defence Against the Dark Arts professor. At King\'s Cross station, Harry and Ron cannot enter Platform 9¾ to board the Hogwarts Express, so they fly to Hogwarts in the enchanted car.\r\n\r\nDuring the school year, Harry hears a strange voice emanating from the castle walls. Argus Filch\'s cat is found Petrified, along with a warning scrawled on the wall: \"The Chamber of Secrets has been opened. Enemies of the heir, beware\". Harry learns that the Chamber supposedly houses a monster that attacks Muggle-born students, and which only the Heir of Slytherin can control. During a Quidditch match, a rogue Bludger strikes Harry, breaking his arm. Professor Lockhart botches an attempt to mend it, which sends Harry to the hospital wing. Dobby visits Harry and reveals that he jinxed the Bludger and sealed the portal at King\'s Cross. He also tells Harry that house-elves are bound to serve a master, and cannot be freed unless their master gives them clothing.\r\n\r\nAfter another attack from the monster, students attend a defensive duelling class. During the class, Harry displays the rare ability to speak Parseltongue, the language of snakes. Moaning Myrtle, a ghost who haunts a bathroom, shows Harry and his friends a diary that was left in her stall. It belonged to Tom Riddle, a student who witnessed another student\'s death when the Chamber was last opened. During the next attack by the monster, Hermione Granger is Petrified.\r\n\r\nHarry and Ron discover that the monster is a Basilisk, a gigantic snake that can kill victims with a direct gaze and Petrify them with an indirect gaze. Harry realizes the Basilisk is producing the voice he hears in the walls. After Ron\'s sister Ginny is abducted and taken into the Chamber, Harry and Ron discover the Chamber entrance in Myrtle\'s bathroom. When they force Lockhart to enter with them, he confesses that the stories he told of his heroic adventures are fabrications. He attempts to erase the boys\' memories, but his spell backfires and obliterates his own memory.\r\n\r\nHarry finds an unconscious Ginny in the Chamber. A manifestation of Tom Riddle appears and reveals that he is Lord Voldemort and the Heir of Slytherin. After explaining that he opened the Chamber, Riddle summons the Basilisk to kill Harry. Dumbledore\'s phoenix Fawkes arrives, bringing Harry the Sorting Hat. While Fawkes blinds the Basilisk, Harry pulls the Sword of Gryffindor from the Hat. He slays the serpent, then stabs the diary with a Basilisk fang, destroying it and the manifestation of Riddle. Later, Harry liberates Dobby by tricking his master into giving him clothing. At the end of the novel, the Petrified students are cured and Gryffindor wins the House Cup.', '3199.00', NULL, 'harry,potter,chamber,secrets,mystery,serpent,sword', 'book', NULL, 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'checked out', '2024-10-17 08:01:40', '2024-11-21 13:34:12'),
-(9, NULL, '1987467186417', NULL, 'Harry Potter and the Sorcerer\'s Stone (Book 1)', 'J.K. Rowling', NULL, '9781338878929', NULL, 'Scholastic Inc.', 1998, 'english', 'fiction', NULL, 'paperback', '9.png', NULL, '480.00', NULL, 'harry,potter,sorcerer,stone', 'book', NULL, 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-10-26 01:52:11', '2024-11-17 08:18:04'),
-(10, NULL, '5747852147891', NULL, 'Harry Potter and the Goblet of Fire (Book 4)', 'J.K. Rowling', NULL, '9781338878950', NULL, 'Scholastic Inc.', 2008, 'english', 'fiction', NULL, 'paperback', '10.png', NULL, '650.00', NULL, 'harry,potter,goblet,fire', 'book', '2024-11-08', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-10-26 02:24:03', '2024-11-19 13:18:29'),
-(11, NULL, '9798487963541', NULL, 'Harry Potter and the Order of the Phoenix (Book 5)', 'J.K. Rowling', NULL, '9781338878967', NULL, 'Scholastic Inc.', 2012, 'english', 'fiction', NULL, 'paperback', '11.png', NULL, NULL, NULL, 'harry,potter,order,phoenix', 'book', NULL, 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'checked out', '2024-10-26 02:28:45', '2024-11-23 03:58:13'),
-(12, NULL, '3597857891467', NULL, 'Harry Potter and the Half-Blood Prince (Book 6)', 'J.K. Rowling', NULL, '9781338878974', NULL, 'Scholastic Inc.', 2006, 'english', 'fiction', NULL, 'paperback', '12.png', NULL, '780.00', NULL, 'harry,potter,half-blood,prince', 'book', NULL, 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'checked out', '2024-10-26 02:31:34', '2024-11-19 13:16:14'),
-(13, NULL, '7894258941365', NULL, 'Harry Potter and the Deathly Hallows (Book 7)', 'J.K. Rowling', NULL, '9781338878981', NULL, 'Scholastic Inc.', 2018, 'english', 'fiction', NULL, 'paperback', '13.png', NULL, '820.00', NULL, 'harry,potter,deathly,hallows', 'book', NULL, 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-10-26 02:34:09', '2024-11-08 06:09:58'),
-(14, NULL, '1784575884789', NULL, 'The Lord of the Rings: The Fellowship of The Ring (Book 1)', 'J.R.R. Tolkien', NULL, '9780358380238', NULL, 'Bloomsbury', 1995, 'english', 'fiction', NULL, 'hardcover', '14.png', NULL, '820.00', NULL, NULL, 'book', NULL, 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-10-26 02:38:10', '2024-11-22 15:00:33'),
-(15, NULL, '45897656314752', NULL, 'The Lord of the Rings: The Two Towers (Book 2)', 'J.R.R. Tolkien', NULL, '9780358380245', NULL, 'Clarion Books', 2000, 'english', 'fiction', NULL, 'paperback', '15.png', NULL, '820.00', NULL, 'lord,ring,two towers', 'book', NULL, 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-10-26 02:41:39', '2024-11-23 05:27:04'),
-(16, NULL, '4987467112564', NULL, 'The Lord of the Rings: The Return of The King (Book 3)', 'J.R.R. Tolkien', NULL, '9780358380252', NULL, 'Clarion Books', 2000, 'english', 'fiction', NULL, 'paperback', '16.png', NULL, '820.00', NULL, 'lord,ring,return,king', 'book', NULL, 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'checked out', '2024-10-26 02:47:00', '2024-11-21 14:12:50'),
-(17, NULL, '5789413478941', NULL, 'The Hobbit: A Graphic Novel: An Enchanting Fantasy Adventure (Hobbit Fantasy Classic)', 'J.R.R. Tolkien', NULL, '9780063388468', NULL, 'William Morrow Paperbacks', 2024, 'english', 'fiction', NULL, 'paperback', '9780063388468.png', NULL, NULL, NULL, 'hobbit', 'book', NULL, 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-10-28 05:18:39', '2024-10-29 13:57:40'),
-(18, NULL, '5789413478942', NULL, 'The Hobbit: A Graphic Novel: An Enchanting Fantasy Adventure (Hobbit Fantasy Classic)', 'J.R.R. Tolkien', NULL, '9780063388468', NULL, 'William Morrow Paperbacks', 2024, 'english', 'fiction', NULL, 'paperback', '9780063388468.png', NULL, NULL, NULL, 'hobbit', 'book', NULL, 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-10-28 05:36:44', '2024-10-28 05:36:44'),
-(19, NULL, '1112213455229', NULL, 'Image Processing and Searching', 'Daniel Klein,Dean Jackson', NULL, NULL, NULL, 'Technical Disclosure Commons', 2015, 'english', 'developmental', 11, 'paperback', NULL, 'An image searching system is used to provide images in response to a query. The images can be captured by one or more users over a certain period of time. The system receives a query to search for images. The system parses the query and determines a type of request. The system then processes and searches for images in response to the determined request type. The system then presents the images to the user.', NULL, NULL, 'image processing,image,searching', 'research', '2024-11-19', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-11-05 01:38:09', '2024-11-19 12:30:31'),
-(20, NULL, '1344556677744', NULL, 'Image Processing and Searching', 'Daniel Klein,Dean Jackson', NULL, NULL, NULL, 'Technical Disclosure Commons', 2015, 'english', 'developmental', 11, 'paperback', '', 'An image searching system is used to provide images in response to a query. The images can be captured by one or more users over a certain period of time. The system receives a query to search for images. The system parses the query and determines a type of request. The system then processes and searches for images in response to the determined request type. The system then presents the images to the user.', NULL, NULL, 'image processing,image,searching', 'research', '2024-11-19', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-11-05 03:21:26', '2024-11-19 12:30:24'),
-(22, NULL, '1325476547894', NULL, 'Where Are You Now', 'Honor Society', NULL, NULL, NULL, 'BandSlam Inc.', 2000, 'english', 'romance', NULL, NULL, '22.png', NULL, NULL, NULL, NULL, 'audio', '2024-11-19', 'NEUST-PPY-LIB', 'circulation', NULL, 225, 'available', '2024-11-05 07:13:00', '2024-11-19 12:44:44'),
-(23, NULL, '1784665484154', NULL, 'Sky High', 'Mike Mitchell', NULL, NULL, NULL, 'Walt Disney Pictures', 2005, 'english', 'fiction', NULL, NULL, '23.png', 'At a school in the sky where teens learn how to be superheroes, Will Stronghold (Michael Angarano) lands in a class for students who show special promise. Classmate Gwen (Mary Elizabeth Winstead) quickly cozies up to Will, but it\'s soon clear that she has other motives. When he learns that Gwen\'s mother is a villain who was defeated by his father, Steve Stronghold (Kurt Russell), Will realizes that Gwen is aiming for revenge, and he rushes to a school dance in the hope of stopping her.', NULL, NULL, 'superhero,sky high,sky,high', 'video', '2024-10-01', 'NEUST-PPY-LIB', 'circulation', NULL, 6000, 'available', '2024-11-05 07:58:32', '2024-11-25 12:38:49'),
-(24, NULL, '5747852147892', NULL, 'Harry Potter and the Goblet of Fire (Book 4)', 'J.K. Rowling', NULL, '9781338878950', NULL, 'Scholastic Inc.', 2008, 'english', 'fiction', NULL, 'paperback', '24.png', NULL, '650.00', NULL, 'harry,potter,goblet,fire', 'book', '2024-11-08', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-11-08 02:05:42', '2024-11-19 13:18:29'),
-(25, NULL, NULL, NULL, 'Sky High', 'Mike Mitchell', NULL, NULL, NULL, 'Walt Disney Pictures', 2005, 'english', 'fiction', NULL, NULL, '25.png', 'At a school in the sky where teens learn how to be superheroes, Will Stronghold (Michael Angarano) lands in a class for students who show special promise. Classmate Gwen (Mary Elizabeth Winstead) quickly cozies up to Will, but it\'s soon clear that she has other motives. When he learns that Gwen\'s mother is a villain who was defeated by his father, Steve Stronghold (Kurt Russell), Will realizes that Gwen is aiming for revenge, and he rushes to a school dance in the hope of stopping her.', NULL, NULL, 'superhero,sky high,sky,high', 'video', NULL, 'NEUST-PPY-LIB', 'circulation', NULL, 6000, 'available', '2024-11-08 07:51:31', '2024-11-08 07:51:32'),
-(26, NULL, NULL, NULL, 'Where Are You Now', 'Honor Society', NULL, NULL, NULL, 'BandSlam Inc.', 2000, 'english', 'romance', NULL, NULL, '26.png', NULL, NULL, NULL, NULL, 'audio', NULL, 'NEUST-PPY-LIB', 'circulation', NULL, 225, 'available', '2024-11-08 07:52:46', '2024-11-08 07:52:46'),
-(27, NULL, NULL, NULL, 'Introduction to PC Hardware and Troubleshooting', 'Mike Mayers', NULL, '0-07-125211-8', NULL, 'Osborne', 2006, 'english', 'non-fiction', 447, 'hardcover', '27.png', NULL, '750.00', NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-11-25 14:04:28', '2024-11-25 14:04:33'),
-(28, NULL, NULL, NULL, 'CSS and Networking Guide for CCNA and CSS (NCII)', 'Marygin E. Sarmiento, Ph.d; Marmelo V. Abante, Ph.D; Rolando R. Lansigan, Ph.D; Luisa M. Macatangay, Ph.D; Jaime Sebastian S. Mendiola;  Kenneth A. Cambaya', NULL, '978-621-427-046-0', NULL, 'Unlimited Books Library Services & Publishing Inc', 2019, 'english', 'fiction', 366, 'hardcover', '28.png', NULL, '575.00', NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-11-25 14:15:08', '2024-11-25 14:15:08'),
-(29, NULL, NULL, NULL, 'Operating Systems (Second Edition)', 'Ron Carswell; Terrill Fresse; Shen Jiang', NULL, '978-981-4510-91-2', NULL, 'Philmont Academic Solutions, Inc', 2013, 'english', 'non-fiction', 612, 'hardcover', '29.png', NULL, '500.00', NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-11-25 14:25:19', '2024-11-25 14:25:19'),
-(30, NULL, NULL, NULL, 'WordPress ALL-IN-ONE for Dummies A Wiley Brand', 'Lisa Sabin-Wilson', NULL, '9781394225385', NULL, 'Media and Software Compilation', 2024, 'english', 'fiction', 608, 'hardcover', '30.png', NULL, '2397.00', NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-11-25 14:34:11', '2024-11-25 15:33:36'),
-(31, NULL, NULL, NULL, 'Essential Computer Hardware', 'Kevin Wilson', NULL, '1911174592', NULL, 'Elluminet Press', 2017, 'english', 'non-fiction', 230, 'hardcover', '31.png', NULL, '230.00', NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-11-25 14:41:13', '2024-11-25 14:41:14'),
-(32, NULL, NULL, NULL, 'Clean Code: A Handbook of Agile Software Craftsmanship', 'Robert C. Martin', NULL, '9780132350884', NULL, 'MIT Press', 2008, 'english', 'non-fiction', 464, 'hardcover', NULL, NULL, '750.00', NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-11-25 14:47:57', '2024-11-25 14:47:57'),
-(33, NULL, NULL, NULL, 'Introduction to Algorithms, 3rd Edition', 'Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest, Clifford Stein', NULL, '9780262033848', NULL, 'MIT Press', 2019, 'english', 'non-fiction', 1312, 'hardcover', '33.png', NULL, '3500.00', NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-11-25 14:49:53', '2024-11-25 14:49:53'),
-(34, NULL, NULL, NULL, 'Code: The Hidden Language of Computer Hardware and Software', 'Charles Petzold', NULL, '9780735611313', NULL, 'Microsoft Press', 2000, 'english', 'non-fiction', 393, 'hardcover', '34.png', NULL, '550.00', NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-11-25 14:55:28', '2024-11-25 14:55:28'),
-(35, NULL, NULL, NULL, 'Algorithms, 4th Edition', 'Robert Sedgewick, Kevin Wayne', NULL, '9780321573513', NULL, 'Addison-Wesley', 2011, 'english', 'non-fiction', 976, 'hardcover', '35.png', NULL, '760.00', NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-11-25 14:57:42', '2024-11-25 14:57:42'),
-(36, NULL, NULL, NULL, 'The Pragmatic Programmer: Your Journey to Mastery, 20th Anniversary Edition', 'Andrew Hunt, David Thomas', NULL, '9780135957059', NULL, 'Addison-Wesley Professional', 2019, 'english', 'non-fiction', 352, 'hardcover', '36.png', NULL, '1750.00', NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-11-25 15:01:57', '2024-11-25 15:01:57'),
-(37, NULL, NULL, NULL, 'The C Programming Language, 2nd Edition', 'Prentice Hall', NULL, '9780131103627', NULL, 'Prentice Hall', 2018, 'english', 'non-fiction', 288, 'hardcover', '37.png', NULL, NULL, NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-11-25 15:09:49', '2024-11-25 15:09:49'),
-(38, NULL, NULL, NULL, 'Python Crash Course, 2nd Edition', 'Eric Matthes', NULL, '9781593279288', NULL, 'No Starch Press', 2019, 'english', 'non-fiction', 544, 'hardcover', '38.png', NULL, '1890.00', NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-11-25 15:22:36', '2024-11-25 15:22:37'),
-(39, NULL, NULL, NULL, 'Head First Java, 2nd Edition', 'Kathy Sierra, Bert Bates', NULL, '9780596009205', NULL, 'O\'Reilly Media', 2005, 'english', 'non-fiction', 720, 'hardcover', '39.png', NULL, '2550.00', NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-11-25 15:25:38', '2024-11-25 15:25:38'),
-(40, NULL, NULL, NULL, 'Design Patterns: Elements of Reusable Object-Oriented Software', 'Erich Gamma, Richard Helm, Ralph Johnson, John Vlissides', NULL, '9780201633610', NULL, 'Addison-Wesley Professional', 1994, 'english', 'non-fiction', 395, 'hardcover', '40.png', NULL, '879.00', NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-11-25 15:28:19', '2024-11-25 15:28:19'),
-(41, NULL, NULL, NULL, 'Algorithms to Live By: The Computer Science of Human Decisions', 'Brian Christian, Tom Griffiths', NULL, '9781627790369', NULL, 'Henry Holt and Co.', 2016, 'english', 'fiction', 368, 'hardcover', '41.png', NULL, '890.00', NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-11-25 15:29:48', '2024-11-25 15:30:47'),
-(42, NULL, NULL, NULL, 'The Lean Startup', 'Eric Ries', NULL, '9780307887894', NULL, 'Crown Business', 2011, 'english', 'fiction', 336, 'hardcover', '42.png', NULL, '999.00', NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-11-25 15:40:16', '2024-11-25 15:40:16'),
-(43, NULL, NULL, NULL, 'Good to Great', 'Jim Collins', NULL, '9780066620992', NULL, 'Harper Business', 2001, 'english', 'non-fiction', 320, 'hardcover', '43.png', NULL, '1500.00', NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-11-25 15:43:44', '2024-11-25 15:43:44'),
-(44, NULL, NULL, NULL, 'Blue Ocean Strategy', 'W. Chan Kim, Renée Mauborgne', NULL, '9781591396192', NULL, 'Harvard Business Review Press', 2005, 'english', 'fiction', 240, 'hardcover', '44.png', NULL, '1350.00', NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-11-25 15:46:39', '2024-11-25 15:46:39'),
-(45, NULL, NULL, NULL, 'The Hard Thing About Hard Things', 'Ben Horowitz', NULL, '9780062273208', NULL, 'Harper Business', 2014, 'english', 'fiction', 304, 'hardcover', '45.png', NULL, '1250.00', NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-11-25 15:50:47', '2024-11-25 15:50:48'),
-(46, NULL, NULL, NULL, 'How to Win Friends and Influence People', 'Dale Carnegie', NULL, '9780671027032', NULL, 'Simon & Schuster', 1936, 'english', 'non-fiction', 291, 'hardcover', '46.png', NULL, '670.00', NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-11-25 15:59:27', '2024-11-25 15:59:27');
+(5, NULL, '147866542874', NULL, 'Harry Potter and the Prisoners of Azkaban (Book 3)', 'J.K. Rowling', NULL, '9781338878943', NULL, 'Scholastic Inc.', 2005, 'english', 'fiction', NULL, 'paperback', '5.png', NULL, '520.00', NULL, 'harry,potter,prisoner,azkaban', 'book', NULL, 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'damaged', '2024-09-30 23:11:07', '2024-11-22 18:09:59'),
+(6, NULL, '978035838023', NULL, 'The Lord of the Rings: The Fellowship of The Ring (Book 1)', 'J.R.R. Tolkien', NULL, '9780358380238', NULL, 'Bloomsbury', 1995, 'english', 'fiction', NULL, 'hardcover', '6.png', NULL, NULL, NULL, NULL, 'book', '2024-11-22', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-09-30 23:45:11', '2024-12-02 04:20:40'),
+(7, NULL, '789453697158', NULL, 'The Girl on the Train', 'Paula Hawkins', NULL, '9781594634024', NULL, 'New York Times', 2015, 'english', 'thriller', 336, 'paperback', '7.png', 'Rachel catches the same commuter train every morning. She knows it will wait at the same signal each time, overlooking a row of back gardens. She’s even started to feel like she knows the people who live in one of the houses. “Jess and Jason,” she calls them. Their life—as she sees it—is perfect. If only Rachel could be that happy. And then she sees something shocking. It’s only a minute until the train moves on, but it’s enough. Now everything’s changed. Now Rachel has a chance to become a part of the lives she’s only watched from afar. Now they’ll see; she’s much more than just the girl on the train', '780.00', NULL, 'girl,train,mystery', 'book', '2024-11-01', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-10-06 00:11:21', '2024-12-03 05:52:03'),
+(8, NULL, '188648678941', NULL, 'Harry Potter and the Chamber of Secrets (Book 2)', 'J.K. Rowling', NULL, '9781338878936', NULL, 'Scholastic Inc.', 2000, 'english', 'fiction', 514, 'paperback', '8.png', 'While spending the summer with the Dursleys, the twelve-year-old Harry Potter is visited by Dobby, a house-elf. Dobby says Harry is in danger and must promise not to return to Hogwarts. When Harry refuses, Dobby uses magic to destroy a pudding made by Aunt Petunia. Believing that Harry created the mess, Uncle Vernon locks him in his room. The Ministry of Magic sends a notice accusing Harry of performing underage magic and threatening to expel him from Hogwarts.\r\n\r\nThe Weasley brothers Ron, Fred, and George arrive in their father\'s flying car and take Harry to their home. When Harry and the Weasleys go to Diagon Alley for school supplies, they meet Gilderoy Lockhart, a celebrity author who is the new Defence Against the Dark Arts professor. At King\'s Cross station, Harry and Ron cannot enter Platform 9¾ to board the Hogwarts Express, so they fly to Hogwarts in the enchanted car.\r\n\r\nDuring the school year, Harry hears a strange voice emanating from the castle walls. Argus Filch\'s cat is found Petrified, along with a warning scrawled on the wall: \"The Chamber of Secrets has been opened. Enemies of the heir, beware\". Harry learns that the Chamber supposedly houses a monster that attacks Muggle-born students, and which only the Heir of Slytherin can control. During a Quidditch match, a rogue Bludger strikes Harry, breaking his arm. Professor Lockhart botches an attempt to mend it, which sends Harry to the hospital wing. Dobby visits Harry and reveals that he jinxed the Bludger and sealed the portal at King\'s Cross. He also tells Harry that house-elves are bound to serve a master, and cannot be freed unless their master gives them clothing.\r\n\r\nAfter another attack from the monster, students attend a defensive duelling class. During the class, Harry displays the rare ability to speak Parseltongue, the language of snakes. Moaning Myrtle, a ghost who haunts a bathroom, shows Harry and his friends a diary that was left in her stall. It belonged to Tom Riddle, a student who witnessed another student\'s death when the Chamber was last opened. During the next attack by the monster, Hermione Granger is Petrified.\r\n\r\nHarry and Ron discover that the monster is a Basilisk, a gigantic snake that can kill victims with a direct gaze and Petrify them with an indirect gaze. Harry realizes the Basilisk is producing the voice he hears in the walls. After Ron\'s sister Ginny is abducted and taken into the Chamber, Harry and Ron discover the Chamber entrance in Myrtle\'s bathroom. When they force Lockhart to enter with them, he confesses that the stories he told of his heroic adventures are fabrications. He attempts to erase the boys\' memories, but his spell backfires and obliterates his own memory.\r\n\r\nHarry finds an unconscious Ginny in the Chamber. A manifestation of Tom Riddle appears and reveals that he is Lord Voldemort and the Heir of Slytherin. After explaining that he opened the Chamber, Riddle summons the Basilisk to kill Harry. Dumbledore\'s phoenix Fawkes arrives, bringing Harry the Sorting Hat. While Fawkes blinds the Basilisk, Harry pulls the Sword of Gryffindor from the Hat. He slays the serpent, then stabs the diary with a Basilisk fang, destroying it and the manifestation of Riddle. Later, Harry liberates Dobby by tricking his master into giving him clothing. At the end of the novel, the Petrified students are cured and Gryffindor wins the House Cup.', '3199.00', NULL, 'harry,potter,chamber,secrets,mystery,serpent,sword', 'book', NULL, 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-10-17 08:01:40', '2024-12-03 05:52:19'),
+(9, NULL, '198746718641', NULL, 'Harry Potter and the Sorcerer\'s Stone (Book 1)', 'J.K. Rowling', NULL, '9781338878929', NULL, 'Scholastic Inc.', 1998, 'english', 'fiction', NULL, 'paperback', '9.png', NULL, '480.00', NULL, 'harry,potter,sorcerer,stone', 'book', NULL, 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-10-26 01:52:11', '2024-12-03 05:52:32'),
+(10, NULL, '574785214788', NULL, 'Harry Potter and the Goblet of Fire (Book 4)', 'J.K. Rowling', NULL, '9781338878950', NULL, 'Scholastic Inc.', 2008, 'english', 'fiction', NULL, 'paperback', '10.png', NULL, '650.00', NULL, 'harry,potter,goblet,fire', 'book', '2024-11-08', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-10-26 02:24:03', '2024-12-03 05:52:53'),
+(11, NULL, '979848796354', NULL, 'Harry Potter and the Order of the Phoenix (Book 5)', 'J.K. Rowling', NULL, '9781338878967', NULL, 'Scholastic Inc.', 2012, 'english', 'fiction', NULL, 'paperback', '11.png', NULL, NULL, NULL, 'harry,potter,order,phoenix', 'book', NULL, 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'checked out', '2024-10-26 02:28:45', '2024-11-23 03:58:13'),
+(12, NULL, '359785789146', NULL, 'Harry Potter and the Half-Blood Prince (Book 6)', 'J.K. Rowling', NULL, '9781338878974', NULL, 'Scholastic Inc.', 2006, 'english', 'fiction', NULL, 'paperback', '12.png', NULL, '780.00', NULL, 'harry,potter,half-blood,prince', 'book', NULL, 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'checked out', '2024-10-26 02:31:34', '2024-11-19 13:16:14'),
+(13, NULL, '789425894136', NULL, 'Harry Potter and the Deathly Hallows (Book 7)', 'J.K. Rowling', NULL, '9781338878981', NULL, 'Scholastic Inc.', 2018, 'english', 'fiction', NULL, 'paperback', '13.png', NULL, '820.00', NULL, 'harry,potter,deathly,hallows', 'book', NULL, 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-10-26 02:34:09', '2024-12-03 05:53:12'),
+(14, NULL, '178457588478', NULL, 'The Lord of the Rings: The Fellowship of The Ring (Book 1)', 'J.R.R. Tolkien', NULL, '9780358380238', NULL, 'Bloomsbury', 1995, 'english', 'fiction', NULL, 'hardcover', '14.png', NULL, '820.00', NULL, NULL, 'book', NULL, 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-10-26 02:38:10', '2024-12-03 05:53:24'),
+(15, NULL, '458976563147', NULL, 'The Lord of the Rings: The Two Towers (Book 2)', 'J.R.R. Tolkien', NULL, '9780358380245', NULL, 'Clarion Books', 2000, 'english', 'fiction', NULL, 'paperback', '15.png', NULL, '820.00', NULL, 'lord,ring,two towers', 'book', NULL, 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-10-26 02:41:39', '2024-12-03 05:53:36'),
+(16, NULL, '498746711256', NULL, 'The Lord of the Rings: The Return of The King (Book 3)', 'J.R.R. Tolkien', NULL, '9780358380252', NULL, 'Clarion Books', 2000, 'english', 'fiction', NULL, 'paperback', '16.png', NULL, '820.00', NULL, 'lord,ring,return,king', 'book', NULL, 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'checked out', '2024-10-26 02:47:00', '2024-11-21 14:12:50'),
+(17, NULL, '578941347893', NULL, 'The Hobbit: A Graphic Novel: An Enchanting Fantasy Adventure (Hobbit Fantasy Classic)', 'J.R.R. Tolkien', NULL, '9780063388468', NULL, 'William Morrow Paperbacks', 2024, 'english', 'fiction', NULL, 'paperback', '9780063388468.png', NULL, NULL, NULL, 'hobbit', 'book', NULL, 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-10-28 05:18:39', '2024-12-03 05:53:47'),
+(18, NULL, '578941347894', NULL, 'The Hobbit: A Graphic Novel: An Enchanting Fantasy Adventure (Hobbit Fantasy Classic)', 'J.R.R. Tolkien', NULL, '9780063388468', NULL, 'William Morrow Paperbacks', 2024, 'english', 'fiction', NULL, 'paperback', '9780063388468.png', NULL, NULL, NULL, 'hobbit', 'book', NULL, 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-10-28 05:36:44', '2024-12-03 05:54:01'),
+(19, NULL, '111221345522', NULL, 'Image Processing and Searching', 'Daniel Klein,Dean Jackson', NULL, NULL, NULL, 'Technical Disclosure Commons', 2015, 'english', 'developmental', 11, 'paperback', NULL, 'An image searching system is used to provide images in response to a query. The images can be captured by one or more users over a certain period of time. The system receives a query to search for images. The system parses the query and determines a type of request. The system then processes and searches for images in response to the determined request type. The system then presents the images to the user.', NULL, NULL, 'image processing,image,searching', 'research', '2024-11-19', 'NEUST-PPY-LIB', 'thesis', NULL, NULL, 'available', '2024-11-05 01:38:09', '2024-12-03 06:27:25'),
+(20, NULL, '134455667774', NULL, 'Image Processing and Searching', 'Daniel Klein,Dean Jackson', NULL, NULL, NULL, 'Technical Disclosure Commons', 2015, 'english', 'developmental', 11, 'paperback', '', 'An image searching system is used to provide images in response to a query. The images can be captured by one or more users over a certain period of time. The system receives a query to search for images. The system parses the query and determines a type of request. The system then processes and searches for images in response to the determined request type. The system then presents the images to the user.', NULL, NULL, 'image processing,image,searching', 'research', '2024-11-19', 'NEUST-PPY-LIB', 'thesis', NULL, NULL, 'no barcode', '2024-11-05 03:21:26', '2024-11-28 03:22:25'),
+(22, NULL, '132547654789', NULL, 'Where Are You Now', 'Honor Society', NULL, NULL, NULL, 'BandSlam Inc.', 2000, 'english', 'romance', NULL, NULL, '22.png', NULL, NULL, NULL, NULL, 'audio', '2024-11-19', 'NEUST-PPY-LIB', 'audio-visual', NULL, 225, 'no barcode', '2024-11-05 07:13:00', '2024-11-28 02:51:45'),
+(23, NULL, '178466548415', NULL, 'Sky High', 'Mike Mitchell', NULL, NULL, NULL, 'Walt Disney Pictures', 2005, 'english', 'fiction', NULL, NULL, '23.png', 'At a school in the sky where teens learn how to be superheroes, Will Stronghold (Michael Angarano) lands in a class for students who show special promise. Classmate Gwen (Mary Elizabeth Winstead) quickly cozies up to Will, but it\'s soon clear that she has other motives. When he learns that Gwen\'s mother is a villain who was defeated by his father, Steve Stronghold (Kurt Russell), Will realizes that Gwen is aiming for revenge, and he rushes to a school dance in the hope of stopping her.', NULL, NULL, 'superhero,sky high,sky,high', 'video', '2024-10-01', 'NEUST-PPY-LIB', 'audio-visual', NULL, 6000, 'no barcode', '2024-11-05 07:58:32', '2024-11-28 02:52:09'),
+(24, NULL, '574785214789', NULL, 'Harry Potter and the Goblet of Fire (Book 4)', 'J.K. Rowling', NULL, '9781338878950', NULL, 'Scholastic Inc.', 2008, 'english', 'fiction', NULL, 'paperback', '24.png', NULL, '650.00', NULL, 'harry,potter,goblet,fire', 'book', '2024-11-08', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'no barcode', '2024-11-08 02:05:42', '2024-11-19 13:18:29'),
+(25, NULL, NULL, NULL, 'Sky High', 'Mike Mitchell', NULL, NULL, NULL, 'Walt Disney Pictures', 2005, 'english', 'fiction', NULL, NULL, '25.png', 'At a school in the sky where teens learn how to be superheroes, Will Stronghold (Michael Angarano) lands in a class for students who show special promise. Classmate Gwen (Mary Elizabeth Winstead) quickly cozies up to Will, but it\'s soon clear that she has other motives. When he learns that Gwen\'s mother is a villain who was defeated by his father, Steve Stronghold (Kurt Russell), Will realizes that Gwen is aiming for revenge, and he rushes to a school dance in the hope of stopping her.', NULL, NULL, 'superhero,sky high,sky,high', 'video', NULL, 'NEUST-PPY-LIB', 'audio-visual', NULL, 6000, 'no barcode', '2024-11-08 07:51:31', '2024-11-28 02:52:00'),
+(26, NULL, NULL, NULL, 'Where Are You Now', 'Honor Society', NULL, NULL, NULL, 'BandSlam Inc.', 2000, 'english', 'romance', NULL, NULL, '26.png', NULL, NULL, NULL, NULL, 'audio', NULL, 'NEUST-PPY-LIB', 'audio-visual', NULL, 225, 'no barcode', '2024-11-08 07:52:46', '2024-11-28 02:51:33'),
+(27, NULL, NULL, NULL, 'Introduction to PC Hardware and Troubleshooting', 'Mike Mayers', NULL, '0-07-125211-8', NULL, 'Osborne', 2006, 'english', 'non-fiction', 447, 'hardcover', '27.png', NULL, '750.00', NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'no barcode', '2024-11-25 14:04:28', '2024-11-25 14:04:33'),
+(28, NULL, NULL, NULL, 'CSS and Networking Guide for CCNA and CSS (NCII)', 'Marygin E. Sarmiento, Ph.d; Marmelo V. Abante, Ph.D; Rolando R. Lansigan, Ph.D; Luisa M. Macatangay, Ph.D; Jaime Sebastian S. Mendiola;  Kenneth A. Cambaya', NULL, '978-621-427-046-0', NULL, 'Unlimited Books Library Services & Publishing Inc', 2019, 'english', 'fiction', 366, 'hardcover', '28.png', NULL, '575.00', NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'no barcode', '2024-11-25 14:15:08', '2024-11-25 14:15:08'),
+(29, NULL, NULL, NULL, 'Operating Systems (Second Edition)', 'Ron Carswell; Terrill Fresse; Shen Jiang', NULL, '978-981-4510-91-2', NULL, 'Philmont Academic Solutions, Inc', 2013, 'english', 'non-fiction', 612, 'hardcover', '29.png', NULL, '500.00', NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'no barcode', '2024-11-25 14:25:19', '2024-11-25 14:25:19'),
+(30, NULL, NULL, NULL, 'WordPress ALL-IN-ONE for Dummies A Wiley Brand', 'Lisa Sabin-Wilson', NULL, '9781394225385', NULL, 'Media and Software Compilation', 2024, 'english', 'fiction', 608, 'hardcover', '30.png', NULL, '2397.00', NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'no barcode', '2024-11-25 14:34:11', '2024-11-25 15:33:36'),
+(31, NULL, NULL, NULL, 'Essential Computer Hardware', 'Kevin Wilson', NULL, '1911174592', NULL, 'Elluminet Press', 2017, 'english', 'non-fiction', 230, 'hardcover', '31.png', NULL, '230.00', NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'no barcode', '2024-11-25 14:41:13', '2024-11-25 14:41:14'),
+(32, NULL, NULL, NULL, 'Clean Code: A Handbook of Agile Software Craftsmanship', 'Robert C. Martin', NULL, '9780132350884', NULL, 'MIT Press', 2008, 'english', 'non-fiction', 464, 'hardcover', NULL, NULL, '750.00', NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'no barcode', '2024-11-25 14:47:57', '2024-11-25 14:47:57'),
+(33, NULL, NULL, NULL, 'Introduction to Algorithms, 3rd Edition', 'Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest, Clifford Stein', NULL, '9780262033848', NULL, 'MIT Press', 2019, 'english', 'non-fiction', 1312, 'hardcover', '33.png', NULL, '3500.00', NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'no barcode', '2024-11-25 14:49:53', '2024-11-25 14:49:53'),
+(34, NULL, NULL, NULL, 'Code: The Hidden Language of Computer Hardware and Software', 'Charles Petzold', NULL, '9780735611313', NULL, 'Microsoft Press', 2000, 'english', 'non-fiction', 393, 'hardcover', '34.png', NULL, '550.00', NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'no barcode', '2024-11-25 14:55:28', '2024-11-25 14:55:28'),
+(35, NULL, NULL, NULL, 'Algorithms, 4th Edition', 'Robert Sedgewick, Kevin Wayne', NULL, '9780321573513', NULL, 'Addison-Wesley', 2011, 'english', 'non-fiction', 976, 'hardcover', '35.png', NULL, '760.00', NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'no barcode', '2024-11-25 14:57:42', '2024-11-25 14:57:42'),
+(36, NULL, NULL, NULL, 'The Pragmatic Programmer: Your Journey to Mastery, 20th Anniversary Edition', 'Andrew Hunt, David Thomas', NULL, '9780135957059', NULL, 'Addison-Wesley Professional', 2019, 'english', 'non-fiction', 352, 'hardcover', '36.png', NULL, '1750.00', NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'no barcode', '2024-11-25 15:01:57', '2024-11-25 15:01:57'),
+(37, NULL, NULL, NULL, 'The C Programming Language, 2nd Edition', 'Prentice Hall', NULL, '9780131103627', NULL, 'Prentice Hall', 2018, 'english', 'non-fiction', 288, 'hardcover', '37.png', NULL, NULL, NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'no barcode', '2024-11-25 15:09:49', '2024-11-25 15:09:49'),
+(38, NULL, NULL, NULL, 'Python Crash Course, 2nd Edition', 'Eric Matthes', NULL, '9781593279288', NULL, 'No Starch Press', 2019, 'english', 'non-fiction', 544, 'hardcover', '38.png', NULL, '1890.00', NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'no barcode', '2024-11-25 15:22:36', '2024-11-25 15:22:37'),
+(39, NULL, NULL, NULL, 'Head First Java, 2nd Edition', 'Kathy Sierra, Bert Bates', NULL, '9780596009205', NULL, 'O\'Reilly Media', 2005, 'english', 'non-fiction', 720, 'hardcover', '39.png', NULL, '2550.00', NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'no barcode', '2024-11-25 15:25:38', '2024-11-25 15:25:38'),
+(40, NULL, NULL, NULL, 'Design Patterns: Elements of Reusable Object-Oriented Software', 'Erich Gamma, Richard Helm, Ralph Johnson, John Vlissides', NULL, '9780201633610', NULL, 'Addison-Wesley Professional', 1994, 'english', 'non-fiction', 395, 'hardcover', '40.png', NULL, '879.00', NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'no barcode', '2024-11-25 15:28:19', '2024-11-25 15:28:19'),
+(41, NULL, NULL, NULL, 'Algorithms to Live By: The Computer Science of Human Decisions', 'Brian Christian, Tom Griffiths', NULL, '9781627790369', NULL, 'Henry Holt and Co.', 2016, 'english', 'fiction', 368, 'hardcover', '41.png', NULL, '890.00', NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'no barcode', '2024-11-25 15:29:48', '2024-11-25 15:30:47'),
+(42, NULL, NULL, NULL, 'The Lean Startup', 'Eric Ries', NULL, '9780307887894', NULL, 'Crown Business', 2011, 'english', 'fiction', 336, 'hardcover', '42.png', NULL, '999.00', NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'no barcode', '2024-11-25 15:40:16', '2024-11-25 15:40:16'),
+(43, NULL, NULL, NULL, 'Good to Great', 'Jim Collins', NULL, '9780066620992', NULL, 'Harper Business', 2001, 'english', 'non-fiction', 320, 'hardcover', '43.png', NULL, '1500.00', NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'no barcode', '2024-11-25 15:43:44', '2024-11-25 15:43:44'),
+(44, NULL, NULL, NULL, 'Blue Ocean Strategy', 'W. Chan Kim, Renée Mauborgne', NULL, '9781591396192', NULL, 'Harvard Business Review Press', 2005, 'english', 'fiction', 240, 'hardcover', '44.png', NULL, '1350.00', NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'no barcode', '2024-11-25 15:46:39', '2024-12-02 02:08:28'),
+(45, NULL, '789453651478', NULL, 'The Hard Thing About Hard Things', 'Ben Horowitz', NULL, '9780062273208', NULL, 'Harper Business', 2014, 'english', 'fiction', 304, 'hardcover', '45.png', NULL, '1250.00', NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'available', '2024-11-25 15:50:47', '2024-12-02 04:32:39'),
+(46, NULL, '365417458941', NULL, 'How to Win Friends and Influence People', 'Dale Carnegie', NULL, '9780671027032', NULL, 'Simon & Schuster', 1936, 'english', 'non-fiction', 291, 'hardcover', '46.png', NULL, '670.00', NULL, NULL, 'book', '2024-11-25', 'NEUST-PPY-LIB', 'circulation', NULL, NULL, 'no barcode', '2024-11-25 15:59:27', '2024-12-02 02:09:30'),
+(47, NULL, '784941489745', NULL, 'Noli Me Tangere (Touch Me Not)', 'Jose Rizal', NULL, '9780143039693', NULL, 'Penguin Classics', 2006, 'english', 'fiction', NULL, 'paperback', '47.png', NULL, NULL, NULL, NULL, 'book', '2024-11-28', 'NEUST-PPY-LIB', 'filipiniana', NULL, NULL, 'no barcode', '2024-11-28 03:07:06', '2024-12-02 01:17:59'),
+(48, NULL, '198646545774', NULL, 'El Filibusterismo (Penguin Classics)', 'Jose Rizal', NULL, '9780143106395', NULL, 'Penguin Classics', 2011, 'english', 'fiction', NULL, 'paperback', '48.png', NULL, NULL, NULL, NULL, 'book', '2024-11-28', 'NEUST-PPY-LIB', 'filipiniana', NULL, NULL, 'no barcode', '2024-11-28 03:10:52', '2024-12-02 01:15:13');
 
 -- --------------------------------------------------------
 
@@ -328,58 +342,19 @@ CREATE TABLE `loaned_items` (
 --
 
 INSERT INTO `loaned_items` (`id`, `type`, `barcode`, `date_loaned`, `due_date`, `date_returned`, `loaner_id`, `status`, `created_at`, `updated_at`) VALUES
-(15, 'book', '1987467186417', '2024-10-29', '2024-11-05', '2024-10-29', 19, 'returned', '2024-10-29 14:44:11', '2024-10-29 14:49:44'),
-(16, 'book', '1886486789417', '2024-10-29', '2024-11-05', '2024-10-29', 19, 'returned', '2024-10-29 15:05:06', '2024-10-29 15:06:15'),
-(17, 'book', '1886486789417', '2024-10-29', '2024-11-05', '2024-10-29', 20, 'returned', '2024-10-29 15:51:35', '2024-10-29 15:59:28'),
-(18, 'book', '1478665428748', '2024-10-30', '2024-11-06', '2024-10-30', 19, 'returned', '2024-10-29 16:44:25', '2024-10-29 16:45:00'),
-(19, 'book', '5747852147891', '2024-10-30', '2024-11-06', '2024-10-30', 20, 'returned', '2024-10-29 16:53:36', '2024-10-29 16:54:02'),
-(20, 'book', '9798487963541', '2024-10-30', '2024-11-06', '2024-10-30', 19, 'returned', '2024-10-29 16:56:39', '2024-10-29 16:56:54'),
-(21, 'book', '5747852147891', '2024-10-30', '2024-11-06', '2024-11-08', 19, 'returned', '2024-10-29 16:59:17', '2024-11-08 07:23:31'),
-(22, 'book', '3597857891467', '2024-10-30', '2024-11-06', NULL, 19, 'checked out', '2024-10-29 16:59:55', '2024-11-21 07:19:17'),
-(23, 'book', '1886486789417', '2024-11-21', '2024-11-28', NULL, 19, 'checked out', '2024-11-21 13:34:12', '2024-11-21 13:34:12'),
-(24, 'book', '4987467112564', '2024-11-21', '2024-11-28', NULL, 19, 'checked out', '2024-11-21 13:41:07', '2024-11-21 13:41:07'),
-(25, 'book', '9798487963541', '2024-11-23', '2024-11-30', NULL, 23, 'checked out', '2024-11-23 03:58:13', '2024-11-23 03:58:13'),
-(26, 'book', '45897656314752', '2024-11-23', '2024-11-30', '2024-11-23', 23, 'returned', '2024-11-23 05:22:48', '2024-11-23 05:24:05'),
-(27, 'book', '45897656314752', '2024-11-23', '2024-11-30', '2024-11-23', 23, 'returned', '2024-11-23 05:26:00', '2024-11-23 05:27:04');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `media_discs`
---
-
-CREATE TABLE `media_discs` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `accession_number` varchar(255) DEFAULT NULL,
-  `barcode_number` varchar(255) DEFAULT NULL,
-  `lcc_number` varchar(255) DEFAULT NULL,
-  `ddc_number` varchar(255) DEFAULT NULL,
-  `ir_number` varchar(255) NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `author` varchar(255) DEFAULT NULL,
-  `year_released` int(11) DEFAULT NULL,
-  `publisher` varchar(255) DEFAULT NULL,
-  `language` varchar(255) DEFAULT '''''''English''''''',
-  `cover_image` varchar(255) DEFAULT NULL,
-  `summary` text DEFAULT NULL,
-  `duration` int(11) DEFAULT NULL,
-  `location` varchar(255) DEFAULT NULL,
-  `tags` varchar(255) DEFAULT NULL,
-  `library` varchar(255) DEFAULT NULL,
-  `genre` varchar(255) DEFAULT NULL,
-  `type` varchar(255) NOT NULL,
-  `status` varchar(255) DEFAULT 'available',
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `media_discs`
---
-
-INSERT INTO `media_discs` (`id`, `accession_number`, `barcode_number`, `lcc_number`, `ddc_number`, `ir_number`, `title`, `author`, `year_released`, `publisher`, `language`, `cover_image`, `summary`, `duration`, `location`, `tags`, `library`, `genre`, `type`, `status`, `created_at`, `updated_at`) VALUES
-(1, NULL, NULL, NULL, NULL, '101056492420988933', 'The Light Beyond the Garden Wall of Egypt', 'Scott Whitehead', 2005, 'Orange Records', 'english', '1.png', NULL, 73, NULL, NULL, NULL, 'autobiography', 'cd', 'available', '2024-10-14 07:37:19', '2024-10-14 07:52:08'),
-(2, NULL, NULL, NULL, NULL, '101056492420988933', 'The Light Beyond the Garden Wall of Egypt', 'Scott Whitehead', 2005, 'Orange Records', 'english', '1.png', NULL, 73, NULL, NULL, NULL, 'autobiography', 'cd', 'available', '2024-10-14 07:58:59', '2024-10-14 07:58:59');
+(15, 'book', '198746718641', '2024-10-29', '2024-11-05', '2024-10-29', 19, 'returned', '2024-10-29 14:44:11', '2024-10-29 14:49:44'),
+(16, 'book', '188648678941', '2024-10-29', '2024-11-05', '2024-10-29', 19, 'returned', '2024-10-29 15:05:06', '2024-10-29 15:06:15'),
+(17, 'book', '188648678941', '2024-10-29', '2024-11-05', '2024-10-29', 20, 'returned', '2024-10-29 15:51:35', '2024-10-29 15:59:28'),
+(18, 'book', '147866542874', '2024-10-30', '2024-11-06', '2024-10-30', 19, 'returned', '2024-10-29 16:44:25', '2024-10-29 16:45:00'),
+(19, 'book', '574785214789', '2024-10-30', '2024-11-06', '2024-10-30', 20, 'returned', '2024-10-29 16:53:36', '2024-10-29 16:54:02'),
+(20, 'book', '979848796354', '2024-10-30', '2024-11-06', '2024-10-30', 19, 'returned', '2024-10-29 16:56:39', '2024-10-29 16:56:54'),
+(21, 'book', '574785214789', '2024-10-30', '2024-11-06', '2024-11-08', 19, 'returned', '2024-10-29 16:59:17', '2024-11-08 07:23:31'),
+(22, 'book', '359785789146', '2024-10-30', '2024-11-06', NULL, 19, 'checked out', '2024-10-29 16:59:55', '2024-11-21 07:19:17'),
+(23, 'book', '188648678941', '2024-11-21', '2024-11-28', NULL, 19, 'checked out', '2024-11-21 13:34:12', '2024-11-21 13:34:12'),
+(24, 'book', '498746711256', '2024-11-21', '2024-11-28', NULL, 19, 'checked out', '2024-11-21 13:41:07', '2024-11-21 13:41:07'),
+(25, 'book', '979848796354', '2024-11-23', '2024-11-30', NULL, 23, 'checked out', '2024-11-23 03:58:13', '2024-11-23 03:58:13'),
+(26, 'book', '458976563147', '2024-11-23', '2024-11-30', '2024-11-23', 23, 'returned', '2024-11-23 05:22:48', '2024-11-23 05:24:05'),
+(27, 'book', '458976563147', '2024-11-23', '2024-11-30', '2024-11-23', 23, 'returned', '2024-11-23 05:26:00', '2024-11-23 05:27:04');
 
 -- --------------------------------------------------------
 
@@ -438,7 +413,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (64, '2024_11_10_153657_create_face_encodings_table', 32),
 (66, '2024_11_14_090308_create_attendance_table', 33),
 (68, '2024_11_23_014033_create_reported_items_table', 34),
-(69, '2024_11_25_224616_add_section_to_items_table', 35);
+(69, '2024_11_25_224616_add_section_to_items_table', 35),
+(70, '2024_12_04_093228_add_inout_column_attendances_table', 36);
 
 -- --------------------------------------------------------
 
@@ -526,54 +502,15 @@ CREATE TABLE `requested_items` (
 --
 
 INSERT INTO `requested_items` (`id`, `type`, `barcode`, `date_requested`, `due_date`, `requester_id`, `status`, `created_at`, `updated_at`) VALUES
-(26, 'book', '1987467186417', '2024-10-29', '2024-11-01', 19, 'checked out', '2024-10-29 14:40:18', '2024-10-29 14:44:11'),
-(28, 'book', '1784575884789', '2024-10-30', '2024-11-02', 20, 'cancelled', '2024-10-29 16:05:46', '2024-10-29 16:29:23'),
-(29, 'book', '5747852147891', '2024-10-30', '2024-11-02', 20, 'checked out', '2024-10-29 16:46:30', '2024-10-29 16:53:36'),
-(31, 'book', '1886486789417', '2024-11-21', '2024-11-24', 19, 'checked out', '2024-11-21 12:30:56', '2024-11-21 13:34:12'),
-(32, 'book', '4987467112564', '2024-11-21', '2024-11-24', 19, 'checked out', '2024-11-21 13:36:36', '2024-11-21 13:41:07'),
-(33, 'book', '1784665484154', '2024-11-22', '2024-11-28', 20, 'cancelled', '2024-11-22 04:03:37', '2024-11-25 12:38:49'),
-(34, 'book', '9798487963541', '2024-11-23', '2024-11-26', 23, 'checked out', '2024-11-23 03:49:37', '2024-11-23 03:58:13'),
-(35, 'book', '45897656314752', '2024-11-23', '2024-11-26', 23, 'checked out', '2024-11-23 05:19:32', '2024-11-23 05:22:48'),
-(36, 'book', '1784575884789', '2024-11-25', NULL, 20, 'pending', '2024-11-25 12:32:34', '2024-11-25 12:32:34');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `researches`
---
-
-CREATE TABLE `researches` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `accession_number` varchar(255) DEFAULT NULL,
-  `barcode_number` varchar(255) DEFAULT NULL,
-  `lcc_number` varchar(255) DEFAULT NULL,
-  `ddc_number` varchar(255) DEFAULT NULL,
-  `ir_number` varchar(255) NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `author` varchar(255) NOT NULL,
-  `year_submitted` int(11) NOT NULL,
-  `language` varchar(255) DEFAULT 'English',
-  `type` varchar(255) DEFAULT NULL,
-  `number_of_pages` int(11) DEFAULT NULL,
-  `format` varchar(255) DEFAULT NULL,
-  `cover_image` varchar(255) DEFAULT NULL,
-  `summary` text DEFAULT NULL,
-  `location` varchar(255) DEFAULT NULL,
-  `tags` varchar(255) DEFAULT NULL,
-  `library` varchar(255) DEFAULT NULL,
-  `status` varchar(255) DEFAULT 'available',
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `researches`
---
-
-INSERT INTO `researches` (`id`, `accession_number`, `barcode_number`, `lcc_number`, `ddc_number`, `ir_number`, `title`, `author`, `year_submitted`, `language`, `type`, `number_of_pages`, `format`, `cover_image`, `summary`, `location`, `tags`, `library`, `status`, `created_at`, `updated_at`) VALUES
-(1, NULL, NULL, NULL, NULL, 'BCE75C9C-EEE6-47ED-AA38-3B1C71CEEDB8', 'Research Paper Title Proposal', 'Connor Hunter', 2022, 'english', 'exploratory', 321, 'hardcover', '1.png', NULL, NULL, NULL, NULL, 'reference only', '2024-10-14 00:40:33', '2024-10-14 05:21:30'),
-(2, NULL, NULL, NULL, NULL, '101056492420988931', 'Research Proposal Title: The Light Beyond the Garden Wall', 'Scott Whitehead', 2018, 'english', 'developmental', 333, 'paperback', '2.png', NULL, NULL, NULL, NULL, 'reference only', '2024-10-14 05:34:30', '2024-10-14 05:35:31'),
-(3, NULL, NULL, NULL, NULL, '101056492420988931', 'Research Proposal Title: The Light Beyond the Garden Wall', 'Scott Whitehead', 2018, 'english', 'developmental', 333, 'paperback', '2.png', NULL, NULL, NULL, NULL, 'reference only', '2024-10-14 05:48:18', '2024-10-14 05:48:18');
+(26, 'book', '198746718641', '2024-10-29', '2024-11-01', 19, 'checked out', '2024-10-29 14:40:18', '2024-10-29 14:44:11'),
+(28, 'book', '178457588478', '2024-10-30', '2024-11-02', 20, 'cancelled', '2024-10-29 16:05:46', '2024-10-29 16:29:23'),
+(29, 'book', '574785214789', '2024-10-30', '2024-11-02', 20, 'checked out', '2024-10-29 16:46:30', '2024-10-29 16:53:36'),
+(31, 'book', '188648678941', '2024-11-21', '2024-11-24', 19, 'checked out', '2024-11-21 12:30:56', '2024-11-21 13:34:12'),
+(32, 'book', '498746711256', '2024-11-21', '2024-11-24', 19, 'checked out', '2024-11-21 13:36:36', '2024-11-21 13:41:07'),
+(33, 'book', '178466548415', '2024-11-22', '2024-11-28', 20, 'cancelled', '2024-11-22 04:03:37', '2024-11-25 12:38:49'),
+(34, 'book', '979848796354', '2024-11-23', '2024-11-26', 23, 'checked out', '2024-11-23 03:49:37', '2024-11-23 03:58:13'),
+(35, 'book', '458976563147', '2024-11-23', '2024-11-26', 23, 'checked out', '2024-11-23 05:19:32', '2024-11-23 05:22:48'),
+(36, 'book', '178457588478', '2024-11-25', NULL, 20, 'pending', '2024-11-25 12:32:34', '2024-11-25 12:32:34');
 
 -- --------------------------------------------------------
 
@@ -595,7 +532,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('pzezxt9Q7A0tdYRwA6ASeLKE7uXKnDNQ5WjUi5n5', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiMFZBV3BzME5JcGZVSFI5MjlybWljMTBlaEc5Y3RkS2lpcHlsV25ibiI7czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czozODoiaHR0cDovL2xvY2FsaG9zdDo4MDAwL2NvbGxlY3Rpb25zL2Jvb2siO31zOjk6Il9wcmV2aW91cyI7YToxOntzOjM6InVybCI7czoyNzoiaHR0cDovL2xvY2FsaG9zdDo4MDAwL2xvZ2luIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1732596084);
+('oNOtkA1uVcJ3i1IPe44564oq8mbWkXzedLtwVY9P', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiWHp1STZlaGllejd1WU9JVG1yVTdOTklWZUdVaXJ4OThxRzcxUVRJbiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NTI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC9ub3RpZmljYXRpb25zL2xpYnJhcnlfc2VydmljZXMiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxO30=', 1733293436);
 
 -- --------------------------------------------------------
 
@@ -638,10 +575,10 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `role`, `card_number`, `pin`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'elioth barker', 'elioth.barker@gmail.com', '2024-08-20 00:16:29', '$2y$12$zcPJE7rJSVLEzKz8YkG4ue6Y6hteFhQV2EoqJMIrxD01lXxXqR8w.', 'admin', 'NEUST-F-001', '0000', 'F6YHHPtPMdNazMlOuEQ4gVVxccnUVyMnRPevS2SfKX7181Cv2FG6933w1N5x', '2024-08-20 00:16:30', '2024-11-15 07:33:26'),
+(1, 'elioth barker', 'elioth.barker@gmail.com', '2024-08-20 00:16:29', '$2y$12$zcPJE7rJSVLEzKz8YkG4ue6Y6hteFhQV2EoqJMIrxD01lXxXqR8w.', 'admin', 'NEUST-F-001', '0000', 'L45f1PznJ84TLaQGpBVlGZs8i80gYWAIiq2A8byuuNWziPpE40LpOLIvVVXc', '2024-08-20 00:16:30', '2024-11-15 07:33:26'),
 (16, 'JUAN DELA CRUZ', 'juan.delacruz.01.11.2001@gmail.com', NULL, '$2y$12$sLzI0QOAWHCV93RHVDE0FOpOgslIusKc34Ls5DS0WnHlI9MZCzHI2', 'librarian', 'NEUST-F-002', '0000', NULL, '2024-10-24 15:16:48', '2024-10-24 15:16:48'),
 (19, 'christian peña', 'christian940616@gmail.com', '2024-10-24 17:45:40', '$2y$12$FN5MmjLR5PmJTif3vwWZ5u1BjNOUO1vcH/8nck.XgHmfvRYiBeIAi', 'teacher', 'NEUST-F-932', '0000', NULL, '2024-10-24 17:45:40', '2024-10-25 01:22:43'),
-(20, 'Elioth Coder', 'elioth.coder@gmail.com', '2024-10-24 19:57:48', '$2y$12$bhkxRA/fb.XWR.nV7Q7kteZpT1CjWGXSA2hvycVhqHJ.hxnjIhTzq', 'student', 'NEUST-P-100', '0000', NULL, '2024-10-24 19:57:48', '2024-10-24 19:57:48'),
+(20, 'Elioth Coder', 'elioth.coder@gmail.com', '2024-10-24 19:57:48', '$2y$12$bhkxRA/fb.XWR.nV7Q7kteZpT1CjWGXSA2hvycVhqHJ.hxnjIhTzq', 'student', 'NEUST-P-100', '8888', NULL, '2024-10-24 19:57:48', '2024-12-02 09:01:37'),
 (21, 'maria nina reyes', 'marianina.reyes04@gmail.com', '2024-11-21 14:55:03', '$2y$12$7fnBvS3RrWtCYB8Sa/MSM.Q9lVQehHFVl06d9jIo56QawPhbEYgBK', 'student', 'NEUST-F-00001', '0000', NULL, '2024-11-21 14:55:03', '2024-11-21 14:55:03'),
 (23, 'edward mansibang', 'ewamansibang@gmail.com', '2024-11-23 03:33:44', '$2y$12$nw1SVa20tYe6jiVXUTQ5fuu89ftulFSfEBK.ZHxYSkKG1Y5qibMWG', 'teacher', 'NEUST-F-923', '0000', NULL, '2024-11-23 03:33:44', '2024-11-23 03:33:44');
 
@@ -690,7 +627,7 @@ INSERT INTO `user_details` (`id`, `card_number`, `first_name`, `middle_name`, `l
 (7, 'NEUST-F-932', 'christian', NULL, 'peña', NULL, 'male', '1994-06-16', 'christian940616@gmail.com', '09694708031', NULL, 'GENERAL TINIO', 'NUEVA ECIJA', 'NEUST-F-932.png', 'NEUST-PPY-LIB', 'active', 'teacher', 'CICT', 'NEUST-PPY', 'lecturer', NULL, NULL, NULL, '2024-10-24 17:30:22', '2024-10-25 01:22:43'),
 (8, 'NEUST-P-100', 'elioth', NULL, 'coder', NULL, 'male', '1994-10-16', 'elioth.coder@gmail.com', NULL, NULL, NULL, NULL, 'NEUST-P-100.png', 'NEUST-PPY-LIB', 'active', 'student', 'CICT', 'NEUST-PPY', NULL, 'BSIT', 4, 'A', '2024-10-24 19:17:17', '2024-11-10 03:00:11'),
 (10, 'NEUST-T-00001', 'angel', NULL, 'locsin', NULL, 'female', '1997-11-05', 'angel.locsin@gmail.com', NULL, NULL, NULL, NULL, 'NEUST-T-00001.png', 'NEUST-PPY-LIB', 'active', 'student', 'CICT', 'NEUST-PPY', NULL, 'BSIT', 2, 'A', '2024-11-10 10:38:20', '2024-11-10 10:38:24'),
-(11, 'NEUST-F-001', 'elioth', NULL, 'barker', NULL, 'male', '1994-06-16', 'elioth.barker@gmail.com', '09694708031', NULL, NULL, NULL, 'NEUST-F-001.png', 'NEUST-PPY-LIB', 'active', 'admin', NULL, NULL, NULL, NULL, NULL, NULL, '2024-10-24 15:16:48', '2024-11-21 15:22:56'),
+(11, 'NEUST-F-001', 'elioth', NULL, 'barker', NULL, 'male', '1994-06-16', 'elioth.barker@gmail.com', '09694708031', NULL, NULL, NULL, 'NEUST-F-001.png', 'NEUST-PPY-LIB', 'active', 'admin', NULL, NULL, NULL, NULL, NULL, NULL, '2024-10-24 15:16:48', '2024-12-02 08:41:14'),
 (12, 'NEUST-F-00001', 'maria nina', NULL, 'reyes', NULL, 'female', '2008-06-19', 'marianina.reyes04@gmail.com', NULL, NULL, NULL, NULL, 'NEUST-F-00001.png', 'NEUST-PPY-LIB', 'active', 'student', 'COED', 'NEUST-PPY', NULL, 'BSED', 1, 'A', '2024-11-21 14:48:08', '2024-11-22 02:04:39'),
 (13, 'NEUST-F-00002', 'marian', NULL, 'rivera', NULL, 'female', '1992-03-05', 'marian.rivera019@gmail.com', NULL, NULL, NULL, NULL, 'NEUST-F-00002.png', 'NEUST-PPY-LIB', 'active', 'student', 'CMBT', 'NEUST-PPY', NULL, 'BSBA', 4, 'A', '2024-11-22 13:12:40', '2024-11-22 13:12:44'),
 (15, 'NEUST-F-923', 'edward', 'mirasol', 'mansibang', NULL, 'male', '1985-01-12', 'ewamansibang@gmail.com', '09166902122', NULL, NULL, NULL, 'NEUST-F-923.png', 'NEUST-PPY-LIB', 'active', 'teacher', 'CICT', 'NEUST-PPY', 'instructor i', NULL, NULL, NULL, '2024-11-23 03:30:28', '2024-11-23 03:32:46');
@@ -776,14 +713,6 @@ ALTER TABLE `loaned_items`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `media_discs`
---
-ALTER TABLE `media_discs`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `media_discs_accession_number_unique` (`accession_number`),
-  ADD UNIQUE KEY `media_discs_barcode_number_unique` (`barcode_number`);
-
---
 -- Indexes for table `migrations`
 --
 ALTER TABLE `migrations`
@@ -815,14 +744,6 @@ ALTER TABLE `reported_items`
 --
 ALTER TABLE `requested_items`
   ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `researches`
---
-ALTER TABLE `researches`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `researches_accession_number_unique` (`accession_number`),
-  ADD UNIQUE KEY `researches_barcode_number_unique` (`barcode_number`);
 
 --
 -- Indexes for table `sessions`
@@ -861,7 +782,7 @@ ALTER TABLE `user_details`
 -- AUTO_INCREMENT for table `attendances`
 --
 ALTER TABLE `attendances`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `campuses`
@@ -879,19 +800,19 @@ ALTER TABLE `colleges`
 -- AUTO_INCREMENT for table `failed_jobs`
 --
 ALTER TABLE `failed_jobs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `items`
 --
 ALTER TABLE `items`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- AUTO_INCREMENT for table `jobs`
 --
 ALTER TABLE `jobs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `libraries`
@@ -906,16 +827,10 @@ ALTER TABLE `loaned_items`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
--- AUTO_INCREMENT for table `media_discs`
---
-ALTER TABLE `media_discs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=71;
 
 --
 -- AUTO_INCREMENT for table `programs`
@@ -934,12 +849,6 @@ ALTER TABLE `reported_items`
 --
 ALTER TABLE `requested_items`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
-
---
--- AUTO_INCREMENT for table `researches`
---
-ALTER TABLE `researches`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `tokens`
