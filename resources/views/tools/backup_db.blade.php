@@ -72,11 +72,11 @@
 
             <br>
             <h1>Restore from file</h1>
-            <form action="/backup_db/restore_from_file" method="POST" enctype="multipart/form-data">
+            <form action="" id="form" method="POST" enctype="multipart/form-data">
                 @csrf
                 <label for="data">
                     <input type="file" id="data" name="database" accept='.sql'>
-                    <button type="submit" class="btn btn-primary">Restore</button>
+                    <button type="submit"  class="btn btn-primary">Restore</button>
                 </label>
             </form>
         </div>
@@ -232,6 +232,49 @@
                     }
                 });
             }
+
+
+            
+            document.getElementById('form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                Swal.fire({
+                    title: "Restoring Database...",
+                    showConfirmButton: false,
+                    timer: 2000,
+                }).then(async () => {
+                    let fileInput = document.getElementById('data');
+                    let file = fileInput.files[0];
+                    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                    let formData = new FormData();
+                    formData.set('database', file);
+
+                    console.log(formData.get('database'))
+                    let response = await fetch('/tools/backup_db/restore_from_file', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken
+                        },
+                    });
+
+                    let {
+                        status,
+                        message
+                    } = await response.json();
+
+                    await Swal.fire({
+                        title: message,
+                        icon: status,
+                        showConfirmButton: false,
+                        timer: 2000,
+                    });
+
+                    if (status == 'success') {
+                        window.location.reload();
+                    }
+                });
+            })
+
         </script>
     </x-slot:script>
 </x-layout>

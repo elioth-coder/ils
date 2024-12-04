@@ -141,6 +141,7 @@ Route::middleware('auth')->group(function () {
                 Route::post('/backup_db/generate', 'generate');
                 Route::post('/backup_db/delete', 'destroy');
                 Route::post('/backup_db/restore', 'restore');
+                Route::post('/backup_db/restore_from_file', 'restore_from_file');
             });
         });
 
