@@ -41,18 +41,10 @@ class TeacherController extends Controller
 
     public function index()
     {
-        if(Auth::user()->role != 'admin') {
-            $staff = UserDetail::where('email', Auth::user()->email)->first();
-            $teachers  =
-                UserDetail::whereIn('role', ['teacher'])
-                    ->where('library', $staff->library)
-                    ->latest()
-                    ->get();
-        } else {
-            $teachers = UserDetail::whereIn('role', ['teacher'])
-                ->latest()
-                ->get();
-        }
+
+        $teachers = UserDetail::whereIn('role', ['teacher'])
+            ->latest()
+            ->get();
 
         $colleges  = College::latest()->get();
         $campuses  = Campus::latest()->get();
@@ -84,7 +76,7 @@ class TeacherController extends Controller
             'municipality'    => ['nullable', 'string', 'max:255'],
             'barangay'        => ['nullable', 'string', 'max:255'],
             'mobile_number'   => ['nullable', 'string', 'max:255'],
-            'email'           => ['required', 'email', 'unique:user_details,email', 'max:255'],
+            'email'           => ['required', 'email', 'unique:user_details,email', 'unique:users,email', 'max:255'],
             'college'         => ['required', 'exists:colleges,code'],
             'campus'          => ['required', 'exists:campuses,code'],
             'academic_rank'   => ['required', 'string', 'max:255'],
@@ -92,17 +84,11 @@ class TeacherController extends Controller
             'file'            => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ];
 
-        if(Auth::user()->role == 'admin') {
-            $rules['library'] = ['required', 'string', 'exists:libraries,code'];
-        }
-
         $attributes = $request->validate($rules);
         $attributes['role'] = 'teacher';
 
-        if(Auth::user()->role != 'admin') {
-            $staff = UserDetail::where('email', Auth::user()->email)->first();
-            $attributes['library'] = $staff->library;
-        }
+        $staff = UserDetail::where('email', Auth::user()->email)->first();
+        $attributes['library'] = $staff->library;
 
         $teacher = UserDetail::create($attributes);
         if(!empty($attributes['file'])) {
@@ -152,18 +138,10 @@ class TeacherController extends Controller
 
     public function edit($id)
     {
-        if(Auth::user()->role != 'admin') {
-            $staff = UserDetail::where('email', Auth::user()->email)->first();
-            $teachers  =
-                UserDetail::whereIn('role', ['teacher'])
-                    ->where('library', $staff->library)
-                    ->latest()
-                    ->get();
-        } else {
-            $teachers = UserDetail::whereIn('role', ['teacher'])
-                ->latest()
-                ->get();
-        }
+
+        $teachers = UserDetail::whereIn('role', ['teacher'])
+            ->latest()
+            ->get();
 
         $selected  = UserDetail::findOrFail($id);
         $colleges  = College::latest()->get();
@@ -197,7 +175,7 @@ class TeacherController extends Controller
             'municipality'    => ['nullable', 'string', 'max:255'],
             'barangay'        => ['nullable', 'string', 'max:255'],
             'mobile_number'   => ['nullable', 'string', 'max:255'],
-            'email'           => ['required', 'email', 'unique:user_details,email', 'max:255'],
+            'email'           => ['required', 'email', 'unique:user_details,email', 'unique:users,email', 'max:255'],
             'college'         => ['required', 'exists:colleges,code'],
             'campus'          => ['required', 'exists:campuses,code'],
             'academic_rank'   => ['required', 'string', 'max:255'],
@@ -212,16 +190,11 @@ class TeacherController extends Controller
         if($request->post('email') == $teacher->email) {
             unset($rules['email']);
         }
-        if(Auth::user()->role == 'admin') {
-            $rules['library'] = ['required', 'string', 'exists:libraries,code'];
-        }
 
         $attributes = $request->validate($rules);
 
-        if(Auth::user()->role != 'admin') {
-            $staff = UserDetail::where('email', Auth::user()->email)->first();
-            $attributes['library'] = $staff->library;
-        }
+        $staff = UserDetail::where('email', Auth::user()->email)->first();
+        $attributes['library'] = $staff->library;
 
         $previousCardNumber = $teacher->card_number;
         $previousProfile = $teacher->profile;

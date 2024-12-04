@@ -281,6 +281,7 @@ class AccountController extends Controller
         $name = $userAttributes['first_name'] . ' ' . $userAttributes['last_name'];
         $password = Hash::make($userAttributes['password']);
         $generated_token = Str::uuid();
+        $pin = mt_rand(1000,9999);
         Token::create([
             'token' => $generated_token,
             'data'  => json_encode([
@@ -288,6 +289,7 @@ class AccountController extends Controller
                 'email'       => $userAttributes['email'],
                 'password'    => $password,
                 'role'        => $user->role,
+                'pin'         => $pin,
                 'card_number' => $user->card_number,
             ], JSON_UNESCAPED_UNICODE),
             'purpose'    => 'ACCOUNT_ACTIVATION',
@@ -298,6 +300,7 @@ class AccountController extends Controller
             'name'            => $name,
             'app_domain'      => env('APP_DOMAIN'),
             'app_url'         => env('APP_URL'),
+            'pin'             => $pin,
             'activation_link' => env('APP_URL') . '/account/activate/' . $generated_token,
         ]));
 
@@ -337,6 +340,7 @@ class AccountController extends Controller
                 'email'       => $data->email,
                 'password'    => $data->password,
                 'role'        => $data->role,
+                'pin'         => $data->pin,
                 'card_number' => $data->card_number,
                 'created_at'  => DB::raw('NOW()'),
                 'updated_at'  => DB::raw('NOW()'),

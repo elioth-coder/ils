@@ -10,6 +10,7 @@ use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Program;
+use App\Models\User;
 use App\Models\UserDetail;
 
 class StudentController extends Controller
@@ -38,18 +39,9 @@ class StudentController extends Controller
 
     public function index()
     {
-        if(Auth::user()->role != 'admin') {
-            $staff = UserDetail::where('email', Auth::user()->email)->first();
-            $students =
-                UserDetail::whereIn('role', ['student'])
-                    ->where('library', $staff->library)
-                    ->latest()
-                    ->get();
-        } else {
-            $students = UserDetail::whereIn('role', ['student'])
-                ->latest()
-                ->get();
-        }
+        $students = UserDetail::whereIn('role', ['student'])
+            ->latest()
+            ->get();
 
         $colleges  = College::latest()->get();
         $campuses  = Campus::latest()->get();
@@ -84,7 +76,7 @@ class StudentController extends Controller
             'municipality'   => ['nullable', 'string', 'max:255'],
             'barangay'       => ['nullable', 'string', 'max:255'],
             'mobile_number'  => ['nullable', 'string', 'max:255'],
-            'email'          => ['required', 'email', 'unique:user_details,email', 'max:255'],
+            'email'          => ['required', 'email', 'unique:user_details,email', 'unique:users,email', 'max:255'],
             'program'        => ['required', 'exists:programs,code'],
             'college'        => ['required', 'exists:colleges,code'],
             'campus'         => ['required', 'exists:campuses,code'],
@@ -94,17 +86,11 @@ class StudentController extends Controller
             'file'           => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ];
 
-        if(Auth::user()->role == 'admin') {
-            $rules['library'] = ['required', 'string', 'exists:libraries,code'];
-        }
-
         $attributes = $request->validate($rules);
         $attributes['role'] = 'student';
 
-        if(Auth::user()->role != 'admin') {
-            $staff = UserDetail::where('email', Auth::user()->email)->first();
-            $attributes['library'] = $staff->library;
-        }
+        $staff = UserDetail::where('email', Auth::user()->email)->first();
+        $attributes['library'] = $staff->library;
 
         $student = UserDetail::create($attributes);
         if(!empty($attributes['file'])) {
@@ -154,24 +140,15 @@ class StudentController extends Controller
 
     public function edit($id)
     {
-        if(Auth::user()->role != 'admin') {
-            $staff = UserDetail::where('email', Auth::user()->email)->first();
-            $students =
-                UserDetail::whereIn('role', ['student'])
-                    ->where('library', $staff->library)
-                    ->latest()
-                    ->get();
-        } else {
-            $students = UserDetail::whereIn('role', ['student'])
-                ->latest()
-                ->get();
-        }
+
+        $students = UserDetail::whereIn('role', ['student'])
+            ->latest()
+            ->get();
 
         $colleges  = College::latest()->get();
         $campuses  = Campus::latest()->get();
         $libraries = Library::latest()->get();
         $programs  = Program::latest()->get();
-
 
         $selected = UserDetail::findOrFail($id);
 
@@ -179,7 +156,6 @@ class StudentController extends Controller
             'colleges'    => $colleges,
             'campuses'    => $campuses,
             'libraries'   => $libraries,
-            'students'    => $students,
             'students'    => $students,
             'programs'    => $programs,
             'selected'    => $selected,
@@ -205,7 +181,7 @@ class StudentController extends Controller
             'municipality'   => ['nullable', 'string', 'max:255'],
             'barangay'       => ['nullable', 'string', 'max:255'],
             'mobile_number'  => ['nullable', 'string', 'max:255'],
-            'email'          => ['required', 'email', 'unique:students,email', 'max:255'],
+            'email'          => ['required', 'email', 'unique:user_details,email', 'unique:users,email', 'max:255'],
             'program'        => ['required', 'exists:programs,code'],
             'college'        => ['required', 'exists:colleges,code'],
             'campus'         => ['required', 'exists:campuses,code'],
@@ -222,16 +198,11 @@ class StudentController extends Controller
         if($request->post('email') == $student->email) {
             unset($rules['email']);
         }
-        if(Auth::user()->role == 'admin') {
-            $rules['library'] = ['required', 'string', 'exists:libraries,code'];
-        }
 
         $attributes = $request->validate($rules);
 
-        if(Auth::user()->role != 'admin') {
-            $staff = UserDetail::where('email', Auth::user()->email)->first();
-            $attributes['library'] = $staff->library;
-        }
+        $staff = UserDetail::where('email', Auth::user()->email)->first();
+        $attributes['library'] = $staff->library;
 
         $previousCardNumber = $student->card_number;
         $previousProfile = $student->profile;

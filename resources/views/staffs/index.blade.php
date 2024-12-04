@@ -6,7 +6,7 @@
             <ol class="breadcrumb mb-0 border py-2 px-3 bg-white rounded">
                 <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
                 <li class="breadcrumb-item"><a href="/users">Users</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Staffs</li>
+                <li class="breadcrumb-item active" aria-current="page">Library Staff</li>
             </ol>
         </nav>
     @endslot
@@ -32,14 +32,14 @@
         <form id="patron-form" action="/users/staffs" method="POST" enctype="multipart/form-data">
             @csrf
             @method('POST')
-            <h4 class="text-body-secondary">Create new staff</h4>
+            <h4 class="text-body-secondary">Create new Library Staff</h4>
             <hr>
             <div class="d-flex column-gap-4">
                 <div class="w-100">
                     <div class="d-flex column-gap-2">
                         <div class="mb-2 w-100">
                             <label for="card_number" class="form-label">Card No. / ID No.</label>
-                            <input type="text" class="form-control form-control-sm" placeholder="--" name="card_number" id="card_number" value="{{ old('card_number') ?? '' }}">
+                            <input type="text" required class="form-control form-control-sm" placeholder="--" name="card_number" id="card_number" value="{{ old('card_number') ?? '' }}">
                             @error('card_number')
                                 <div class="form-text text-danger">{{ $message }}</div>
                             @enderror

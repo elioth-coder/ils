@@ -132,6 +132,9 @@ Route::middleware('auth')->group(function () {
 
         Route::prefix('tools')->group(function () {
             Route::controller(ToolController::class)->group(function () {
+                Route::get('/csv_import', 'csv_import');
+                Route::get('/id_card_maker', 'id_card_maker');
+                Route::post('/id_card_maker/print', 'id_card_print');
                 Route::get('/barcode_maker', 'barcode_maker');
                 Route::get('/barcode_maker/print', 'barcode_print');
             });
@@ -192,6 +195,11 @@ Route::middleware('auth')->group(function () {
                 Route::get('/item_count', 'item_count');
                 Route::get('/patron_list', 'patron_list');
                 Route::get('/attendance_list', 'attendance_list');
+
+                Route::get('/item_list/print', 'item_list_print');
+                Route::get('/item_count/print', 'item_count_print');
+                Route::get('/patron_list/print', 'patron_list_print');
+                Route::get('/attendance_list/print', 'attendance_list_print');
             });
         });
 

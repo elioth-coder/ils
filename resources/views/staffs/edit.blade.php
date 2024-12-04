@@ -30,7 +30,7 @@
           position: absolute;
         }
         </style>
-        <form action="/users/staffs/{{ $selected->id }}" method="POST" enctype="multipart/form-data">
+        <form id="patron-form" action="/users/staffs/{{ $selected->id }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PATCH')
             <h4 class="text-body-secondary">Edit this staff</h4>

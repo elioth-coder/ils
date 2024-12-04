@@ -24,6 +24,7 @@
 
             <p>To activate this account, please click the following link:</p>
             <p><a href="{{ $data['activation_link'] }}">{{ $data['activation_link'] }}</a></p>
+            <p>Note: your current pin is <b>{{ $data['pin'] }}</b></p>
             <p>Sincerely, <a href="{{ $data['app_url'] }}">{{ $data['app_domain'] }}</a> Management</p>
         </div>
     </div>

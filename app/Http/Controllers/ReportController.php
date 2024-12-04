@@ -69,7 +69,14 @@ class ReportController extends Controller
         ]);
     }
 
-    public function item_list(Request $request)
+    public function item_list_print(Request $request)
+    {
+        $data = $this->item_list_data($request);
+
+        return view('reports.item_list_print', $data);
+    }
+
+    public function item_list_data(Request $request)
     {
         $user    = UserDetail::where('email', Auth::user()->email)->first();
         $library = $user->library;
@@ -136,10 +143,17 @@ class ReportController extends Controller
         $query->execute($parameters);
         $items = $query->fetchAll(PDO::FETCH_CLASS, 'stdClass');
 
-        return view('reports.item_list', [
+        return [
             'items'      => $items,
             'publishers' => $publishers,
-        ]);
+        ];
+    }
+
+    public function item_list(Request $request)
+    {
+        $data = $this->item_list_data($request);
+
+        return view('reports.item_list', $data);
     }
 
     public function item_count(Request $request)

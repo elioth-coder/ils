@@ -17,8 +17,6 @@ class StaffController extends Controller
     public $statuses = [ 'active', 'inactive',];
     public $roles = [
         'librarian',
-        'assistant',
-        'clerk'
     ];
 
     public function index()
@@ -46,7 +44,7 @@ class StaffController extends Controller
             'suffix'          => ['nullable', 'string', 'max:255'],
             'gender'          => ['required', 'in:male,female'],
             'birthday'        => ['required', 'date'],
-            'email'           => ['required', 'email', 'unique:users,email'],
+            'email'           => ['required', 'email', 'unique:user_details,email', 'unique:users,email'],
             'mobile_number'   => ['required', 'string', 'max:255'],
             'password'        => ['required', 'confirmed', Password::min(6)],
             'library'         => ['required', 'string', 'exists:libraries,code', 'max:255'],
@@ -142,7 +140,7 @@ class StaffController extends Controller
             'suffix'          => ['nullable', 'string', 'max:255'],
             'gender'          => ['required', 'in:male,female'],
             'birthday'        => ['required', 'date'],
-            'email'           => ['required', 'email', 'unique:users,email'],
+            'email'           => ['required', 'email', 'unique:user_details,email', 'unique:users,email'],
             'mobile_number'   => ['required', 'string', 'max:255'],
             'password'        => ['required', 'confirmed', Password::min(6)],
             'library'         => ['required', 'string', 'exists:libraries,code', 'max:255'],
@@ -159,18 +157,27 @@ class StaffController extends Controller
         if($request->post('email') == $staff->email) {
             unset($rules['email']);
         }
+        if(!$request->post('password')) {
+            unset($rules['password']);
+        }
+
         $attributes = $request->validate($rules);
 
         $previousCardNumber = $staff->card_number;
         $previousProfile = $staff->profile;
         $staff->update($attributes);
-        $user->update([
+        $user_data = [
             'name'        => $staff->first_name . ' ' . $staff->last_name,
             'email'       => $staff->email,
             'role'        => $staff->role,
-            'password'    => $attributes['password'],
             'card_number' => $staff->card_number,
-        ]);
+        ];
+
+        if(!empty($attributes['password'])) {
+            $user_data['password'] = $attributes['password'];
+        }
+
+        $user->update($user_data);
         if(!empty($attributes['file'])) {
             $manager = ImageManager::gd();
             $image = $manager->read($request->file('file'));

@@ -160,6 +160,16 @@
 
                                 $tools = [
                                     [
+                                        'icon' => 'filetype-csv',
+                                        'url' => '/tools/csv_import',
+                                        'title' => 'CSV Import',
+                                    ],
+                                    [
+                                        'icon' => 'person-vcard',
+                                        'url' => '/tools/id_card_maker',
+                                        'title' => 'ID Card Maker',
+                                    ],
+                                    [
                                         'icon' => 'upc-scan',
                                         'url' => '/tools/barcode_maker',
                                         'title' => 'Barcode Maker',

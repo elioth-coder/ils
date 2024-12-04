@@ -16,8 +16,8 @@
         </style>
         <div class="d-block mb-4">
             @foreach ($items as $item)
-                <div class="float-start m-3" style="width: 190px;">
-                    <span class="multiline-ellipsis">{{ $item->title }}</span>
+            <div class="float-start m-3 border border-dark p-1" style="width: 200px;">
+                <span class="multiline-ellipsis">{{ $item->title }}</span>
                     <img src="data:image/png;base64,{!! DNS1D::getBarcodePNG($item->barcode, 'EAN13', 2, 70, array(0,0,0), true) !!}" alt="barcode" /><br>
                 </div>
             @endforeach

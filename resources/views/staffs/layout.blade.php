@@ -16,7 +16,7 @@
         <div class="container d-flex flex-column pb-5 row-gap-4">
             <section class="w-100">
                 <a href="/users/staffs#staffs-form" class="btn btn-outline-success">
-                    New Staff
+                    New Library Staff
                     <i class="bi bi-plus"></i>
                 </a>
             </section>
