@@ -16,10 +16,10 @@
         }
 
         @page {
-            margin: 0; 
+            margin: 0;
             padding:0;
         }
-     
+
         /* Header and Footer Styles */
         #header {
             position: fixed;
@@ -40,7 +40,7 @@
             padding: 0;
             bottom: 0;
             margin-top: auto; /* Push footer to the bottom */
-            
+
         }
 
         .content {
@@ -83,22 +83,22 @@
 </head>
 <body>
     <header>
-    <img id="header" src="{{ asset('/images/print/header.png') }}" alt="">
+    <img id="header" src="{{ asset('/images/print/reports/header.png') }}" alt="">
     </header>
 
         <table style="border:none;">
             <thead style="border:none;">
                 <tr style="border:none;">
-                    <td style="border:none;"></td>       
+                    <td style="border:none;"></td>
                 </tr>
             </thead>
-            
+
             <tbody style="border:none;">
                 <tr style="border:none;">
                     <td style="border:none;">
                         <div class="content" >
                         <h2>Attendance Report</h2>
-                  
+
                         <table class="table table-bordered">
                         <thead>
                         <tr>
@@ -145,7 +145,7 @@
                             <b>Prepared By:</b> {{ ucwords(strtolower($prepared_by->first_name)) . ' ' . ucwords(strtolower($prepared_by->middle_name)) . ' ' . ucwords(strtolower($prepared_by->last_name)) }}<br>
 
                             <b>Role:</b> {{ ucwords(strtolower($prepared_by->role)) }}
-                            
+
                             </p>
                         </div>
                         </div>
@@ -154,13 +154,13 @@
             </tbody>
             <tfoot style="border:none;">
                 <tr style="border:none;">
-                    <td style="border:none;">  
+                    <td style="border:none;">
                     </td>
                 </tr>
             </tfoot>
         </table>
     <footer>
-        <img id="footer" src="{{ asset('/images/print/footer.png') }}" alt="" style="">
+        <img id="footer" src="{{ asset('/images/print/reports/footer.png') }}" alt="" style="">
     </footer>
 
 </body>
