@@ -16,7 +16,7 @@
             </nav>
         </section>
         <div class="container d-flex flex-column pb-5 flex-wrap">
-            <h1 class="text-center"><i class="bi bi-upc-scan me-3"></i>CSV Import</h1>
+            <h1 class="text-center"><i class="bi bi-filetype-csv me-3"></i>CSV Import</h1>
             <hr>
 
             <div class="my-4 bg-white p-3 border rounded shadow">
