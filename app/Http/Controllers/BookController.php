@@ -13,6 +13,7 @@ class BookController extends Controller
 {
     public $languages = [
         'english',
+        'tagalog',
         'spanish',
         'french',
         'german',

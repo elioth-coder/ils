@@ -133,6 +133,7 @@ Route::middleware('auth')->group(function () {
         Route::prefix('tools')->group(function () {
             Route::controller(ToolController::class)->group(function () {
                 Route::get('/csv_import', 'csv_import');
+                Route::post('/process_csv_import', 'process_csv_import');
                 Route::get('/id_card_maker', 'id_card_maker');
                 Route::post('/id_card_maker/print', 'id_card_print');
                 Route::get('/barcode_maker', 'barcode_maker');

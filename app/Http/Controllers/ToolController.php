@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Item;
 use App\Models\UserDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -9,6 +10,28 @@ use PDO;
 
 class ToolController extends Controller
 {
+    public function process_csv_import(Request $request)
+    {
+        try {
+            $data = $request->all();
+            $data['status']  = 'no barcode';
+            $data['library'] = 'NEUST-PPY-LIB';
+
+            $item = Item::create($data);
+
+            return response()->json([
+                'message' => 'Data inserted successfully!',
+                'data'    => $data,
+                'status'  => 'success',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error: ' . $e->getMessage(),
+                'status'  => 'error',
+            ], 200);
+        }
+    }
+
     public function csv_import()
     {
         return view('tools.csv_import');
