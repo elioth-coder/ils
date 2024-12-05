@@ -193,6 +193,11 @@ Route::middleware('auth')->group(function () {
                 Route::get('/item_count', 'item_count');
                 Route::get('/patron_list', 'patron_list');
                 Route::get('/attendance_list', 'attendance_list');
+                Route::get('/report_template', 'report_template');
+                Route::get('/report_template_inventory', 'report_template_inventory');
+                Route::get('/report_template_count', 'report_template_count');
+                Route::get('/report_template_attendance', 'report_template_attendance');
+                
             });
         });
 

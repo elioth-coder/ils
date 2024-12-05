@@ -156,7 +156,7 @@
                             $_genre = request('genre') ?? '';
                         @endphp
                         <label for="genre" class="form-label">Genre</label>
-                        <select class="form-control form-control-sm text-capitalize" name="genre" id="role">
+                        <select class="form-control form-control-sm text-capitalize" name="genre" id="genre">
                             <option value="">--</option>
                             @foreach ($genres as $genre)
                                 <option {{ $genre == $_genre ? 'selected' : '' }} value="{{ $genre }}">
@@ -240,14 +240,20 @@
                 </tbody>
             </table>
 
-            <div class="w-full text-end">
+            <!-- <div class="w-full text-end">
                 <a href="/reports/item_list/print?{{ request()->getQueryString() }}" class="btn btn-warning">
                     <i class="bi bi-print"></i>
                     Print Report
                 </a>
             </div>
+            <div class="d-flex justify-content-end pe-5 w-100 mb-3"> -->
+          
         </div>
     </main>
+    <div class="d-flex justify-content-end pe-5 w-100 mb-3">
+                <button id="printButton" class="btn btn-primary">Print</button>
+            </div>
+            </div>
     <x-footer />
     <x-slot:script>
         <script>
@@ -264,6 +270,21 @@
                 let year = `${from}-${to}`;
                 $publication_year.value = year;
             }
+
+
+            document.getElementById('printButton').addEventListener('click', () => {
+                    const params = new URLSearchParams({
+                        date_acquired_start: document.getElementById('date_acquired_start').value,
+                        date_acquired_end: document.getElementById('date_acquired_end').value,
+                        publisher: document.getElementById('publisher').value,
+                        publication_year: document.getElementById('publication_year').value,
+                        type: document.getElementById('type').value,
+                        format: document.getElementById('format').value,
+                        genre: document.getElementById('genre').value,
+                        status: document.getElementById('status').value
+                    });
+                    window.location.href = `/reports/report_template_inventory?_method=GET&${params.toString()}`;
+                });
         </script>
     </x-slot>
 </x-layout>
