@@ -175,6 +175,7 @@
                             <label for="role" class="form-label">Role</label>
                             <select class="form-control form-control-sm text-uppercase" name="role" id="role">
                                 <option value="">--</option>
+                                <option value="librarian">Staff</option>
                                 @foreach ($roles as $role)
                                     <option {{ $role==old('role') ? "selected" : "" }} value="{{ $role }}">{{ $role }}</option>
                                 @endforeach
