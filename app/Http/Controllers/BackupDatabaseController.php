@@ -47,11 +47,13 @@ class BackupDatabaseController extends Controller
         }
     }
 
+ 
     public function restore_from_file(Request $request)
     {
+
         try {
             $backupFile = $request->file('database');
-            $storagePath = storage_path('backups');
+            $storagePath = storage_path('backups') . '\\';
             $fileName = time() . '-' . $backupFile->getClientOriginalName();
             $permanentFilePath = $storagePath . $fileName;
             $backupFile->move($storagePath, $fileName);

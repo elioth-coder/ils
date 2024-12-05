@@ -142,7 +142,7 @@
                                 $_genre = request('genre') ?? '';
                             @endphp
                             <label for="genre" class="form-label">Genre</label>
-                            <select class="form-control form-control-sm text-capitalize" name="genre" id="gebre">
+                            <select class="form-control form-control-sm text-capitalize" name="genre" id="genre">
                                 <option value="">--</option>
                                 @foreach($genres as $genre)
                                     <option {{ $genre == $_genre ? 'selected' : '' }} value="{{ $genre }}">{{ $genre }}</option>
@@ -224,6 +224,11 @@
             </table>
         </div>
     </main>
+    <div class="d-flex justify-content-end pe-5 w-100 mb-3">
+    <div class="d-flex justify-content-end pe-5 w-75 mb-3">
+        <button id="printButton" class="btn btn-primary">Print</button>
+    </div>
+
     <x-footer />
     <x-slot:script>
         <script>
@@ -240,6 +245,18 @@
                 let year = `${from}-${to}`;
                 $publication_year.value = year;
             }
+
+            document.getElementById('printButton').addEventListener('click', () => {
+            const params = new URLSearchParams({
+                publisher: document.getElementById('publisher').value, 
+                publication_year: document.getElementById('publication_year').value, 
+                type: document.getElementById('type').value,  
+                format: document.getElementById('format').value,  
+                genre: document.getElementById('genre').value,  
+                status: document.getElementById('status').value, 
+            });
+            window.location.href = `/reports/report_template_count?_method=GET&${params.toString()}`;
+        });
         </script>
     </x-slot>
 </x-layout>

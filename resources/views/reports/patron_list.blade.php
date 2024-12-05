@@ -161,6 +161,25 @@
             </table>
         </div>
     </main>
+    <div class="d-flex justify-content-end pe-5 w-100 mb-3">
+    <div class="d-flex justify-content-end pe-5 w-75 mb-3">
+        <button id="printButton" class="btn btn-primary">Print</button>
+    </div>
+
+    <script>
+        document.getElementById('printButton').addEventListener('click', () => {
+            const params = new URLSearchParams({
+                college: document.getElementById('college').value,
+                program: document.getElementById('program').value,
+                year: document.getElementById('year').value,
+                section: document.getElementById('section').value,
+                role: document.getElementById('role').value,
+                status: document.getElementById('status').value
+            });
+            window.location.href = `/reports/report_template?_method=GET&${params.toString()}`;
+        });
+    </script>
+    </div>
     <x-footer />
     <x-slot:script>
         <script>
