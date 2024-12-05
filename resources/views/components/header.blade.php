@@ -323,14 +323,6 @@
                                                 </a>
                                             </li>
                                         @endforeach
-                                        <li>
-                                            <hr class="dropdown-divider">
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item" href="/reports">
-                                                <i class="bi bi-bar-chart-line me-1"></i> Reports
-                                            </a>
-                                        </li>
                                     </ul>
                                 </div>
 
@@ -379,14 +371,6 @@
                                                 </a>
                                             </li>
                                         @endforeach
-                                        <li>
-                                            <hr class="dropdown-divider">
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item" href="/tools">
-                                                <i class="bi bi-layers me-1"></i> Tools
-                                            </a>
-                                        </li>
                                     </ul>
                                 </div>
 

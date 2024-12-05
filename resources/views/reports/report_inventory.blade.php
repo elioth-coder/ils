@@ -156,6 +156,10 @@
     <footer>
         <img id="footer" src="{{ asset('/images/print/reports/footer.png') }}" alt="" style="">
     </footer>
-
+    <script>
+        window.onload = function() {
+            window.print();
+        }
+    </script>
 </body>
 </html>
