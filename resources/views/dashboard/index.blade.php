@@ -245,7 +245,7 @@
                 { label: 'On Loan',    y: {{ $on_loan_count }} },
                 { label: 'On Reserve', y: {{ $on_reserve_count }} },
                 { label: 'Available',  y: {{ $available_count }} },
-                { label: 'Others',     y: {{ $others_count }} },
+                { label: 'Other Status',     y: {{ $others_count }} },
             ];
 
             window.onload = function() {
@@ -286,7 +286,7 @@
                     animationEnabled: true,
                     colorSet: 'bootstrap5',
                     title: {
-                        text: "Number of Collections per Type"
+                        text: "Number of Collections"
                     },
                     axisY: {
                         title: "Collection Count"
@@ -295,7 +295,7 @@
                         type: "column",
                         showInLegend: true,
                         legendMarkerColor: "grey",
-                        legendText: "Type of Collections",
+                        legendText: "Status of Collections",
                         dataPoints: collectionDataPoints,
                     }]
                 });
