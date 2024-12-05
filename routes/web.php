@@ -197,6 +197,12 @@ Route::middleware('auth')->group(function () {
                 Route::get('/item_count', 'item_count');
                 Route::get('/patron_list', 'patron_list');
                 Route::get('/attendance_list', 'attendance_list');
+
+                Route::get('/item_list/print', 'item_list_print');
+                Route::get('/item_count/print', 'item_count_print');
+                Route::get('/patron_list/print', 'patron_list_print');
+                Route::get('/attendance_list/print', 'attendance_list_print');
+
                 Route::get('/report_template', 'report_template');
                 Route::get('/report_template_inventory', 'report_template_inventory');
                 Route::get('/report_template_count', 'report_template_count');
