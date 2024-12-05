@@ -154,7 +154,7 @@ Route::middleware('auth')->group(function () {
                 Route::post('/find_barcode', 'find_barcode');
                 Route::post('/reserve_item', 'reserve_item');
                 Route::post('/checkout_item', 'checkout_item');
-                Route::post('/cancel_item', 'cancel_item');
+                Route::post('/cancel_item', 'cancel_item')->withoutMiddleware([IsLibrarian::class]);
                 Route::post('/return_item', 'return_item');
                 Route::post('/renew_item', 'renew_item');
                 Route::post('/notify_overdue', 'notify_overdue');
