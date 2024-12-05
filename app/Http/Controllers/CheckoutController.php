@@ -206,6 +206,7 @@ class CheckoutController extends Controller
             ]);
 
             $item = RequestedItem::where('barcode', $attributes['barcode'])
+                ->where('status', 'pending')
                 ->where('requester_id', $attributes['requester_id'])
                 ->first();
 
