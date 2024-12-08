@@ -242,17 +242,17 @@ class ReportController extends Controller
 
         $pdo  = DB::connection()->getPdo();
         $sql  =
-            "SELECT `attendances`.`created_at` AS `log_time`, `user_details`.*
+            "SELECT `attendances`.*, `user_details`.`college`, `user_details`.`year`, `user_details`.`section`
             FROM `attendances`
             INNER JOIN `user_details`
             ON `attendances`.`card_number` = `user_details`.`card_number`
             WHERE `library`=:library ";
-        $sql .= ($request->input('college')==null) ? "" : "AND `college`=:college ";
-        $sql .= ($request->input('program')==null) ? "" : "AND `program`=:program ";
+        $sql .= ($request->input('college')==null) ? "" : "AND `user_details`.`college`=:college ";
+        $sql .= ($request->input('program')==null) ? "" : "AND `attendances`.`program`=:program ";
         $sql .= ($request->input('year')==null)    ? "" : "AND `year`=:year ";
         $sql .= ($request->input('role')==null)    ? "" : "AND `user_details`.`role`=:role ";
-        $sql .= (!$hasDateFilter)                  ? "" : "AND (`attendances`.`created_at` BETWEEN :from AND :to) ";
-        $sql .= "ORDER BY `log_time` DESC ";
+        $sql .= (!$hasDateFilter)                  ? "" : "AND (`attendances`.`in` BETWEEN :from AND :to) ";
+        $sql .= "ORDER BY `in` ASC ";
 
         $query = $pdo->prepare($sql);
         $parameters = [];
@@ -299,11 +299,11 @@ class ReportController extends Controller
     {
         $user    = UserDetail::where('email', Auth::user()->email)->first();
         $library = $user->library;
-        
+
         $user_id = Auth::user()->card_number;
         $person = UserDetail::where('card_number', $user_id)->firstOrFail();
 
-        
+
 
         $pdo  = DB::connection()->getPdo();
         $sql  = "SELECT * FROM `user_details` WHERE `library`=:library AND role NOT IN ('admin','staff','clerk','librarian') ";
@@ -573,8 +573,8 @@ class ReportController extends Controller
         ]);
     }
 
-    
-    
+
+
 
 
 }

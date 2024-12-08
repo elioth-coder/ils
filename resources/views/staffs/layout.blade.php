@@ -46,18 +46,32 @@
                         @foreach ($staffs as $staff)
                             <tr>
                                 <td>
-                                    <form id="delete-staff-{{ $staff->id }}"
-                                        action="/users/staffs/{{ $staff->id }}" method="POST" class="d-none">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit">DELETE</button>
-                                    </form>
-                                    <a title="Edit" href="/users/staffs/{{ $staff->id }}/edit#staffs-form" class="btn btn-light btn-sm">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <button title="Delete" onclick="deleteStaff({{ $staff->id }});" class="btn btn-light btn-sm">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
+                                    @if ($staff->role == 'admin')
+                                        <button disabled title="Edit"
+                                            class="btn btn-light btn-sm">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button disabled title="Delete"
+                                            class="btn btn-light btn-sm">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    @else
+                                        <form id="delete-staff-{{ $staff->id }}"
+                                            action="/users/staffs/{{ $staff->id }}" method="POST" class="d-none">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit">DELETE</button>
+                                        </form>
+                                        <a title="Edit"
+                                            href="/users/staffs/{{ $staff->id }}/edit#staffs-form"
+                                            class="btn btn-light btn-sm">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <button title="Delete" onclick="deleteStaff({{ $staff->id }});"
+                                            class="btn btn-light btn-sm">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    @endif
                                 </td>
                                 <td>{{ $staff->card_number }}</td>
                                 <td>{{ $staff->first_name }} {{ $staff->last_name }}</td>
@@ -103,11 +117,13 @@
                 const container = document.getElementById('profile-container');
                 const cover_img = document.getElementById('profile');
 
-                container.addEventListener('click', ()=> { file.click() });
-                fileInput.addEventListener('change', (e)=> {
+                container.addEventListener('click', () => {
+                    file.click()
+                });
+                fileInput.addEventListener('change', (e) => {
                     let self = e.target;
 
-                    if(self.files.length) {
+                    if (self.files.length) {
                         let image = URL.createObjectURL(self.files[0]);
 
                         cover_img.src = image;
@@ -129,7 +145,7 @@
                 data.set('card_number', formData.get('card_number'));
                 data.set('file', formData.get('file'));
 
-                if(!data.get('file').name) {
+                if (!data.get('file').name) {
                     $submitProxy.innerHTML = 'Submit';
                     $submitProxy.removeAttribute('disabled');
                     document.querySelector('#submit').click();
@@ -143,7 +159,7 @@
 
                 let _response = await response.json();
 
-                if(_response.status == 'success') {
+                if (_response.status == 'success') {
                     $submitProxy.innerHTML = 'Submit';
                     $submitProxy.removeAttribute('disabled');
                     document.querySelector('#submit').click();

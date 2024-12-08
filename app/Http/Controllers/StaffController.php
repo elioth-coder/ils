@@ -21,7 +21,7 @@ class StaffController extends Controller
 
     public function index()
     {
-        $staffs = UserDetail::whereIn('role', ['librarian','clerk','staff'])->get();
+        $staffs = UserDetail::whereNotIn('role', ['student','teacher'])->get();
         $libraries = Library::latest()->get();
 
         return view('staffs.index', [
@@ -115,7 +115,7 @@ class StaffController extends Controller
         $selected = UserDetail::findOrFail($id);
         $user = User::where('email', $selected->email)->first();
         $selected->role = $user->role;
-        $staffs = UserDetail::whereIn('role', ['librarian','clerk','staff'])->get();
+        $staffs = UserDetail::whereNotIn('role', ['student','teacher'])->get();
         $libraries = Library::latest()->get();
 
         return view('staffs.edit', [

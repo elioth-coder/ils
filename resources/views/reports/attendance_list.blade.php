@@ -114,7 +114,7 @@
                 <tbody>
                 @forelse ($patrons as $patron)
                     @php
-                        $date_object = new DateTime($patron->log_time);
+                        $date_object = new DateTime($patron->in);
                         $date = $date_object->format('Y-m-d');
                         $time = $date_object->format('h:i A');
                     @endphp
@@ -123,9 +123,9 @@
                     <td>{{ $date }}</td>
                     <td>{{ $time }}</td>
                     <td>{{ $patron->card_number }}</td>
-                    <td class="text-capitalize">{{ $patron->last_name }}, {{ $patron->first_name }}</td>
+                    <td class="text-capitalize">{{ $patron->name }}</td>
                     <td class="text-capitalize">{{ $patron->role }}</td>
-                    <td>{{ $patron->college }}</td>
+                    <td>{{ $patron->college ?? '--' }}</td>
                     <td>{{ $patron->program ?? '--' }}</td>
                     <td>{{ $patron->year }} {{ $patron->section ?? '--' }}</td>
                     </tr>
