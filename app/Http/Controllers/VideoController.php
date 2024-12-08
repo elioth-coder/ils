@@ -74,6 +74,7 @@ class VideoController extends Controller
         'checked out',
         'reserved',
         'lost',
+        'missing',
         'damaged',
         'reference only',
         'no barcode',

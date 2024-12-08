@@ -57,12 +57,13 @@
                         </div>
                         <div class="mb-2 w-100">
                             @php
+                                $generated = substr((floor(microtime(true) * 1000) . ''), 0, 12);
                                 if ($errors->has('barcode')) {
                                     $barcode = old('barcode');
                                 } else {
                                     $barcode = old('barcode')
                                         ? old('barcode')
-                                        : $selected->barcode;
+                                        : $generated;
                                 }
                             @endphp
                             <label for="barcode" class="form-label">Barcode No.</label>
