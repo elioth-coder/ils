@@ -137,7 +137,7 @@
                                         $duedate = strtotime($item->due_date);
                                     @endphp
                                     <td>
-                                        {{ $item->due_date }} <br>
+                                        {{ $item->due_date }} {{ date('h:i A', strtotime($item->created_at)) }} <br>
                                         @if($today > $duedate)
                                             <span class="badge text-bg-danger">Overdue</span>
                                         @endif
@@ -200,7 +200,7 @@
                                         $duedate = strtotime($item->due_date);
                                     @endphp
                                     <td class="text-capitalize" style="width: 120px;">
-                                        {{ $item->due_date }}
+                                        {{ $item->due_date }} {{ date('h:i A', strtotime($item->created_at)) }}
                                         @if($today > $duedate)
                                             <span class="badge text-bg-danger">Overdue</span>
                                         @endif
@@ -266,7 +266,9 @@
                                             </section>
                                         </div>
                                     </td>
-                                    <td class="text-capitalize" style="width: 150px;">{{ $item->date_requested }}</td>
+                                    <td class="text-capitalize" style="width: 150px;">
+                                        {{ $item->date_requested }} {{ date('h:i A', strtotime($item->created_at)) }}
+                                    </td>
                                     <td class="text-center">
                                         @php
                                             $data = "{ barcode: $item->barcode, requester_id: $patron->user_id }";
@@ -328,9 +330,9 @@
                                         </div>
                                     </td>
                                     <td class="text-capitalize">
-                                        {{ $item->date_loaned }}
+                                        {{ $item->date_loaned }} {{ date('h:i A', strtotime($item->created_at)) }}
                                         <i class="bi bi-arrow-right"></i>
-                                        {{ $item->date_returned }}
+                                        {{ $item->date_returned }} {{ date('h:i A', strtotime($item->updated_at)) }}
                                     </td>
                                 </tr>
                             @empty

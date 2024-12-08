@@ -115,9 +115,9 @@
                                                         {{ strtolower($item->patron->last_name) }}
                                                     </a>
                                                 </p>
-                                                {{ $item->date_loaned }}
+                                                {{ $item->date_loaned }} {{ date('h:i A', strtotime($item->created_at)) }}
                                                 <i class="bi bi-arrow-right"></i>
-                                                {{ $item->due_date }}
+                                                {{ $item->due_date }} {{ date('h:i A', strtotime($item->created_at)) }}
                                                 <br>
                                             </td>
                                             <td class="text-center" style="max-width: 120px;">
@@ -203,9 +203,9 @@
                                                         {{ strtolower($item->patron->last_name) }}
                                                     </a>
                                                 </p>
-                                                {{ $item->date_loaned }}
+                                                {{ $item->date_loaned }} {{ date('h:i A', strtotime($item->created_at)) }}
                                                 <i class="bi bi-arrow-right"></i>
-                                                {{ $item->due_date }}
+                                                {{ $item->due_date }} {{ date('h:i A', strtotime($item->created_at)) }}
                                                 <br>
                                             </td>
                                             <td class="text-center" style="max-width: 120px;">
@@ -288,7 +288,7 @@
                                                         {{ strtolower($item->patron->last_name) }}
                                                     </a>
                                                 </p>
-                                                {{ $item->date_returned }}
+                                                {{ $item->date_returned }} {{ date('h:i A', strtotime($item->updated_at)) }}
                                                 <br>
                                             </td>
                                         </tr>

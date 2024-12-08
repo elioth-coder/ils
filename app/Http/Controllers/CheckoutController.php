@@ -160,7 +160,7 @@ class CheckoutController extends Controller
 
             $requested_item->update([
                 'status'   => 'for pickup',
-                'due_date' => Carbon::now()->addDays(3),
+                'due_date' => Carbon::now()->addDays(1),
             ]);
 
             $item = Item::where('barcode', $attributes['barcode'])->first();
@@ -397,7 +397,7 @@ class CheckoutController extends Controller
                 'type'        => $item->type,
                 'barcode'     => $item->barcode,
                 'date_loaned' => DB::raw('DATE(NOW())'),
-                'due_date'    => DB::raw('DATE_ADD(DATE(NOW()), INTERVAL 1 WEEK)'),
+                'due_date'    => DB::raw('DATE_ADD(DATE(NOW()), INTERVAL 3 DAY)'),
                 'loaner_id'   => $attributes['requester_id'],
                 'status'      => 'checked out',
             ]);

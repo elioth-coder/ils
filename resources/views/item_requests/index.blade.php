@@ -86,7 +86,7 @@
                                                     {{ $item->request_status }}
                                                 </span>
                                                 @if ($item->request_status == 'for pickup')
-                                                    <br><i>until {{ $item->due_date }}</i>
+                                                    <br><i>until {{ $item->due_date }} {{ date('h:i A', strtotime($item->created_at)) }}</i>
                                                 @endif
                                                 @if ($today > $duedate && $item->request_status == 'for pickup')
                                                     <span class="badge text-bg-danger">Overdue</span>
@@ -130,8 +130,7 @@
                                                         {{ strtolower($item->patron->last_name) }}
                                                     </a>
                                                 </p>
-                                                {{ $item->date_requested }} <br>
-                                            </td>
+                                                {{ $item->date_requested }} {{ date('h:i A', strtotime($item->created_at)) }} <br>                                          </td>
                                             <td class="text-center">
                                                 @php
                                                     $requester_id = $item->patron->user_id;
@@ -214,7 +213,7 @@
                                                         {{ strtolower($item->patron->last_name) }}
                                                     </a>
                                                 </p>
-                                                {{ $item->date_requested }} <br>
+                                                {{ $item->date_requested }} {{ date('h:i A', strtotime($item->created_at)) }} <br>                                          </td>
                                             </td>
                                             <td class="text-center">
                                                 @php
@@ -308,7 +307,7 @@
                                                         {{ strtolower($item->patron->last_name) }}
                                                     </a>
                                                 </p>
-                                                {{ $item->date_requested }} <br>
+                                                {{ $item->date_requested }} {{ date('h:i A', strtotime($item->created_at)) }} <br>                                          </td>
                                             </td>
                                         </tr>
                                     @endforeach
