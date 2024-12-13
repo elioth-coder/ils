@@ -20,7 +20,7 @@
     <main class="d-flex align-items-center justify-content-center w-100 bg-success-subtle">
         <div class="container py-5 d-flex">
             <section class="d-flex w-100 h-100 align-items-center justify-content-center">
-                <img src="{{ asset('images/login-cartoon.png') }}" class="w-75 h-75" />
+                <img src="{{ asset('images/forgot-password.png') }}" class="w-75 h-75" />
             </section>
             <section class="d-flex flex-column w-100 h-100 align-items-center justify-content-center">
                 @error('credential')
@@ -32,36 +32,31 @@
                 @enderror
                 <div style="width: 400px;" class="p-3 mx-auto card">
                     <div class="card-body">
-                        <form action="/login" method="POST" autocomplete="off">
+                        <form action="{{ route('password.email') }}" method="POST" autocomplete="off">
                             @csrf
                             @method('POST')
 
-                            <h3 class="text-body-secondary">Sign in to our platform</h3>
+                            <h3 class="text-body-secondary">Forgot Password?</h3>
                             <br>
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email</label>
                                 <input type="email" class="form-control" name="email" id="email" value="{{ old('email') ?? '' }}">
                             </div>
-                            <div class="mb-3">
-                                <label for="password" class="form-label">Password</label>
-                                <div class="mb-3 input-group" x-data="{ show: false }">
-                                    <input x-bind:type="(show) ? 'text' : 'password'" name="password" id="password" class="form-control">
-                                    <button x-on:click="show = !show" class="btn btn-outline-secondary" type="button">
-                                        <i class="bi" x-bind:class="(show) ? 'bi-eye-fill' : 'bi-eye-slash-fill'"></i>
-                                    </button>
+                            @if (session('status'))
+                                <div class="alert alert-success">
+                                    {{ session('status') }}
                                 </div>
-                            </div>
-                            <div class="mb-3 form-check">
-                                <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                                <label class="form-check-label" for="exampleCheck1">Keep me signed in</label>
-                            </div>
+                            @endif
+
+                            @error('email')
+                                <div class="alert alert-danger">{{ $message }}</div>
+                            @enderror
+                       
                             <div class="d-flex">
-                                <button type="submit" class="px-3 w-100 btn btn-primary">Sign in</button>
+                                <button type="submit" class="px-3 w-100 btn btn-primary">Send Link</button>
                             </div>
                           
-                                <p class="mt-4 text-center "><a href="/forgot-password">Forgot password?</a></p>
-                         
-                            <p class="mt-4 text-center">Do not have an account? Sign up <a href="/register">here</a>.</p>
+                            <p class="mt-4 text-center">Please enter you email to receive the reset password form.</p>
                         </form>
                     </div>
                 </div>
