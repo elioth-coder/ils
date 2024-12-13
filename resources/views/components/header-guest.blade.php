@@ -24,6 +24,10 @@
                         <i class="bi bi-gear-wide-connected me-1"></i>
                         E-Resources
                     </a>
+                    <a href="/faqs" class="btn {{ str_starts_with(request()->path(), 'faqs') ? 'btn-warning' : '' }} text-decoration-none">
+                        <i class="bi bi-chat-dots me-1"></i>
+                        FAQ
+                    </a>
                 </div>
 
                 <button x-on:click="open = !open" class="btn btn-success btn-sm">

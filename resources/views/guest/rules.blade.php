@@ -24,6 +24,10 @@
                             <i class="me-1 bi bi-star"></i>
                             Borrowing Procedure
                         </a>
+                        <a href="#period" class="list-group-item list-group-item-action">
+                            <i class="me-1 bi bi-star"></i>
+                            Borrowing Period
+                        </a>
                         <a href="#loan_period" class="list-group-item list-group-item-action">
                             <i class="me-1 bi bi-star"></i>
                             Loan Period
@@ -35,6 +39,10 @@
                         <a href="#etiquette" class="list-group-item list-group-item-action">
                             <i class="me-1 bi bi-star"></i>
                             Etiquette in NEUST Library
+                        </a>
+                        <a href="#resources" class="list-group-item list-group-item-action">
+                            <i class="me-1 bi bi-star"></i>
+                            Library Resources
                         </a>
                     </div>
                 </div>
@@ -105,6 +113,23 @@
                                         No library materials shall be removed from the library un their issue has been
                                         properly
                                         recorded at the appropriate section.
+                                    </li>
+                                </ol>
+                            </li>
+
+                            <li>
+                                <span id="period" style="font-weight: bold;">Borrowing Period</span>
+                                <ol class="vstack gap-2 mt-2" type="a">
+                                    <li class="ml-4">
+                                        NEUST students may borrow a maximum of 13 books at a time. 
+                                        This applies to the books in the Circulation Section which could be borrowed for a period of 1 week while in the Filipiniana section only one book is allowed for overnight use. 
+                                        Reference books are for library use only.
+                                    </li>
+                                    <li class="ml-4">
+                                        NEUST faculty and staff may borrow a maximum of 3 books for a period of 1 week.
+                                        This applies to books from Circulation Section excluding books from Filipiniana,
+                                        and Reference Sections and books with limited copies.
+                                        Overdue notices will be sent two days after the due date.
                                     </li>
                                 </ol>
                             </li>
@@ -222,6 +247,26 @@
                                     </li>
                                 </ol>
                             </li>
+                            
+                            <li>
+                                <span id="resources" style="font-weight: bold;">Library Resources</span>
+                                <ol class="vstack gap-2 mt-2" type="a">
+                                    <li class="ml-4">
+                                        The library contains the bulk of the collection in the social sciences, 
+                                        humanities and natural sciences. 
+                                        The basic collection of textbooks and required readings are in the Circulation Section. 
+                                        Current issues of journals and publications are available in the Serials section.
+                                    </li>
+                                    <li class="ml-4">
+                                        The library offers circulation, reserve, references, information, and reader's advisory service. Special services include extensive and bibliographic services undertaken at the Filipiniana section and the bibliography, indexing and publications Section.
+                                    </li>
+
+                                    <li class="ml-4">
+                                        The Filipiniana research collection includes strong book collections for literature, history, political science, and bibliography as well as extensive news of major Philippine newspaper and periodicals.
+                                    </li>
+                                </ol>
+                            </li>
+
                         </ol>
                     </div>
                 </div>

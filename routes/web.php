@@ -44,6 +44,7 @@ Route::middleware('guest')->group(function () {
     Route::get('/about', [GuestController::class, 'about']);
     Route::get('/resources', [GuestController::class, 'resources']);
     Route::get('/rules', [GuestController::class, 'rules']);
+    Route::get('/faqs', [GuestController::class, 'faqs']);
     Route::get('/login', [SessionController::class, 'create']);
     Route::post('/login', [SessionController::class, 'store'])->name('login');
     Route::get('/forgot-password', [ForgotPasswordController::class, 'index']);

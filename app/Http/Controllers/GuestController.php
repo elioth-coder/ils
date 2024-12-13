@@ -25,5 +25,10 @@ class GuestController extends Controller
     {
         return view('guest.resources');
     }
+    
+    public function faqs()
+    {
+        return view('guest.faqs');
+    }
 
 }
