@@ -13,9 +13,45 @@ use PDO;
 
 class ReportController extends Controller
 {
+    
     public function index()
     {
-        return view('reports.index');
+        $most_borrowed_books = DB::table('loaned_items')
+        ->join('items', 'loaned_items.barcode', '=', 'items.barcode')
+        ->select('items.title', 'items.author', DB::raw('COUNT(loaned_items.barcode) as borrow_count'))
+        ->groupBy('items.title', 'items.author')
+        ->orderBy('borrow_count', 'desc')
+        ->limit(5)
+        ->get();
+ 
+        $top_visitors = DB::table('attendances')
+        ->select('card_number', 'name', 'role', DB::raw('COUNT(*) as visit_count'))
+        ->groupBy('card_number', 'name', 'role')
+        ->orderBy('visit_count', 'desc')
+        ->limit(5)
+        ->get();
+
+        $recent_reported_items = DB::table('reported_items')
+        ->join('items', 'reported_items.barcode', '=', 'items.barcode')
+        ->join('users', 'reported_items.reporter_id', '=', 'users.id')
+        ->select(
+            'items.title',
+            'items.author',
+            'items.type',
+            'reported_items.details',
+            'reported_items.created_at',
+            'users.name',
+        )
+        ->orderBy('reported_items.created_at', 'desc')
+        ->limit(10)
+        ->get();
+
+
+        return view('reports.index', [
+            'top_visitors' => $top_visitors,
+            'most_borrowed_books' => $most_borrowed_books,
+            'recent_reported_items' => $recent_reported_items
+        ]);
     }
 
     public function patron_list(Request $request)
