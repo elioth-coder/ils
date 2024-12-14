@@ -29,10 +29,13 @@
                     </div>
                     <div class="mb-2">
                         <label for="answer" class="form-label">Answer</label>
-                        <textarea style="height: 172px;" class="form-control form-control-sm" placeholder="--" name="answer" id="answer" rows="4">{{ old('answer') ?? '' }}</textarea>
-                        @error('answer')
-                            <div class="form-text text-danger">{{ $message }}</div>
-                        @enderror
+                        <div class="border rounded">
+                            <div class="rounded" id="toolbar"></div>
+                            <textarea style="height: 172px;" class="rounded form-control form-control-sm" placeholder="--" name="answer" id="answer" rows="4">{{ old('answer') ?? '' }}</textarea>
+                            @error('answer')
+                                <div class="form-text text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
                     </div>
                     <div class="mb-2">
                         <label for="keywords" class="form-label">Keywords</label>

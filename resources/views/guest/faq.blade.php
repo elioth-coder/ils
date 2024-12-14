@@ -1,3 +1,5 @@
+@use('Illuminate\Support\Str')
+
 <x-layout>
     <x-header-guest />
     <main class="d-flex flex-column min-vh-100 min-vw-100 bg-success-subtle">
@@ -30,7 +32,9 @@
                                         <div id="collapse-item-{{ $faq->id }}"
                                             class="accordion-collapse collapse show"
                                             data-bs-parent="#accordion-faq-{{ $faq->id }}">
-                                            <div class="accordion-body">{{ $faq->answer }}</div>
+                                            <div class="accordion-body">
+                                                {!! Str::markdown($faq->answer) !!}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

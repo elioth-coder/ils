@@ -5,6 +5,8 @@
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
         <script src="https://cdn.datatables.net/2.1.4/js/dataTables.min.js"></script>
         <script src="https://cdn.datatables.net/2.1.4/js/dataTables.bootstrap5.min.js"></script>
+        <script src="https://unpkg.com/tiny-markdown-editor/dist/tiny-mde.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://unpkg.com/tiny-markdown-editor/dist/tiny-mde.min.css" />
     </x-slot:head>
     <x-header />
     <main class="d-flex flex-column justify-content-center w-100 bg-body-secondary">
@@ -48,10 +50,12 @@
                                         @method('DELETE')
                                         <button type="submit">DELETE</button>
                                     </form>
-                                    <a title="Edit" href="/settings/faqs/{{ $faq->id }}/edit#faq-form" class="btn btn-light btn-sm">
+                                    <a title="Edit" href="/settings/faqs/{{ $faq->id }}/edit#faq-form"
+                                        class="btn btn-light btn-sm">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <button title="Delete" onclick="deleteFaq({{ $faq->id }});" class="btn btn-light btn-sm">
+                                    <button title="Delete" onclick="deleteFaq({{ $faq->id }});"
+                                        class="btn btn-light btn-sm">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </td>
@@ -90,6 +94,14 @@
                     document.querySelector(`#delete-faq-${id} button`).click();
                 }
             }
+
+            const tinyMDE = new TinyMDE.Editor({
+                textarea: "answer"
+            });
+            const commandBar = new TinyMDE.CommandBar({
+                element: "toolbar",
+                editor: tinyMDE,
+            });
         </script>
     </x-slot:script>
 </x-layout>
