@@ -43,6 +43,7 @@ class ItemRequestController extends Controller
          INNER JOIN requested_items
          ON items.barcode = requested_items.barcode
          WHERE requested_items.status
+         ORDER BY requested_items.created_at DESC
         ";
 
         $predicate = "IN ('pending')";

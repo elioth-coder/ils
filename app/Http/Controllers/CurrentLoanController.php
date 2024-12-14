@@ -45,6 +45,7 @@ class CurrentLoanController extends Controller
          ON items.barcode = loaned_items.barcode
          WHERE loaned_items.status = 'checked out'
          AND DATE(loaned_items.due_date) <= DATE(NOW())
+         ORDER BY loaned_items.created_at DESC
         ";
         $query = $pdo->prepare($sql);
         $query->execute();
@@ -69,6 +70,7 @@ class CurrentLoanController extends Controller
          INNER JOIN loaned_items
          ON items.barcode = loaned_items.barcode
          WHERE loaned_items.status
+         ORDER BY loaned_items.created_at DESC
         ";
 
         $predicate = "IN ('checked out') AND DATE(loaned_items.due_date) > DATE(NOW())";

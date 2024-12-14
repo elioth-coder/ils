@@ -22,8 +22,8 @@
             <div class="container d-flex flex-column py-5 column-gap-5">
                 <section class="w-100 column-gap-4 d-flex mb-2">
                     <div class="w-100">
-                        <h4>NEUST ILS Catalogue</h4>
-                        <p>You can discover, search and request documents. The global catalogue contains the collections of the NEUST ILS Libraries.
+                        <h4>NEUST ILI Catalogue</h4>
+                        <p>You can discover, search and request documents. The global catalogue contains the collections of the NEUST ILI Libraries.
                     </div>
                     <div class="w-100">
                         <h4>Useful Links</h4>
@@ -46,11 +46,11 @@
                 </section>
                 <section class="w-100 column-gap-4 d-flex">
                     <div class="w-100">
-                        <h4>About NEUST ILS</h4>
-                        <p>NEUST ILS is a competence and service centre for NEUST libraries. It is a thesis project of one of its graduate student.</p>
+                        <h4>About NEUST ILI</h4>
+                        <p>NEUST ILI is a competence and service centre for NEUST libraries. It is a thesis project of one of its graduate student.</p>
                     </div>
                     <div class="w-100">
-                        <h4>NEUST ILS Libraries</h4>
+                        <h4>NEUST ILI Libraries</h4>
                         <ul>
                             <li>
                                 <span>General Tinio (Papaya) Off-Campus Library</span><br>
