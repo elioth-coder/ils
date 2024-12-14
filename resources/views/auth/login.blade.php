@@ -1,22 +1,5 @@
 <x-layout>
-    <header>
-        <nav class="navbar bg-primary">
-            <div class="container">
-                <x-navbar-brand />
-            </div>
-        </nav>
-        <section class="bg-light w-100">
-            <div class="w-100 border-light-subtle border-bottom">
-                <section class="container py-2 d-flex align-items-center justify-content-end">
-                    <a href="/" class="btn btn-success btn-sm">
-                        <i class="bi bi-arrow-left"></i>
-                        Go Back
-                        <i class="bi bi-house"></i>
-                    </a>
-                </section>
-            </div>
-        </section>
-    </header>
+    <x-header-guest />
     <main class="d-flex align-items-center justify-content-center w-100 bg-success-subtle">
         <div class="container py-5 d-flex">
             <section class="d-flex w-100 h-100 align-items-center justify-content-center">
@@ -58,9 +41,9 @@
                             <div class="d-flex">
                                 <button type="submit" class="px-3 w-100 btn btn-primary">Sign in</button>
                             </div>
-                          
+
                                 <p class="mt-4 text-center "><a href="/forgot-password">Forgot password?</a></p>
-                         
+
                             <p class="mt-4 text-center">Do not have an account? Sign up <a href="/register">here</a>.</p>
                         </form>
                     </div>

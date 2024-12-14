@@ -7,7 +7,11 @@
             }
         </style>
     </x-slot:head>
-    <x-header />
+    @if(in_array(Auth::user()->role, ['admin','librarian']))
+        <x-header />
+    @else
+        <x-header-patron />
+    @endif
     <main class="d-flex w-100 bg-light">
         <div class="container d-flex flex-column">
             <h2 class="text-center my-4">NEUST Library Dashboard</h2>
@@ -133,13 +137,6 @@
                 <div class="w-full">
                     @php
                         $data_this_month = [
-                            // [
-                            //     'href'  => '/services/current_loans',
-                            //     'icon'  => 'arrow-up-right-square',
-                            //     'color' => 'warning-subtle',
-                            //     'count' => $on_loan_count,
-                            //     'label' => 'On loan items this month',
-                            // ],
                             [
                                 'href' => '/services/item_requests',
                                 'icon' => 'ban',
@@ -154,13 +151,6 @@
                                 'count' => count($new_collections),
                                 'label' => 'New collections this month',
                             ],
-                            // [
-                            //     'href'  => '/users/visited',
-                            //     'icon'  => 'people',
-                            //     'color' => 'warning',
-                            //     'count' => $visitor_count,
-                            //     'label' => 'Visitors this month',
-                            // ],
                             [
                                 'href' => '/services/item_requests',
                                 'icon' => 'people',
@@ -208,7 +198,8 @@
                     <h4 class="my-3">Data this month</h4>
                     <div class="d-flex column-gap-3 row-gap-3 flex-wrap">
                         @foreach ($data_this_month as $item)
-                            <a href="{{ $item['href'] }}" class="card text-decoration-none p-3 text-center"
+                            <a class="card text-decoration-none p-3 text-center"
+                                @if(in_array(Auth::user()->role, ['admin','librarian'])) href="{{ $item['href'] }}" @endif
                                 style="max-width: 150px; min-width: 150px;">
                                 <h1 class="m-0 bg-{{ $item['color'] }} border p-2">
                                     <i class="bi bi-{{ $item['icon'] }}" style="font-size: 60px;"></i><br>

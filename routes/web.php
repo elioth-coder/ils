@@ -34,6 +34,11 @@ use App\Http\Middleware\IsLibrarian;
 use Illuminate\Support\Facades\Route;
 
 Route::delete('/logout', [SessionController::class, 'destroy'])->middleware('auth');
+Route::get('/about', [GuestController::class, 'about']);
+Route::get('/resources', [GuestController::class, 'resources']);
+Route::get('/faq', [GuestController::class, 'faq']);
+Route::get('/rules', [GuestController::class, 'rules']);
+Route::get('/faqs', [GuestController::class, 'faqs']);
 
 Route::middleware('guest')->group(function () {
     Route::get('/register', [AccountController::class, 'create']);
@@ -42,11 +47,6 @@ Route::middleware('guest')->group(function () {
     Route::get('/account/activate/{token_value}', [AccountController::class, 'activate']);
 
     Route::get('/', [GuestController::class, 'index']);
-    Route::get('/about', [GuestController::class, 'about']);
-    Route::get('/resources', [GuestController::class, 'resources']);
-    Route::get('/faq', [GuestController::class, 'faq']);
-    Route::get('/rules', [GuestController::class, 'rules']);
-    Route::get('/faqs', [GuestController::class, 'faqs']);
     Route::get('/login', [SessionController::class, 'create']);
     Route::post('/login', [SessionController::class, 'store'])->name('login');
     Route::get('/forgot-password', [ForgotPasswordController::class, 'index']);

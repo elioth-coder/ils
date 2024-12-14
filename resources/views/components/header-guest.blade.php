@@ -30,6 +30,13 @@
                     </a>
                 </div>
 
+                @if(str_starts_with(request()->path(), 'register') || str_starts_with(request()->path(), 'login'))
+                    <a href="/" class="btn btn-success btn-sm me-2">
+                        <i class="bi bi-arrow-left"></i>
+                        Go Back
+                        <i class="bi bi-house"></i>
+                    </a>
+                @endif
                 <button x-on:click="open = !open" class="btn btn-success btn-sm">
                     <i class="bi bi-person"></i>
                     My Account
