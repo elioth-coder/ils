@@ -128,7 +128,6 @@
                     const strength = checkPasswordStrength(password);
                     const errors = validatePassword(password);
 
-                    // Update message and style based on strength
                     if (strength === "Weak") {
                         strengthMessage.textContent = "Weak Password";
                         strengthMessage.className = "strength weak";
@@ -150,22 +149,12 @@
 
                     let strengthScore = 0;
 
-                    // Check password length
                     if (password.length >= 8) strengthScore++;
 
-                    // Check for lowercase letters
                     if (/[a-z]/.test(password)) strengthScore++;
-
-                    // Check for uppercase letters
                     if (/[A-Z]/.test(password)) strengthScore++;
-
-                    // Check for numbers
                     if (/\d/.test(password)) strengthScore++;
-
-                    // Check for special characters
                     if (/[\W_]/.test(password)) strengthScore++;
-
-                    // Determine strength
                     if (strengthScore <= 2) return "Weak";
                     if (strengthScore === 3) return "Medium";
                     return "Strong";

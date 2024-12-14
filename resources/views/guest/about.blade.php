@@ -1,6 +1,6 @@
 <x-layout>
     <x-header-guest />
-    <main class="d-flex flex-column min-vh-100 min-vw-100 bg-primary-subtle">
+    <main class="d-flex flex-column min-vh-100 min-vw-100 bg-success-subtle">
         <div class="container">
             <div class="w-full">
                 <h2 class="my-4 text-center">Library Mission, Goals and Objectives of NEUST Libraries</h2>

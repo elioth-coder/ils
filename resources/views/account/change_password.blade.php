@@ -102,7 +102,7 @@
                     const strength = checkPasswordStrength(password);
                     const errors = validatePassword(password);
                     console.log("-------------");
-                    
+
 
                     // Update message and style based on strength
                     if (strength === "Weak") {

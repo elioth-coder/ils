@@ -1,8 +1,4 @@
 <x-layout>
-    <x-slot:head>
-        <meta name="csrf-token" content="{{ csrf_token() }}">
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-</x-slot:head>
     <x-header />
     <main class="d-flex align-items-center justify-content-center w-100 bg-light">
         <div class="container d-flex flex-column py-4">
@@ -248,12 +244,12 @@
 
             document.getElementById('printButton').addEventListener('click', () => {
             const params = new URLSearchParams({
-                publisher: document.getElementById('publisher').value, 
-                publication_year: document.getElementById('publication_year').value, 
-                type: document.getElementById('type').value,  
-                format: document.getElementById('format').value,  
-                genre: document.getElementById('genre').value,  
-                status: document.getElementById('status').value, 
+                publisher: document.getElementById('publisher').value,
+                publication_year: document.getElementById('publication_year').value,
+                type: document.getElementById('type').value,
+                format: document.getElementById('format').value,
+                genre: document.getElementById('genre').value,
+                status: document.getElementById('status').value,
             });
             window.location.href = `/reports/report_template_count?_method=GET&${params.toString()}`;
         });

@@ -12,15 +12,14 @@
             {{ $breadcrumb ?? '' }}
         </section>
 
-        <div class="container d-flex pb-5 column-gap-4">
-            <aside style="width: 33.33%;" class="d-block">
-                <div class="card p-3 w-full shadow">
-                    <div class="card-body">
-                        {{ $form ?? '' }}
-                    </div>
-                </div>
-            </aside>
-            <section class="flex-grow-1">
+        <div class="container d-flex flex-column pb-5 row-gap-4">
+            <section class="w-100">
+                <a href="/settings/faqs#faq-form" class="btn btn-outline-success">
+                    New FAQ
+                    <i class="bi bi-plus"></i>
+                </a>
+            </section>
+            <section class="d-block">
                 @if (session('message'))
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
                         <section class="d-flex align-items-center">
@@ -31,49 +30,55 @@
                     </div>
                 @endif
 
-                <table id="libraries-table" class="table table-striped table-hover">
+                <table id="faqs-table" class="table table-striped table-hover">
                     <thead>
                         <tr>
                             <th>Action</th>
-                            <th>Code</th>
-                            <th>Name</th>
+                            <th>Question</th>
+                            <th>Keywords</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($libraries as $library)
+                        @foreach ($faqs as $faq)
                             <tr>
-                                <td>
-                                    <form id="delete-library-{{ $library->id }}"
-                                        action="/settings/libraries/{{ $library->id }}" method="POST" class="d-none">
+                                <td style="width: 150px;">
+                                    <form id="delete-faq-{{ $faq->id }}"
+                                        action="/settings/faqs/{{ $faq->id }}" method="POST" class="d-none">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit">DELETE</button>
                                     </form>
-
-                                    <a href="/settings/libraries/{{ $library->id }}/edit" class="btn btn-light btn-sm">
+                                    <a title="Edit" href="/settings/faqs/{{ $faq->id }}/edit#faq-form" class="btn btn-light btn-sm">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <button onclick="deleteLibrary({{ $library->id }});" class="btn btn-light btn-sm">
+                                    <button title="Delete" onclick="deleteFaq({{ $faq->id }});" class="btn btn-light btn-sm">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </td>
-                                <td>{{ $library->code }}</td>
-                                <td>{{ $library->name }}</td>
+                                <td>{{ $faq->question }}</td>
+                                <td>{{ $faq->keywords }}</td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
+            </section>
+            <section class="d-block">
+                <div id="faq-form" class="card p-3 w-full shadow">
+                    <div class="card-body">
+                        {{ $form ?? '' }}
+                    </div>
+                </div>
             </section>
         </div>
     </main>
     <x-footer />
     <x-slot:script>
         <script>
-            new DataTable('#libraries-table');
+            new DataTable('#faqs-table');
 
-            async function deleteLibrary(id) {
+            async function deleteFaq(id) {
                 let result = await Swal.fire({
-                    title: "Delete this library?",
+                    title: "Delete this faq?",
                     icon: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#0d6efd",
@@ -82,7 +87,7 @@
                 });
 
                 if (result.isConfirmed) {
-                    document.querySelector(`#delete-library-${id} button`).click();
+                    document.querySelector(`#delete-faq-${id} button`).click();
                 }
             }
         </script>

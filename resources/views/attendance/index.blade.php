@@ -1,8 +1,6 @@
 <x-layout>
     <x-slot:head>
-        <meta name="csrf-token" content="{{ csrf_token() }}">
         <script src="/js/face-api.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <style>
             .swal2-image.profile {
                 border-radius: 50%;

@@ -1,8 +1,4 @@
 <x-layout>
-    <x-slot:head>
-        <meta name="csrf-token" content="{{ csrf_token() }}">
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    </x-slot:head>
     <x-header />
     <main class="d-flex align-items-center justify-content-center w-100 bg-light">
         <div class="container d-flex flex-column py-4">
@@ -247,7 +243,7 @@
                 </a>
             </div>
             <div class="d-flex justify-content-end pe-5 w-100 mb-3"> -->
-          
+
         </div>
     </main>
     <div class="d-flex justify-content-end pe-5 w-100 mb-3">
