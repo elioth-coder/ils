@@ -18,6 +18,7 @@ use App\Http\Controllers\BackupDatabaseController;
 use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\CurrentLoanController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\GuestController;
 use App\Http\Controllers\ItemController;
@@ -45,8 +46,13 @@ Route::middleware('guest')->group(function () {
     Route::get('/resources', [GuestController::class, 'resources']);
     Route::get('/faq', [GuestController::class, 'faq']);
     Route::get('/rules', [GuestController::class, 'rules']);
+    Route::get('/faqs', [GuestController::class, 'faqs']);
     Route::get('/login', [SessionController::class, 'create']);
     Route::post('/login', [SessionController::class, 'store'])->name('login');
+    Route::get('/forgot-password', [ForgotPasswordController::class, 'index']);
+    Route::post('/forgot-password', [ForgotPasswordController::class, 'sendLink'])->name('password.email');
+    Route::get('reset-password/{token}', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
+    Route::post('reset-password', [ForgotPasswordController::class, 'reset'])->name('password.update');
 });
 
 Route::prefix('search')->group(function () {

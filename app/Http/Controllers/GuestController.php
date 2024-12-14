@@ -26,6 +26,11 @@ class GuestController extends Controller
     {
         return view('guest.resources');
     }
+    
+    public function faqs()
+    {
+        return view('guest.faqs');
+    }
 
     public function faq(Request $request)
     {
