@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Faq;
 use Illuminate\Http\Request;
 
 class GuestController extends Controller
@@ -24,6 +25,22 @@ class GuestController extends Controller
     public function resources()
     {
         return view('guest.resources');
+    }
+
+    public function faq(Request $request)
+    {
+        $q = $request->input('q') ?? '';
+
+        $faqs =
+            Faq::where('question', 'LIKE', "%$q%")
+                ->orWhere('answer', 'LIKE', "%$q%")
+                ->orWhere('keywords', 'LIKE', "%$q%")
+                ->latest()
+                ->paginate(3);
+
+        return view('guest.faq', [
+            'faqs' => $faqs,
+        ]);
     }
 
 }

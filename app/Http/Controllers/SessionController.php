@@ -35,6 +35,8 @@ class SessionController extends Controller
     {
         Auth::logout();
 
-        return redirect('/');
+        return response()->json([
+            'status' => 'success',
+        ]);
     }
 }

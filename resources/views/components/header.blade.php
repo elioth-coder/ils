@@ -74,44 +74,43 @@
                                     ],
                                 ];
 
-                                // $sections = [
-                                //     [
-                                //         'icon' => 'arrow-clockwise',
-                                //         'url' => '/sections/circulation',
-                                //         'title' => 'Circulation Section',
-                                //     ],
-                                //     [
-                                //         'icon' => 'flag',
-                                //         'url' => '/sections/filipiniana',
-                                //         'title' => 'Filipiniana Section',
-                                //     ],
-                                //     [
-                                //         'icon' => 'newspaper',
-                                //         'url' => '/sections/periodical',
-                                //         'title' => 'Periodical Section',
-                                //     ],
-                                //     [
-                                //         'icon' => 'bookmark',
-                                //         'url' => '/sections/reference',
-                                //         'title' => 'Reference Section',
-                                //     ],
-                                //     [
-                                //         'icon' => 'pc-display',
-                                //         'url' => '/sections/e-library',
-                                //         'title' => 'E-Library Section',
-                                //     ],
-                                //     [
-                                //         'icon' => 'film',
-                                //         'url' => '/sections/audio-visual',
-                                //         'title' => 'Audio Visual Section',
-                                //     ],
-                                //     [
-                                //         'icon' => 'journal',
-                                //         'url' => '/sections/thesis',
-                                //         'title' => 'Thesis Section',
-                                //     ],
-
-                                // ];
+                                $sections = [
+                                    [
+                                        'icon' => 'arrow-clockwise',
+                                        'url' => '/sections/circulation',
+                                        'title' => 'Circulation Section',
+                                    ],
+                                    [
+                                        'icon' => 'flag',
+                                        'url' => '/sections/filipiniana',
+                                        'title' => 'Filipiniana Section',
+                                    ],
+                                    [
+                                        'icon' => 'newspaper',
+                                        'url' => '/sections/periodical',
+                                        'title' => 'Periodical Section',
+                                    ],
+                                    [
+                                        'icon' => 'bookmark',
+                                        'url' => '/sections/reference',
+                                        'title' => 'Reference Section',
+                                    ],
+                                    [
+                                        'icon' => 'pc-display',
+                                        'url' => '/sections/e-library',
+                                        'title' => 'E-Library Section',
+                                    ],
+                                    [
+                                        'icon' => 'film',
+                                        'url' => '/sections/audio-visual',
+                                        'title' => 'Audio Visual Section',
+                                    ],
+                                    [
+                                        'icon' => 'journal',
+                                        'url' => '/sections/thesis',
+                                        'title' => 'Thesis Section',
+                                    ],
+                                ];
 
                                 $users = [
                                     [
@@ -132,7 +131,6 @@
                                         'url' => '/users/staffs',
                                         'title' => 'Library Staffs',
                                     ];
-
                                 }
 
                                 $collections = [
@@ -179,7 +177,6 @@
                                         'url' => '/tools/backup_db',
                                         'title' => 'DB Backup/Restore',
                                     ],
-
                                 ];
 
                                 $settings = [];
@@ -196,7 +193,6 @@
                                         'title' => 'Campuses',
                                     ];
                                 }
-
                                 $settings[] = [
                                     'icon' => 'buildings',
                                     'url' => '/settings/colleges',
@@ -207,15 +203,22 @@
                                     'url' => '/settings/programs',
                                     'title' => 'Programs',
                                 ];
+                                $settings[] = [
+                                    'icon' => 'question-circle',
+                                    'url' => '/settings/faqs',
+                                    'title' => 'FAQs',
+                                ];
 
                             @endphp
-                            <a href="/" class="btn {{ str_starts_with(request()->path(), 'dashboard') ? 'btn-warning' : '' }} text-decoration-none">
+                            <a href="/"
+                                class="btn {{ str_starts_with(request()->path(), 'dashboard') ? 'btn-warning' : '' }} text-decoration-none">
                                 <i class="bi bi-bell-fill me-1"></i>
                                 Dashboard
                             </a>
                             @if (in_array(Auth::user()->role, ['admin', 'librarian', 'staff', 'clerk']))
                                 <div x-data="notification" class="dropdown">
-                                    <button class="btn  {{ str_starts_with(request()->path(), 'services') ? 'btn-warning' : '' }} dropdown-toggle text-decoration-none"
+                                    <button
+                                        class="btn  {{ str_starts_with(request()->path(), 'services') ? 'btn-warning' : '' }} dropdown-toggle text-decoration-none"
                                         type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class="bi bi-grid-fill me-1"></i>
                                         Services
@@ -229,14 +232,16 @@
                                                 <a class="dropdown-item position-relative" href="{{ $service['url'] }}">
                                                     <i class="bi bi-{{ $service['icon'] }} me-1"></i>
                                                     {{ $service['title'] }}
-                                                    @if ($service['title']=='Item Requests')
+                                                    @if ($service['title'] == 'Item Requests')
                                                         <template x-if="request_count > 0">
-                                                            <span class="badge text-bg-danger position-absolute end-0 me-3" x-text="request_count"></span>
+                                                            <span class="badge text-bg-danger position-absolute end-0 me-3"
+                                                                x-text="request_count"></span>
                                                         </template>
                                                     @endif
-                                                    @if ($service['title']=='Current Loans')
+                                                    @if ($service['title'] == 'Current Loans')
                                                         <template x-if="loan_count > 0">
-                                                            <span class="badge text-bg-danger position-absolute end-0 me-3" x-text="loan_count"></span>
+                                                            <span class="badge text-bg-danger position-absolute end-0 me-3"
+                                                                x-text="loan_count"></span>
                                                         </template>
                                                     @endif
                                                 </a>
@@ -253,33 +258,38 @@
                                     </ul>
                                 </div>
 
-                                {{-- <div class="dropdown">
-                                    <button class="btn {{ str_starts_with(request()->path(), 'sections') ? 'btn-warning' : '' }} dropdown-toggle text-decoration-none"
-                                        type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="bi bi-grid-1x2-fill me-1"></i>
-                                        Sections
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-end">
-                                        @foreach ($sections as $section)
+                                @if (!in_array(Auth::user()->role, ['admin', 'librarian', 'staff', 'clerk']))
+                                    <div class="dropdown">
+                                        <button
+                                            class="btn {{ str_starts_with(request()->path(), 'sections') ? 'btn-warning' : '' }} dropdown-toggle text-decoration-none"
+                                            type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bi bi-grid-1x2-fill me-1"></i>
+                                            Sections
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            @foreach ($sections as $section)
+                                                <li>
+                                                    <a class="dropdown-item" href="{{ $section['url'] }}">
+                                                        <i class="bi bi-{{ $section['icon'] }} me-1"></i>
+                                                        {{ $section['title'] }}
+                                                    </a>
+                                                </li>
+                                            @endforeach
                                             <li>
-                                                <a class="dropdown-item" href="{{ $section['url'] }}">
-                                                    <i class="bi bi-{{ $section['icon'] }} me-1"></i> {{ $section['title'] }}
+                                                <hr class="dropdown-divider">
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="/sections">
+                                                    <i class="bi bi-grid-1x2 me-1"></i> Library Sections
                                                 </a>
                                             </li>
-                                        @endforeach
-                                        <li>
-                                            <hr class="dropdown-divider">
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item" href="/sections">
-                                                <i class="bi bi-grid-1x2 me-1"></i> Library Sections
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div> --}}
+                                        </ul>
+                                    </div>
+                                @endif
 
                                 <div class="dropdown">
-                                    <button class="btn {{ str_starts_with(request()->path(), 'collections') ? 'btn-warning' : '' }} dropdown-toggle text-decoration-none"
+                                    <button
+                                        class="btn {{ str_starts_with(request()->path(), 'collections') ? 'btn-warning' : '' }} dropdown-toggle text-decoration-none"
                                         type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class="bi bi-layers-fill me-1"></i>
                                         Collections
@@ -310,7 +320,8 @@
                                 </div>
 
                                 <div class="dropdown">
-                                    <button class="btn {{ str_starts_with(request()->path(), 'reports') ? 'btn-warning' : '' }} dropdown-toggle text-decoration-none"
+                                    <button
+                                        class="btn {{ str_starts_with(request()->path(), 'reports') ? 'btn-warning' : '' }} dropdown-toggle text-decoration-none"
                                         type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class="bi bi-bar-chart-line-fill me-1"></i>
                                         Reports
@@ -319,7 +330,8 @@
                                         @foreach ($reports as $report)
                                             <li>
                                                 <a class="dropdown-item" href="{{ $report['url'] }}">
-                                                    <i class="bi bi-{{ $report['icon'] }} me-1"></i> {{ $report['title'] }}
+                                                    <i class="bi bi-{{ $report['icon'] }} me-1"></i>
+                                                    {{ $report['title'] }}
                                                 </a>
                                             </li>
                                         @endforeach
@@ -327,7 +339,8 @@
                                 </div>
 
                                 <div class="dropdown">
-                                    <button class="btn  {{ str_starts_with(request()->path(), 'users') ? 'btn-warning' : '' }} dropdown-toggle text-decoration-none"
+                                    <button
+                                        class="btn  {{ str_starts_with(request()->path(), 'users') ? 'btn-warning' : '' }} dropdown-toggle text-decoration-none"
                                         type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class="bi bi-people-fill me-1"></i>
                                         Patrons
@@ -357,7 +370,8 @@
                                 </div>
 
                                 <div class="dropdown">
-                                    <button class="btn {{ str_starts_with(request()->path(), 'tools') ? 'btn-warning' : '' }} dropdown-toggle text-decoration-none"
+                                    <button
+                                        class="btn {{ str_starts_with(request()->path(), 'tools') ? 'btn-warning' : '' }} dropdown-toggle text-decoration-none"
                                         type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class="bi bi-tools me-1"></i>
                                         Tools
@@ -375,7 +389,8 @@
                                 </div>
 
                                 <div class="dropdown">
-                                    <button class="btn  {{ str_starts_with(request()->path(), 'settings') ? 'btn-warning' : '' }} dropdown-toggle text-decoration-none"
+                                    <button
+                                        class="btn  {{ str_starts_with(request()->path(), 'settings') ? 'btn-warning' : '' }} dropdown-toggle text-decoration-none"
                                         type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class="bi bi-gear-fill me-1"></i>
                                         Settings
@@ -425,13 +440,17 @@
                         <a href="/account/change_pin" class="text-decoration-none link-secondary me-3">
                             <i class="bi bi-unlock-fill me-1"></i> Change PIN
                         </a>
-                        <form action="/logout" id="logout-form" class="d-inline" method="POST">
+                        {{-- <form action="/logout" id="logout-form" class="d-inline" method="POST">
                             @csrf
                             @method('DELETE')
                             <button class="text-decoration-none p-0 link-secondary me-3 btn btn-link">
                                 <i class="bi bi-box-arrow-right me-1"></i> Logout
                             </button>
-                        </form>
+                        </form> --}}
+                        <button onclick="confirmLogout()"
+                            class="text-decoration-none p-0 link-secondary me-3 btn btn-link">
+                            <i class="bi bi-box-arrow-right me-1"></i> Logout
+                        </button>
                     </section>
                 </div>
             </section>
@@ -467,7 +486,11 @@
         Alpine.data('notification', () => ({
             async init() {
                 let response = await fetch('/notifications/library_services');
-                let { status, request_count, loan_count } = await response.json();
+                let {
+                    status,
+                    request_count,
+                    loan_count
+                } = await response.json();
 
                 console.log({
                     status,

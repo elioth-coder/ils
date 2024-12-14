@@ -18,6 +18,7 @@ use App\Http\Controllers\BackupDatabaseController;
 use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\CurrentLoanController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FaqController;
 use App\Http\Controllers\GuestController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ItemRequestController;
@@ -42,6 +43,7 @@ Route::middleware('guest')->group(function () {
     Route::get('/', [GuestController::class, 'index']);
     Route::get('/about', [GuestController::class, 'about']);
     Route::get('/resources', [GuestController::class, 'resources']);
+    Route::get('/faq', [GuestController::class, 'faq']);
     Route::get('/rules', [GuestController::class, 'rules']);
     Route::get('/login', [SessionController::class, 'create']);
     Route::post('/login', [SessionController::class, 'store'])->name('login');
@@ -298,6 +300,17 @@ Route::middleware('auth')->group(function () {
 
         Route::prefix('settings/libraries')->group(function () {
             Route::controller(LibraryController::class)->group(function () {
+                Route::get('/', 'index');
+                Route::post('/', 'store');
+                Route::get('/{id}', 'show');
+                Route::get('/{id}/edit', 'edit');
+                Route::patch('/{id}', 'update');
+                Route::delete('/{id}', 'destroy');
+            });
+        });
+
+        Route::prefix('settings/faqs')->group(function () {
+            Route::controller(FaqController::class)->group(function () {
                 Route::get('/', 'index');
                 Route::post('/', 'store');
                 Route::get('/{id}', 'show');

@@ -5,7 +5,6 @@
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
         <script src="https://cdn.datatables.net/2.1.4/js/dataTables.min.js"></script>
         <script src="https://cdn.datatables.net/2.1.4/js/dataTables.bootstrap5.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </x-slot:head>
     <x-header />
     <main class="d-flex flex-column justify-content-center w-100 bg-body-secondary">

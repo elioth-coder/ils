@@ -1,7 +1,5 @@
 <x-layout>
     <x-slot:head>
-        <meta name="csrf-token" content="{{ csrf_token() }}">
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="https://cdn.canvasjs.com/ga/canvasjs.min.js"></script>
         <style>
             a.card:hover {

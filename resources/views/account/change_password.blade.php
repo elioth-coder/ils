@@ -15,6 +15,25 @@
             <h2 class="mb-4">Change password</h2>
 
             <div class="card p-4 w-50 mb-4">
+                <style>
+                    .strength {
+                        font-size: 1rem;
+                        font-weight: bold;
+                        margin-top: 10px;
+                    }
+
+                    .weak {
+                        color: red;
+                    }
+
+                    .medium {
+                        color: orange;
+                    }
+
+                    .strong {
+                        color: green;
+                    }
+                </style>
                 @if (session('message'))
                     @php $message = session('message'); @endphp
                     <div class="alert alert-{{ $message['type'] }} alert-dismissible fade show" role="alert">
@@ -41,6 +60,7 @@
                         @error('password')
                             <div class="form-text text-danger">{{ $message }}</div>
                         @enderror
+                        <div id="strengthMessage" class="strength form-text"></div>
                     </div>
                     <div class="mb-3">
                         <label for="password_confirmation" class="form-label">Confirm new password</label>
@@ -62,16 +82,58 @@
     <x-slot:script>
         @if (session('message'))
         @php $message = session('message'); @endphp
-        @if($message['type']=='success')
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    setTimeout(() => {
-                        let $logoutForm = document.getElementById('logout-form');
-                        $logoutForm.submit();
-                    }, 2000);
-                });
-            </script>
+
+            @if($message['type']=='success')
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        setTimeout(() => {
+                            let $logoutForm = document.getElementById('logout-form');
+                            $logoutForm.submit();
+                        }, 2000);
+                    });
+                </script>
+            @endif
         @endif
-    @endif
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const passwordInput = document.getElementById("password");
+                const strengthMessage = document.getElementById("strengthMessage");
+
+                passwordInput.addEventListener("input", () => {
+                    const password = passwordInput.value;
+                    const strength = checkPasswordStrength(password);
+
+                    if (strength === "Weak") {
+                        strengthMessage.textContent = "Weak Password";
+                        strengthMessage.className = "strength weak";
+                    } else if (strength === "Medium") {
+                        strengthMessage.textContent = "Medium Strength Password";
+                        strengthMessage.className = "strength medium";
+                    } else if (strength === "Strong") {
+                        strengthMessage.textContent = "Strong Password";
+                        strengthMessage.className = "strength strong";
+                    } else {
+                        strengthMessage.textContent = "";
+                        strengthMessage.className = "strength";
+                    }
+                });
+
+                function checkPasswordStrength(password) {
+                    if (password.length === 0) return "";
+
+                    let strengthScore = 0;
+
+                    if (password.length >= 8) strengthScore++;
+
+                    if (/[a-z]/.test(password)) strengthScore++;
+                    if (/[A-Z]/.test(password)) strengthScore++;
+                    if (/\d/.test(password)) strengthScore++;
+                    if (/[\W_]/.test(password)) strengthScore++;
+                    if (strengthScore <= 2) return "Weak";
+                    if (strengthScore === 3) return "Medium";
+                    return "Strong";
+                }
+            });
+        </script>
     </x-slot>
 </x-layout>
