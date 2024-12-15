@@ -55,9 +55,6 @@
                             <li>
                                 <span>General Tinio (Papaya) Off-Campus Library</span><br>
                             </li>
-                            <li>
-                                <span>Peñaranda Off-Campus Library</span><br>
-                            </li>
                         </ul>
                     </div>
                     <div class="w-100">
