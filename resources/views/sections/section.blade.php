@@ -112,7 +112,7 @@
                                             </div>
                                         </td>
                                         <td class="text-center" style="min-width: 140px;">
-                                            @if (in_array(Auth::user()->role, ['teacher', 'student']))
+                                            @if (in_array(Auth::user()->role, ['teacher', 'student']) && $item->status=='available')
                                                 <button onclick="requestItem({{ $item->barcode }});"
                                                     class="mt-1 btn btn-success">
                                                     Request Item
