@@ -22,8 +22,9 @@
                     </div>
                     <div class="p-1">
                         <h2 class="text-capitalize">{{ strtolower($patron->last_name) }}, {{ strtolower($patron->first_name) }}</h2>
-                        <b>Birthday : </b> {{ $patron->birthday }} ({{ $patron->age }} years old) <br>
-                        <b>Card No. : </b> {{ $patron->card_number }}
+                        <b>Birthday  : </b> {{ $patron->birthday }} ({{ $patron->age }} years old) <br>
+                        <b>Card No.  : </b> {{ $patron->card_number }} <br>
+                        <b>Role : </b> {{ strtoupper($patron->role) }}
                         <p class="m-0 mt-2">
                             <a href="/account/edit"
                                 class="btn btn-outline-primary btn-sm">
