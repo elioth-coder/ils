@@ -31,6 +31,11 @@
                         font-weight: bold;
                         margin-top: 10px;
                     }
+                    .error {
+                        font-size: .8rem;
+                        margin-top: 10px;
+                        color: red;
+                    }
 
                     .weak {
                         color: red;
@@ -44,7 +49,7 @@
                         color: green;
                     }
                 </style>
-                <form action="/account/update_password" method="POST">
+                <form id="form" action="/account/update_password" method="POST">
                     @csrf
                     @method('POST')
                     <div class="mb-2">
@@ -76,10 +81,13 @@
                             <div class="form-text text-danger">{{ $message }}</div>
                         @enderror
                     </div>
+                    <div id="errorMessage" class="error form-text"></div>
+
                     <div class="flex-row-reverse gap-2 mb-2 d-flex">
                         <a href="/dashboard" class="px-3 w-25 btn btn-outline-dark">Cancel</a>
                         <button type="submit" class="px-3 w-25 btn btn-primary">Update</button>
                     </div>
+                            
                 </form>
             </div>
         </div>
@@ -87,38 +95,37 @@
     <x-footer />
 
     <x-slot:script>
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const form = document.getElementById("form");
                 const passwordInput = document.getElementById("password");
                 const strengthMessage = document.getElementById("strengthMessage");
-                const passwordErrors = document.getElementById("passwordErrors");
+                const errorMessage = document.getElementById("errorMessage");
 
                 const lengthRequirement = document.getElementById("lengthRequirement");
                 const numberRequirement = document.getElementById("numberRequirement");
                 const specialCharRequirement = document.getElementById("specialCharRequirement");
 
+                let currentStrength = "";
+
                 passwordInput.addEventListener("input", () => {
                     const password = passwordInput.value;
-                    const strength = checkPasswordStrength(password);
-                    const errors = validatePassword(password);
-                    console.log("-------------");
+                    currentStrength = checkPasswordStrength(password);
+                    validatePassword(password);
 
-
-                    // Update message and style based on strength
-                    if (strength === "Weak") {
+                    if (currentStrength === "Weak") {
                         strengthMessage.textContent = "Weak Password";
                         strengthMessage.className = "strength weak";
-                    } else if (strength === "Medium") {
+                    } else if (currentStrength === "Medium") {
                         strengthMessage.textContent = "Medium Strength Password";
                         strengthMessage.className = "strength medium";
-                    } else if (strength === "Strong") {
+                    } else if (currentStrength === "Strong") {
                         strengthMessage.textContent = "Strong Password";
                         strengthMessage.className = "strength strong";
                     } else {
                         strengthMessage.textContent = "";
                         strengthMessage.className = "strength";
                     }
-                    validatePassword(password);
                 });
 
                 function checkPasswordStrength(password) {
@@ -126,55 +133,39 @@
 
                     let strengthScore = 0;
 
-                    // Check password length
                     if (password.length >= 8) strengthScore++;
-
-                    // Check for lowercase letters
                     if (/[a-z]/.test(password)) strengthScore++;
-
-                    // Check for uppercase letters
                     if (/[A-Z]/.test(password)) strengthScore++;
-
-                    // Check for numbers
                     if (/\d/.test(password)) strengthScore++;
-
-                    // Check for special characters
                     if (/[\W_]/.test(password)) strengthScore++;
 
-                    // Determine strength
                     if (strengthScore <= 2) return "Weak";
                     if (strengthScore === 3) return "Medium";
                     return "Strong";
                 }
+
                 function validatePassword(password) {
-                    // Check length requirement
-                    if (password.length >= 8) {
-                        lengthRequirement.classList.remove("text-secondary");
-                        lengthRequirement.classList.add("text-success");
-                    } else {
-                        lengthRequirement.classList.remove("text-success");
-                        lengthRequirement.classList.add("text-secondary");
-                    }
+                    lengthRequirement.classList.toggle("text-success", password.length >= 8);
+                    lengthRequirement.classList.toggle("text-secondary", password.length < 8);
 
-                    // Check number requirement
-                    if (/\d/.test(password)) {
-                        numberRequirement.classList.remove("text-secondary");
-                        numberRequirement.classList.add("text-success");
-                    } else {
-                        numberRequirement.classList.remove("text-success");
-                        numberRequirement.classList.add("text-secondary");
-                    }
+                    numberRequirement.classList.toggle("text-success", /\d/.test(password));
+                    numberRequirement.classList.toggle("text-secondary", !/\d/.test(password));
 
-                    // Check special character requirement
-                    if (/[\W_]/.test(password)) {
-                        specialCharRequirement.classList.remove("text-secondary");
-                        specialCharRequirement.classList.add("text-success");
-                    } else {
-                        specialCharRequirement.classList.remove("text-success");
-                        specialCharRequirement.classList.add("text-secondary");
-                    }
+                    specialCharRequirement.classList.toggle("text-success", /[\W_]/.test(password));
+                    specialCharRequirement.classList.toggle("text-secondary", !/[\W_]/.test(password));
                 }
+
+                form.addEventListener("submit", (e) => {
+                    if (currentStrength === "Weak" || currentStrength === "") {
+                        e.preventDefault();
+                        errorMessage.textContent = "Password must be at least Medium or Strong to submit the form.";
+                        passwordInput.focus();
+                    } else {
+                        errorMessage.textContent = "";
+                    }
                 });
-            </script>
+            });
+        </script>
     </x-slot:script>
+
 </x-layout>
