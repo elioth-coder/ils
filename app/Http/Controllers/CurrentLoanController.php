@@ -45,9 +45,10 @@ class CurrentLoanController extends Controller
          ON items.barcode = loaned_items.barcode
          WHERE loaned_items.status = 'checked out'
          AND DATE(loaned_items.due_date) <= DATE(NOW())
-         ORDER BY loaned_items.created_at DESC
         ";
-        $query = $pdo->prepare($sql);
+        $order_by = "ORDER BY loaned_items.created_at DESC ";
+
+        $query = $pdo->prepare($sql . $order_by);
         $query->execute();
         $overdue_items = $query->fetchAll(PDO::FETCH_CLASS, 'stdClass');
 
@@ -70,11 +71,10 @@ class CurrentLoanController extends Controller
          INNER JOIN loaned_items
          ON items.barcode = loaned_items.barcode
          WHERE loaned_items.status
-         ORDER BY loaned_items.created_at DESC
         ";
 
-        $predicate = "IN ('checked out') AND DATE(loaned_items.due_date) > DATE(NOW())";
-        $sql = $_sql . $predicate;
+        $predicate = "IN ('checked out') AND DATE(loaned_items.due_date) > DATE(NOW()) ";
+        $sql = $_sql . $predicate . $order_by;
         $query = $pdo->prepare($sql);
         $query->execute();
         $loaned_items = $query->fetchAll(PDO::FETCH_CLASS, 'stdClass');
@@ -86,8 +86,8 @@ class CurrentLoanController extends Controller
             return $item;
         });
 
-        $predicate = "IN ('returned')";
-        $sql = $_sql . $predicate;
+        $predicate = "IN ('returned') ";
+        $sql = $_sql . $predicate . $order_by;
         $query = $pdo->prepare($sql);
         $query->execute();
         $returned_items = $query->fetchAll(PDO::FETCH_CLASS, 'stdClass');

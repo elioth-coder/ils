@@ -43,11 +43,11 @@ class ItemRequestController extends Controller
          INNER JOIN requested_items
          ON items.barcode = requested_items.barcode
          WHERE requested_items.status
-         ORDER BY requested_items.created_at DESC
         ";
+        $order_by = "ORDER BY requested_items.created_at DESC ";
 
-        $predicate = "IN ('pending')";
-        $sql = $_sql . $predicate;
+        $predicate = "IN ('pending') ";
+        $sql = $_sql . $predicate . $order_by;
         $query = $pdo->prepare($sql);
         $query->execute();
         $pending_items = $query->fetchAll(PDO::FETCH_CLASS, 'stdClass');
@@ -59,8 +59,8 @@ class ItemRequestController extends Controller
             return $item;
         });
 
-        $predicate = "IN ('for pickup')";
-        $sql = $_sql . $predicate;
+        $predicate = "IN ('for pickup') ";
+        $sql = $_sql . $predicate . $order_by;
         $query = $pdo->prepare($sql);
         $query->execute();
         $for_pickup_items = $query->fetchAll(PDO::FETCH_CLASS, 'stdClass');
@@ -72,8 +72,8 @@ class ItemRequestController extends Controller
             return $item;
         });
 
-        $predicate = "IN ('cancelled')";
-        $sql = $_sql . $predicate;
+        $predicate = "IN ('cancelled') ";
+        $sql = $_sql . $predicate . $order_by;
         $query = $pdo->prepare($sql);
         $query->execute();
         $cancelled_items = $query->fetchAll(PDO::FETCH_CLASS, 'stdClass');
