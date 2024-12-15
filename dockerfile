@@ -7,6 +7,9 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Explicitly create the directory if it doesn't exist
 RUN mkdir -p /var/www/html
 
+# Set working directory
+WORKDIR /var/www/html
+
 # Install system dependencies, Node.js, and PHP extensions required by Laravel
 RUN apt-get update && apt-get install -y \
     python3 \
@@ -28,8 +31,7 @@ RUN apt-get update && apt-get install -y \
 
 
 
-# Set working directory
-WORKDIR /var/www/html
+
 
 # Copy application files (from the local directory to the working directory)
 COPY . .
