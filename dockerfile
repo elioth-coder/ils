@@ -24,16 +24,14 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Explicitly create the directory if it doesn't exist
-RUN mkdir -p /var/www/html
+RUN mkdir -p ./var/www/html
 
 # Set working directory
-WORKDIR /var/www/html
+WORKDIR ./var/www/html
 
 # Copy application files
 COPY . .
 
-# Install Python dependencies if required
-RUN if [ -f requirements.txt ]; then pip3 install --no-cache-dir -r requirements.txt; fi
 
 # Install Composer and PHP dependencies
 COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
