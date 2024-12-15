@@ -26,11 +26,6 @@ class GuestController extends Controller
     {
         return view('guest.resources');
     }
-    
-    public function faqs()
-    {
-        return view('guest.faqs');
-    }
 
     public function faq(Request $request)
     {
@@ -41,7 +36,7 @@ class GuestController extends Controller
                 ->orWhere('answer', 'LIKE', "%$q%")
                 ->orWhere('keywords', 'LIKE', "%$q%")
                 ->latest()
-                ->paginate(3);
+                ->paginate(5);
 
         return view('guest.faq', [
             'faqs' => $faqs,

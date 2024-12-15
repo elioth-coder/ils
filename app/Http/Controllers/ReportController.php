@@ -6,6 +6,7 @@ use App\Models\College;
 use App\Models\Item;
 use App\Models\Program;
 use App\Models\UserDetail;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -13,7 +14,7 @@ use PDO;
 
 class ReportController extends Controller
 {
-    
+
     public function index()
     {
         $most_borrowed_books = DB::table('loaned_items')
@@ -23,7 +24,7 @@ class ReportController extends Controller
         ->orderBy('borrow_count', 'desc')
         ->limit(5)
         ->get();
- 
+
         $top_visitors = DB::table('attendances')
         ->select('card_number', 'name', 'role', DB::raw('COUNT(*) as visit_count'))
         ->groupBy('card_number', 'name', 'role')
@@ -298,7 +299,7 @@ class ReportController extends Controller
         if($request->input('role'))    $parameters['role']    = $request->input('role');
         if($hasDateFilter) {
             $parameters['from'] = $request->input('from') ?? '0000-00-00';
-            $parameters['to']   = $request->input('to') ?? date('Y-m-d');
+            $parameters['to']   = Carbon::parse($request->input('to') ?? date('Y-m-d'))->addDays(1);
         }
 
         $parameters['library'] = $library;
