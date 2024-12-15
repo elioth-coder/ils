@@ -1,5 +1,9 @@
 <x-layout>
-    <x-header />
+    @if(in_array(Auth::user()->role, ['admin','librarian']))
+        <x-header />
+    @else
+        <x-header-patron />
+    @endif
     <main class="d-flex flex-column align-items-center justify-content-center w-100 bg-body-secondary">
         <section class="container py-3 d-flex align-items-center">
             <nav aria-label="breadcrumb">
@@ -87,7 +91,7 @@
                         <a href="/dashboard" class="px-3 w-25 btn btn-outline-dark">Cancel</a>
                         <button type="submit" class="px-3 w-25 btn btn-primary">Update</button>
                     </div>
-                            
+
                 </form>
             </div>
         </div>

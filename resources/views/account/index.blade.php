@@ -1,7 +1,11 @@
 <x-layout>
     <x-slot:head>
     </x-slot:head>
-    <x-header />
+    @if(in_array(Auth::user()->role, ['admin','librarian']))
+        <x-header />
+    @else
+        <x-header-patron />
+    @endif
     <main class="d-flex flex-column align-items-center justify-content-center w-100 bg-body-secondary">
         <section class="container d-flex py-3 align-items-center">
             <nav aria-label="breadcrumb">
