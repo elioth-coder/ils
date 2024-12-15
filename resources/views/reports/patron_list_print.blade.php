@@ -97,32 +97,33 @@
                 <tr style="border:none;">
                     <td style="border:none;">
                         <div class="content" >
-                        <h2>Item Count Report</h2>
-
+                        <h2>List of Patrons</h2>
                         <table class="table table-bordered">
                             <thead>
                             <tr>
                             <th class="text-end">#</th>
-                            <th>Count</th>
+                            <th>Card No.</th>
+                            <th>Full Name</th>
+                            <th>Gender</th>
+                            <th>Role</th>
+                            <th>College</th>
+                            <th>Program</th>
+                            <th>Year & Section</th>
                             <th>Status</th>
-                            <th>Title</th>
-                            <th>Type</th>
-                            <th>Publisher</th>
-                            <th>Year</th>
-                            <th>Genre</th>
                             </tr>
                             </thead>
                             <tbody>
-                            @forelse ($items as $item)
+                            @forelse ($patrons as $patron)
                                 <tr>
                                 <td class="text-end">{{ $loop->index + 1 }}.</td>
-                                <td class="text-center">{{ $item->count }}</td>
-                                <td class="text-capitalize">{{ $item->status }}</td>
-                                <td>{{ $item->title }}</td>
-                                <td class="text-capitalize">{{ $item->type }}</td>
-                                <td>{{ $item->publisher }}</td>
-                                <td>{{ $item->publication_year }}</td>
-                                <td class="text-capitalize">{{ $item->genre }}</td>
+                                <td>{{ $patron->card_number }}</td>
+                                <td class="text-capitalize">{{ $patron->last_name }}, {{ $patron->first_name }}</td>
+                                <td class="text-capitalize">{{ $patron->gender }}</td>
+                                <td class="text-capitalize">{{ $patron->role }}</td>
+                                <td>{{ $patron->college }}</td>
+                                <td>{{ $patron->program }}</td>
+                                <td>{{ $patron->year }} {{ $patron->section }}</td>
+                                <td class="text-capitalize">{{ $patron->status }}</td>
                                 </tr>
                             @empty
                                 <tr>

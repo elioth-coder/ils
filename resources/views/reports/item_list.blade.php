@@ -166,18 +166,10 @@
                                 'available',
                                 'checked out',
                                 'reserved',
-                                'on hold',
-                                'lost',
-                                'damaged',
-                                'in repair',
-                                'in processing',
+                                'no barcode',
                                 'missing',
-                                'on order',
+                                'damaged',
                                 'reference only',
-                                'withdrawn',
-                                'transferred',
-                                'archived',
-                                'overdue',
                             ];
 
                             $_status = request('status') ?? '';
@@ -279,7 +271,7 @@
                         genre: document.getElementById('genre').value,
                         status: document.getElementById('status').value
                     });
-                    window.location.href = `/reports/report_template_inventory?_method=GET&${params.toString()}`;
+                    window.location.href = `/reports/item_list/print?_method=GET&${params.toString()}`;
                 });
         </script>
     </x-slot>

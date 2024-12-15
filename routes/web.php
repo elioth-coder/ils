@@ -201,21 +201,21 @@ Route::middleware('auth')->group(function () {
         Route::prefix('reports')->group(function () {
             Route::controller(ReportController::class)->group(function () {
                 Route::get('/', 'index');
-                Route::get('/item_list', 'item_list');
-                Route::get('/item_count', 'item_count');
-                Route::get('/patron_list', 'patron_list');
-                Route::get('/attendance_list', 'attendance_list');
 
-                Route::get('/item_list/print', 'item_list_print');
-                Route::get('/item_count/print', 'item_count_print');
+                Route::get('/patron_list', 'patron_list');
                 Route::get('/patron_list/print', 'patron_list_print');
+
+                Route::get('/attendance_list', 'attendance_list');
                 Route::get('/attendance_list/print', 'attendance_list_print');
 
-                Route::get('/report_template', 'report_template');
-                Route::get('/report_template_inventory', 'report_template_inventory');
-                Route::get('/report_template_count', 'report_template_count');
-                Route::get('/report_template_attendance', 'report_template_attendance');
+                Route::get('/item_list', 'item_list');
+                Route::get('/item_list/print', 'item_list_print');
 
+                Route::get('/top_list', 'top_list');
+                Route::get('/top_list/print', 'top_list_print');
+
+                Route::get('/item_count_list', 'item_count_list');
+                Route::get('/item_count_list/print', 'item_count_list_print');
             });
         });
 

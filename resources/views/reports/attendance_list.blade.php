@@ -151,7 +151,7 @@
                 from: document.getElementById('from').value,
                 to: document.getElementById('to').value
             });
-            window.location.href = `/reports/report_template_attendance?_method=GET&${params.toString()}`;
+            window.location.href = `/reports/attendance_list/print?_method=GET&${params.toString()}`;
         });
     </script>
     </div>

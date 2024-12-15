@@ -151,18 +151,10 @@
                                     'available',
                                     'checked out',
                                     'reserved',
-                                    'on hold',
-                                    'lost',
                                     'damaged',
-                                    'in repair',
-                                    'in processing',
                                     'missing',
-                                    'on order',
                                     'reference only',
-                                    'withdrawn',
-                                    'transferred',
-                                    'archived',
-                                    'overdue'
+                                    'no barcode',
                                 ];
 
                                 $_status = request('status') ?? '';
@@ -218,12 +210,12 @@
                 @endforelse
                 </tbody>
             </table>
+
+            <div class="d-flex text-end">
+                <button id="printButton" class="d-block btn btn-primary">Print</button>
+            </div>
         </div>
     </main>
-    <div class="d-flex justify-content-end pe-5 w-100 mb-3">
-    <div class="d-flex justify-content-end pe-5 w-75 mb-3">
-        <button id="printButton" class="btn btn-primary">Print</button>
-    </div>
 
     <x-footer />
     <x-slot:script>
@@ -251,7 +243,7 @@
                 genre: document.getElementById('genre').value,
                 status: document.getElementById('status').value,
             });
-            window.location.href = `/reports/report_template_count?_method=GET&${params.toString()}`;
+            window.location.href = `/reports/item_count_list/print?_method=GET&${params.toString()}`;
         });
         </script>
     </x-slot>

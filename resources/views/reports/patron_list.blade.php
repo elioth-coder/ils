@@ -172,7 +172,7 @@
                 role: document.getElementById('role').value,
                 status: document.getElementById('status').value
             });
-            window.location.href = `/reports/report_template?_method=GET&${params.toString()}`;
+            window.location.href = `/reports/patron_list/print?_method=GET&${params.toString()}`;
         });
     </script>
     </div>

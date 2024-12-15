@@ -36,7 +36,12 @@
                                     ],
                                     [
                                         'icon' => 'list-stars',
-                                        'url' => '/reports/item_count',
+                                        'url' => '/reports/top_list',
+                                        'title' => 'List of top items',
+                                    ],
+                                    [
+                                        'icon' => 'list-stars',
+                                        'url' => '/reports/item_count_list',
                                         'title' => 'List of item count',
                                     ],
                                     [
