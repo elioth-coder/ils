@@ -43,7 +43,7 @@ RUN npm install && npm run build
 
 # Set proper permissions for the Laravel directories
 RUN chown -R www-data:www-data /var/www/ \
-    && chmod -R 775 /var/www/storage /var/www/html/bootstrap/cache
+    && chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
 # Expose port 8000 for Laravel's built-in server
 EXPOSE 8000
