@@ -4,8 +4,6 @@ FROM php:8.2-cli
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive
 
-
-
 # Install system dependencies, Node.js, and PHP extensions required by Laravel
 RUN apt-get update && apt-get install -y \
     python3 \
