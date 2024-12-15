@@ -4,6 +4,9 @@ FROM php:8.2-cli
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive
 
+# Explicitly create the directory if it doesn't exist
+RUN mkdir -p /var/www/html
+
 # Install system dependencies, Node.js, and PHP extensions required by Laravel
 RUN apt-get update && apt-get install -y \
     python3 \
@@ -23,15 +26,13 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Explicitly create the directory if it doesn't exist
-RUN mkdir -p ./var/www/html
+
 
 # Set working directory
-WORKDIR ./var/www/html
+WORKDIR /var/www/html
 
-# Copy application files
+# Copy application files (from the local directory to the working directory)
 COPY . .
-
 
 # Install Composer and PHP dependencies
 COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
