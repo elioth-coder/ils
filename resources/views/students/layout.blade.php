@@ -128,8 +128,6 @@
 
                     console.log({program_code, program});
                 });
-
-
             };
 
             async function addEncoding() {

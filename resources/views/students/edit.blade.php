@@ -385,8 +385,12 @@
             <hr>
             <div class="d-flex gap-2 flex-row-reverse">
                 <a href="{{ url()->previous() }}" class="w-25 btn btn-outline-dark px-3">Cancel</a>
-                <button id="submit_proxy" type="button" onclick="addEncoding();" class="w-25 btn btn-primary px-3">Submit</button>
-                <button id="submit" type="submit" class="d-none w-25 btn btn-primary px-3">Submit</button>
+                @if(env('APP_ENV')=='local')
+                    <button id="submit_proxy" type="button" onclick="addEncoding();" class="w-25 btn btn-primary px-3">Submit</button>
+                    <button id="submit" type="submit" class="d-none w-25 btn btn-primary px-3">Submit</button>
+                @else
+                    <button id="submit" type="submit" class="w-25 btn btn-primary px-3">Submit</button>
+                @endif
             </div>
         </form>
     @endslot

@@ -350,7 +350,6 @@ class AccountController extends Controller
             $token->delete();
 
             return view('account.activate');
-
         } catch(Exception $e) {
             return view('account.activate', [
                 'error' => $e->getMessage()

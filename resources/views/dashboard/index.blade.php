@@ -177,7 +177,7 @@
                                 'icon' => 'film',
                                 'color' => 'danger',
                                 'count' => count($new_videos),
-                                'label' => 'New vides this month',
+                                'label' => 'New videos this month',
                             ],
                             [
                                 'href' => '/collections/new/book',
