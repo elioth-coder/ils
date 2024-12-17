@@ -2,6 +2,7 @@
 
 # Start the Laravel server in the background
 php artisan serve --host=0.0.0.0 --port=8000 &
+php artisan queue:work
 
 # Clear and cache config, routes, and views
 php artisan config:clear
