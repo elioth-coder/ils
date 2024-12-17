@@ -27,11 +27,6 @@ class StudentController extends Controller
         ['key' => '3rd', 'value' => 3],
         ['key' => '4th', 'value' => 4],
         ['key' => '5th', 'value' => 5],
-        ['key' => '6th', 'value' => 6],
-        ['key' => '7th', 'value' => 7],
-        ['key' => '8th', 'value' => 8],
-        ['key' => '9th', 'value' => 9],
-        ['key' => '10th', 'value' => 10],
     ];
 
     public $sections = ['A','B','C','D','E','F',];
