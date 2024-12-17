@@ -36,7 +36,8 @@
                 We kindly request you return the overdue item at your earliest convenience to avoid further penalties. If the items have already been returned, please disregard this notice.
             </p>
             <p>
-                Should you need to renew your loan or have any questions, feel free to contact us at <a href="mailto:neust.ils@gmail.com">neust.ils@gmail.com</a>  or 0969 470 8031.
+                Should you need to renew your loan or have any questions, feel free to contact us at
+                <a href="mailto:neustlibpapayaoffcampus@gmail.com">neustlibpapayaoffcampus@gmail.com</a>  or 0916 690 2122.
             </p>
 
             <p>

@@ -40,7 +40,8 @@
                 Please bring a valid ID or your library card for verification. If you are unable to pick up the item(s) until {{ date('M. d, Y', strtotime($data['deadline'])); }}, kindly inform us to avoid the cancellation of your request.
             </p>
             <p>
-                If you have any questions or need assistance, feel free to contact us at <a href="mailto:neust.ils@gmail.com">neust.ils@gmail.com</a>  or 0969 470 8031.
+                If you have any questions or need assistance, feel free to contact us at
+                <a href="mailto:neustlibpapayaoffcampus@gmail.com">neustlibpapayaoffcampus@gmail.com</a>  or 0916 690 2122.
             </p>
             <p>
                 Thank you for using our library services. We look forward to serving you!
