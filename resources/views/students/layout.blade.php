@@ -1,3 +1,4 @@
+@use(App\Models\Program)
 <x-layout>
     <x-slot:head>
         <link rel="stylesheet" href="https://cdn.datatables.net/2.1.4/css/dataTables.bootstrap5.min.css">
@@ -80,6 +81,8 @@
     <x-footer />
     <x-slot:script>
         <script>
+            const programs = @json(Program::all());
+
             new DataTable('#students-table');
 
             async function deleteStudent(id) {
@@ -97,24 +100,37 @@
                 }
             }
 
-            (function() {
-                const fileInput = document.getElementById('file');
-                const container = document.getElementById('profile-container');
-                const cover_img = document.getElementById('profile');
+            window.onload = function() {
+                const $fileInput = document.getElementById('file');
+                const $container = document.getElementById('profile-container');
+                const $cover_img = document.getElementById('profile');
+                const $program   = document.getElementById('program');
+                const $college   = document.getElementById('college');
 
-                container.addEventListener('click', ()=> { file.click() });
-                fileInput.addEventListener('change', (e)=> {
+                $container.addEventListener('click', ()=> { file.click() });
+                $fileInput.addEventListener('change', (e)=> {
                     let self = e.target;
 
                     if(self.files.length) {
                         let image = URL.createObjectURL(self.files[0]);
 
-                        cover_img.src = image;
+                        $cover_img.src = image;
                     } else {
-                        cover_img.src = '/images/profile.jpg';
+                        $cover_img.src = '/images/profile.jpg';
                     }
                 });
-            })();
+
+                $program.addEventListener('change', (e) => {
+                    let program_code = e.target.value;
+                    let program = programs.filter(p => p.code == program_code)[0];
+
+                    $college.value = program.college;
+
+                    console.log({program_code, program});
+                });
+
+
+            };
 
             async function addEncoding() {
                 $submitProxy = document.querySelector('#submit_proxy');

@@ -397,7 +397,9 @@ class CheckoutController extends Controller
                 'type'        => $item->type,
                 'barcode'     => $item->barcode,
                 'date_loaned' => DB::raw('DATE(NOW())'),
-                'due_date'    => DB::raw('DATE_ADD(DATE(NOW()), INTERVAL 3 DAY)'),
+                'due_date'    => ($item->section=='filipiniana')
+                                ? DB::raw('DATE_ADD(DATE(NOW()), INTERVAL 1 DAY)')
+                                : DB::raw('DATE_ADD(DATE(NOW()), INTERVAL 3 DAY)'),
                 'loaner_id'   => $attributes['requester_id'],
                 'status'      => 'checked out',
             ]);
