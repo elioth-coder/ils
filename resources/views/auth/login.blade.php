@@ -1,4 +1,7 @@
 <x-layout>
+    <x-slot:head>
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+    </x-slot:head>
     <x-header-guest />
     <main class="d-flex align-items-center justify-content-center w-100 bg-success-subtle">
         <div class="container py-5 d-flex">
@@ -15,7 +18,7 @@
                 @enderror
                 <div style="width: 400px;" class="p-3 mx-auto card">
                     <div class="card-body">
-                        <form action="/login" method="POST" autocomplete="off">
+                        <form id="login-form" action="/login" method="POST" autocomplete="off">
                             @csrf
                             @method('POST')
 
@@ -23,14 +26,17 @@
                             <br>
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" name="email" id="email" value="{{ old('email') ?? '' }}">
+                                <input type="email" class="form-control" name="email" id="email" required
+                                    value="{{ old('email') ?? '' }}">
                             </div>
                             <div class="mb-3">
                                 <label for="password" class="form-label">Password</label>
                                 <div class="mb-3 input-group" x-data="{ show: false }">
-                                    <input x-bind:type="(show) ? 'text' : 'password'" name="password" id="password" class="form-control">
+                                    <input x-bind:type="(show) ? 'text' : 'password'" name="password" id="password" required
+                                        class="form-control">
                                     <button x-on:click="show = !show" class="btn btn-outline-secondary" type="button">
-                                        <i class="bi" x-bind:class="(show) ? 'bi-eye-fill' : 'bi-eye-slash-fill'"></i>
+                                        <i class="bi"
+                                            x-bind:class="(show) ? 'bi-eye-fill' : 'bi-eye-slash-fill'"></i>
                                     </button>
                                 </div>
                             </div>
@@ -42,9 +48,10 @@
                                 <button type="submit" class="px-3 w-100 btn btn-primary">Sign in</button>
                             </div>
 
-                                <p class="mt-4 text-center "><a href="/forgot-password">Forgot password?</a></p>
+                            <p class="mt-4 text-center "><a href="/forgot-password">Forgot password?</a></p>
 
-                            <p class="mt-4 text-center">Do not have an account? Sign up <a href="/register">here</a>.</p>
+                            <p class="mt-4 text-center">Do not have an account? Sign up <a href="/register">here</a>.
+                            </p>
                         </form>
                     </div>
                 </div>
@@ -52,4 +59,53 @@
         </div>
     </main>
     <x-footer />
+    <x-slot:script>
+        <script>
+            window.onload = function() {
+                document.getElementById('login-form').addEventListener('submit', async function(event) {
+                    event.preventDefault();
+
+                    let formData = new FormData(event.target);
+
+                    Swal.fire({
+                        title: "Logging in...",
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        timer: 2000,
+                    });
+
+                    let csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+                    let response = await fetch('/login', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken
+                        },
+                    });
+                    let {
+                        status, message
+                    } = await response.json();
+
+                    if (status == 'success') {
+                        Swal.fire({
+                            icon: 'success',
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
+                            timer: 1000,
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            title: message,
+                            icon: 'error',
+                            showConfirmButton: false,
+                            timer: 2000,
+                        });
+                    }
+                });
+            }
+        </script>
+    </x-slot:script>
 </x-layout>

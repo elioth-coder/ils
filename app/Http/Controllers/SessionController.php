@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Request;
@@ -15,20 +16,30 @@ class SessionController extends Controller
 
     public function store(Request $request)
     {
-        $attributes = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
+        try {
+            $attributes = $request->validate([
+                'email' => ['required', 'email'],
+                'password' => ['required'],
+            ]);
 
-        if (!Auth::attempt($attributes)) {
-            throw ValidationException::withMessages([
-                'credential' => 'Incorrect username or password',
+            if (!Auth::attempt($attributes)) {
+                throw ValidationException::withMessages([
+                    'credential' => 'Incorrect username or password',
+                ]);
+            }
+
+            $request->session()->regenerate();
+
+            return response()->json([
+                'status'  => 'success',
+                'message' => 'Successfully logged in',
+            ]);
+        } catch(Exception $e) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => $e->getMessage(),
             ]);
         }
-
-        $request->session()->regenerate();
-
-        return redirect('/');
     }
 
     public function destroy()
