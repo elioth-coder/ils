@@ -60,9 +60,14 @@ return [
             // 'options' => extension_loaded('pdo_mysql') ? array_filter([
             //     PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             // ]) : [],
-            'options'   => [
-                PDO::MYSQL_ATTR_SSL_CA => base_path('./ca.pem'),
-            ],
+            // 'options'   => [
+            //     PDO::MYSQL_ATTR_SSL_CA => base_path('./ca.pem'),
+            // ],
+            'options' =>
+            (env('APP_ENV')=='production')
+                ? [ PDO::MYSQL_ATTR_SSL_CA => base_path('./ca.pem'), ]
+                : (extension_loaded('pdo_mysql') ? array_filter([ PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'), ]) : []),
+
         ],
 
         'mariadb' => [
