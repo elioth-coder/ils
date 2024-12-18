@@ -98,7 +98,7 @@
         <div class="w-100 p-3">
             <p class="text-center m-0">
                 Copyright &copy; 2024 |
-                <a href="/" class="link-hover link-dark text-decoration-none">NEUST ILS v1.0.0</a>
+                <a href="/" class="link-hover link-dark text-decoration-none">NEUST ILI v1.0.0</a>
             </p>
         </div>
     </footer>

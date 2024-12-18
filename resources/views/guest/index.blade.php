@@ -39,8 +39,8 @@
                     <div class="w-100">
                         <h4>Get in Touch</h4>
                         <ul>
-                            <li><a href="/">support@neust.ils.gov.ph</a></li>
-                            <li><a href="/">(+63)919 885 2357</a></li>
+                            <li><a href="mailto:neustlibpapayaoffcampus@gmail.com">neustlibpapayaoffcampus@gmail.com</a></li>
+                            <li><a href="/">(+63)916 690 2122</a></li>
                         </ul>
                     </div>
                 </section>

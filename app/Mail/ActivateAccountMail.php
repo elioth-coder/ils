@@ -31,7 +31,7 @@ class ActivateAccountMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Activate your NEUST ILS account',
+            subject: 'Activate your NEUST ILI account',
         );
     }
 

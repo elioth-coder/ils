@@ -42,5 +42,4 @@ class GuestController extends Controller
             'faqs' => $faqs,
         ]);
     }
-
 }
