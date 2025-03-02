@@ -16,8 +16,6 @@ class IsLibrarian
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $user = Auth::user();
-
         if (!in_array(Auth::user()->role, ['admin', 'librarian'])) {
             return redirect('/');
         }
